@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+dist/
+
+# local sqlite / db artifacts
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+data/*.sqlite
+data/*.sqlite-*
+data/*.db
+data/*.db-*
+
+# env / os noise
+.env
+.env.*
+.DS_Store
