@@ -1,0 +1,233 @@
+========================================================================================================
+MAXEY0 + SCW "PLUGIN" FOR CLAUDE DESKTOP (HOST) — v1.3 HONEYCOMB SUPERSTRUCTURE + TOPOLOGY-AWARE GATES
+========================================================================================================
+
+LEGEND
+  [P] process/service     [C] container/capsule      [DB] datastore        [UI] dashboard
+  --> data/control flow   ==MCP== protocol boundary  ~~notify~~ events
+  (GATE) capability lease token (policy + topology + budget + scope + expiry) permitting plane intersection
+  "CAPABILITY PLANE" = MCP server's tools/resources/prompts + its local constraints
+  "AGENT PLANE"      = Maxey# nodes + delegation edges + policy envelopes
+  "EXECUTION PLANE"  = SCW# capsules (deterministic segmentation) + transcript + sealing
+  "OBS PLANE"        = tracing/logging/ledger/replay + proofs
+  "TOPOLOGY PLANE"   = HONEYCOMB cell lattice of SCWs; rolled/flat state changes adjacency & observability
+
+EDGE KINDS (dashboard + export)
+  workflow_steps | data_in | data_out | observes | controls/uses | contains | touches (membrane adjacency) | portal
+
+--------------------------------------------------------------------------------------------------------
+0) SYSTEM BOUNDARY (BOUNDED / SELF-CONTAINED) — CLAUDE HOST + MAXEY0 GOVERNOR
+--------------------------------------------------------------------------------------------------------
+
++------------------------------------------------------------------------------------------------------+
+| CLAUDE DESKTOP (HOST APP) [P]                                                                        |
+|------------------------------------------------------------------------------------------------------|
+| UI: chat, attachments, tool chooser                                                                  |
+| MCP CLIENT MANAGER: N connections (1 per server)                                                      |
+|  - Session A: ==MCP==> Maxey0 MCP Server (local plugin process)                                       |
+|  - Session B: ==MCP==> Other MCP Server(s) (optional direct; usually via Maxey0)                      |
+| Model runtime (Claude)                                                                                |
++------------------------------------------------------------------------------------------------------+
+                |
+                |  ==MCP==  tools/resources/prompts discovery + tool calls
+                v
+
++------------------------------------------------------------------------------------------------------+
+| MAXEY0 "PLUGIN" (LOCAL) = MAXEY0 MCP SERVER + MCP CLIENT GATEWAY [P]                                 |
+|------------------------------------------------------------------------------------------------------|
+|  maxey10 Ingress Router     (normalize requests, bind run_id, scw_id, topo_epoch)                     |
+|  maxey11 Stable Address Resolver (SAR)                                                                |
+|     - maxey0://agent/Maxey#    maxey0://scw/SCW#   maxey0://gate/GATE#                                |
+|     - maxey0://tool/*          maxey0://resource/* maxey0://obs/*  maxey0://topo/*                    |
+|  maxey12 Capability Discovery Aggregator                                                              |
+|     - local tool adapters + downstream MCP servers capabilities                                       |
+|  maxey13 Policy/Governance Engine (fail-closed)                                                       |
+|     - tool allowlist + arg constraints + data scopes + budgets + risk gates                           |
+|  maxey14 Gate Issuer (GATE registry)                                                                  |
+|     - mints (GATE) := intersection(tenant ∩ maxey0 ∩ agent ∩ provider ∩ TOPOLOGY)                     |
+|     - TOPOLOGY constraint examples:                                                                   |
+|         * allow only (portal) edges between SCWs whose membranes touch                                |
+|         * force traversal-only (multi-hop) if no touch path exists                                    |
+|  maxey15 SCW Fabric (deterministic execution capsules)                                                |
+|     - scw.create / scw.attach / scw.execute / scw.seal / scw.log                                      |
+|  maxey16 Tool Dispatcher / Adapter Layer                                                              |
+|     - routes calls to: local adapters OR downstream MCP planes via (GATE)                             |
+|  maxey17 Observability + Replay                                                                       |
+|     - OTel spans, run ledger hash chain, CST transcript, replay recipes                               |
+|  Maxey00 Superposition Observer (bridge + observer kernel)                                            |
+|     - observes: SCW events, tool calls, policy decisions, gate usage, topology transitions            |
+|  maxey18 Honeycomb Superstructure Engine (HSE)  << NEW TOPOLOGY PLANE CORE >>                         |
+|     - maxey180 Cell Registry: SCW membrane metadata (boundaries, permeability, allowed edge kinds)    |
+|     - maxey181 Adjacency Graph: touches(SCW_i, SCW_j) edges + derived multi-hop reachability          |
+|     - maxey182 Fold/Unfold Operator: topology_state := {flat | rolled | custom}; updates adjacency    |
+|     - maxey183 Portal Manager: creates explicit portal edges ONLY when membranes touch + GATE permits |
+|     - maxey184 Traversal Router: multi-hop routing across honeycomb (diffusion/relay semantics)       |
+|     - maxey185 Observability Operator: projects what each SCW can "see" given topology + gates        |
+|     - maxey186 Density Mapper: emits $map1/$map2-style 3D density artifacts OUTSIDE the active SCWs    |
+|     - maxey187 Drone Controller: spawns "latent drones" inside SCWs to trace instruction-paths        |
++------------------------------------------------------------------------------------------------------+
+         |                   |                      |                       |
+         |                   |                      |                       |
+         v                   v                      v                       v
+
+--------------------------------------------------------------------------------------------------------
+1) CONTROL PLANE (DASHBOARD) — NOW WITH TOPOLOGY VIEW + ROLL/FLAT TOGGLES
+--------------------------------------------------------------------------------------------------------
+
++------------------------------------------------------------------------------------------------------+
+| maxey20 MAXEY0 CONTROL PLANE DASHBOARD [UI]                                                           |
+|------------------------------------------------------------------------------------------------------|
+| "SCW Designer" Canvas (node/edge model)                                                               |
+|  - Nodes: SCW / Agent(Maxey#) / Tool / Maxey00                                                        |
+|  - Edges: workflow_steps / data_in / data_out / observes / controls/uses / contains                   |
+|  - Added edges: touches (membrane adjacency) / portal                                                 |
+|  - Drag containment: Agent -> SCW (contains)                                                          |
+|  - Drag attachment: Tool -> Agent (controls/uses)                                                     |
+|  - Graph I/O: export/import canonical JSON spec                                                       |
+|                                                                                                      |
+| Added (Topology Plane Controls):                                                                      |
+|  - Honeycomb View: render SCWs as cells; show touches graph + portal edges                            |
+|  - "Roll/Flat" toggle: applies Fold/Unfold Operator (maxey182) and recomputes adjacency epoch         |
+|  - Portal Inspector: show which portals exist and the GATE#/policy that enabled them                  |
+|  - Traversal Inspector: show multi-hop paths + relay latency/budget burn                               |
+|  - Density Panels: display $map1 and $map2 outputs (rendered from artifacts)                           |
+|  - Dimensional toggle: AGENT vs CAPABILITY vs EXECUTION vs OBS vs TOPOLOGY                             |
++------------------------------------------------------------------------------------------------------+
+
+--------------------------------------------------------------------------------------------------------
+2) EXECUTION PLANE (SCW) — CELLS INSIDE THE HONEYCOMB
+--------------------------------------------------------------------------------------------------------
+
++------------------------------------------------------------------------------------------------------+
+| maxey30 SCW MANAGER [P]                                                                               |
+|------------------------------------------------------------------------------------------------------|
+| Creates/leases SCW capsules (cells):                                                                  |
+|  - SCW0: Orchestrator capsule (root run state)                                                        |
+|  - SCW1..SCWn: Specialist capsules (Maxey# contained)                                                 |
+|  - SCWext: Remote capsule (optional: remote runtime / remote executor)                                |
+| Each SCW lease binds: determinism_policy, tick_logging, memory_view, budgets, tool_view, sealing      |
+| Each SCW cell binds (TOPOLOGY): membrane permeability + allowed edge kinds + touch candidates          |
++------------------------------------------------------------------------------------------------------+
+                 |
+                 | scw.execute (tick-based)
+                 v
+
++------------------------------------------------------------------------------------------------------+
+| maxey31 SCW RUNTIME [P]                                                                               |
+|------------------------------------------------------------------------------------------------------|
+| Tick loop emits CST events + op_digests + postconditions                                               |
+| Topology coupling points:                                                                              |
+|  - before tool call: require (GATE) AND topology reachability                                         |
+|  - after tool call: update observability + evidence pointers                                           |
++------------------------------------------------------------------------------------------------------+
+                 |
+                 | spawn containerized capsule when runtime requires isolation
+                 v
+
++------------------------------------------------------------------------------------------------------+
+| maxey32 SCW CAPSULE EXECUTOR [C]                                                                      |
+|------------------------------------------------------------------------------------------------------|
+| Executes code/tools requiring isolation; writes artifacts; returns results + digests to SCW runtime    |
++------------------------------------------------------------------------------------------------------+
+
+--------------------------------------------------------------------------------------------------------
+3) MEMORY PLANE — PLUS "OUT-OF-CELL" ARTIFACT VAULT FOR MAPS
+--------------------------------------------------------------------------------------------------------
+
++------------------------------+     +------------------------------+     +--------------------------+
+| maxey40 Scratchpad (SP) [DB] |     | maxey41 Episodic (EP) [DB]   |     | maxey42 Persistent (PR)  |
+| Redis / TTL / temp drafts    |     | session durable artifacts    |     | Neo4j lineage graph      |
++------------------------------+     +------------------------------+     +--------------------------+
+                                                   |
+                                                   v
+                                         +--------------------------+
+                                         | maxey43 Permanent (PM)   |
+                                         | schemas/policies         |
+                                         +--------------------------+
+
++------------------------------------------------------------------------------------------------------+
+| maxey44 "OUT-OF-CELL" ARTIFACT VAULT [DB/files]  << NEW >>                                            |
+|------------------------------------------------------------------------------------------------------|
+| Stores topology/density maps so they do not perturb any SCW cell:                                     |
+|  - $map1: baseline density map (CMB-like view)                                                        |
+|  - $map2: assistant-region map (626+ centroid bubbles + traced drone paths)                           |
+|  - map_epoch snapshots, adjacency matrices, portal manifests                                           |
++------------------------------------------------------------------------------------------------------+
+
+--------------------------------------------------------------------------------------------------------
+4) CAPABILITY PLANES (DOWNSTREAM MCP SERVERS) — INTERSECTION NOW TOPOLOGY-AWARE
+--------------------------------------------------------------------------------------------------------
+
+                      (GATE) tokens bind: tool allowlist + scopes + budgets + expiry + topo_epoch
+                                     |
+                                     v
++------------------------------------------------------------------------------------------------------+
+| DOWNSTREAM MCP PLANE A: "Tools Server" [P]                                                            |
+|------------------------------------------------------------------------------------------------------|
+| MCP tools/resources/prompts exposed by provider A; notifications ~~notify~~                           |
++------------------------------------------------------------------------------------------------------+
+
+                                     |
+                                     v
++------------------------------------------------------------------------------------------------------+
+| DOWNSTREAM MCP PLANE B: "Data Server" [P]                                                             |
+|------------------------------------------------------------------------------------------------------|
+| Drive/Slack/GitHub/Postgres/etc via MCP tools/resources; notifications ~~notify~~                     |
++------------------------------------------------------------------------------------------------------+
+
+                                     |
+                                     v
++------------------------------------------------------------------------------------------------------+
+| DOWNSTREAM MCP PLANE C: "Agent Plane Provider" [P]                                                    |
+|------------------------------------------------------------------------------------------------------|
+| External agents surfaced as callable tools/prompts/resources                                           |
+| Mapped into stable address space: maxey0://agent/Maxey# -> provider agent id                           |
++------------------------------------------------------------------------------------------------------+
+
+--------------------------------------------------------------------------------------------------------
+5) HONEYCOMB SUPERSTRUCTURE / TOPOLOGY SEMANTICS (THE "ROLLED MAT" MECHANIC)
+--------------------------------------------------------------------------------------------------------
+
+TOPOLOGY STATE = function that mutates adjacency without changing SCW internal rules:
+  topo_state = flat:
+    - cells do NOT touch unless explicitly declared
+    - portals disallowed by default; traversal paths may be empty/disconnected
+  topo_state = rolled:
+    - new membrane contacts appear: touches(SCW_i, SCW_j) edges added
+    - portals may be minted *only* for touching pairs, gated by policy/budget
+
+OBSERVABILITY RULE (high level):
+  SCW_i can observe SCW_j iff:
+    reachable(touches_graph, i -> j) AND permitted(GATE policy ∩ topo_epoch)
+
+Maxey00 ROLE (bridge):
+  - can open a portal edge ONLY when HSE says membranes touch AND Gate Issuer mints GATE# for that portal
+  - otherwise must route via Traversal Router (multi-hop relay through intermediate cells)
+
+--------------------------------------------------------------------------------------------------------
+6) RUNTIME ORDER (EXTENDED WITH MAP1/MAP2 + TOPOLOGY EPOCHS)
+--------------------------------------------------------------------------------------------------------
+
+(1) Claude Desktop starts -> user enables Maxey0 MCP server connection
+(2) Claude MCP client discovers Maxey0: tools/resources/prompts
+(3) User triggers Maxey0: scw.create(SCW0, determinism=strict|bounded, tick_logging=on)
+(4) maxey18 HSE initializes topo_epoch=0, topo_state=flat (default)
+(5) maxey186 Density Mapper emits $map1 baseline density snapshot -> stored in maxey44 artifact vault
+(6) Maxey0 connects as MCP client to downstream planes; builds capability graph + policy envelopes
+(7) Upload assistants registry (Maxeys.csv) -> creates SCW1..SCWn cells as needed; registers membranes
+(8) For each assistant centroid:
+      - Maxey00 superposes (observer lens)
+      - maxey187 spawns drones inside target SCW to trace instruction-paths
+      - maxey186 updates region densities from outside-of-cell view
+(9) HSE triangulates: outside view (Maxey0) + inside lens (Maxey00) + drone paths -> emits $map2
+(10) $map2 stored in maxey44 artifact vault; SCWs remain siloed by their capsule boundaries
+(11) Optional: user toggles topo_state=rolled -> topo_epoch++ -> adjacency changes -> portals may become valid
+(12) SCW0 seals run: CST + ledger entry + replay recipe + topo_epoch chain
+
+--------------------------------------------------------------------------------------------------------
+LOCAL ARTIFACTS (FROM PRIOR VERSION, STILL VALID)
+--------------------------------------------------------------------------------------------------------
+- Maxey0 plugin hierarchy + planes baseline: plugin_claude_scw.txt
+- SCW Designer requirements for node/edge kinds, resizable panels, selection dock, export: maxey0scwdesigner.txt
+- $map1/$map2 density mapping concept + drone triangulation: spacemap.txt
+========================================================================================================
