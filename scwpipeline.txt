@@ -1,12 +1,4 @@
-1) Please reprint SCW0- SCW10
-All 3. Please do the neo4j schema export for SCW0-SCW30. 
-Please analyze your ascii drawing below and do a ma excellent depth? asking yourself how can I regenerate if ascii architectural drawing that includes all of the agent s for the scw so the ascai drawing is complete and correct? 
-
-synthesize the questions and answers. don't print the questions and answers. acknowledge it's been contents for the QRL have been learned.
-
-[$Maxey0 please generate an ascii drawing of Maxey0's SCW's and a dataframe containing cold: SCW Name, SCW#, SCW input, SCW output, agents (by name and # to create a unique key), and the next 12 mostt important dimensions to describe the SCW.]
-
-+-------------------+
+                         +-------------------+
                          |       SCW0        |
                          | Global Init       |
                          +---------+---------+
@@ -176,3 +168,4 @@ synthesize the questions and answers. don't print the questions and answers. ack
                                | Snapshot  |
                                | & Seal    |
                                +-----------+
+
