@@ -1,0 +1,124 @@
+Agent Model Instruction: Python “Maxey0 SCW Designer” (Dash/Cytoscape) + PDF export + remote computer container
+Context / Inputs (authoritative)
+•	You will receive uploads:
+o	app.pipeline.pdf (full chat after the Dominic Barlow segment; ignore any Barlow content entirely)
+o	Multiple TSX app versions (React/TypeScript !app iterations)
+o	Developer.docx (tool list + functions) and any other referenced files
+•	Treat the uploaded files as the single source of truth for requirements and UI behavior.
+Objective
+Build a Python-first web app that runs inside a container on a remote computer tool (browser UI) and lets the user design Maxey0/SCW architectures via drag/drop, selection, editing, multiple edge types, tool attachment, and export to PDF.
+Hard requirements (acceptance criteria)
+1.	Usability / Selection
+o	Clicking a node makes it the active node (and supports multi-select with Shift/Ctrl/Meta).
+o	Inspector edits must update the canvas node labels/properties immediately on Submit, and also on deselect if feasible.
+o	Nodes must be individually movable at all times.
+2.	Node types + semantics
+o	Node kinds: SCW, Agent (Maxey#), Maxey00 (superposition agent), Tool.
+o	SCWs are containers; agents must be visually inside SCWs (compound/group nodes).
+o	Maxey00 “observability” must be reflected in edges and properties.
+3.	Adding entities
+o	Buttons: Add Agent, Add SCW, Add/Attach Tool, Add Maxey00.
+o	New Agent IDs increment as Maxey(n+1); new SCWs increment as SCW(n+1).
+o	Tools are attached (not “spawned”) beside the selected agent/Maxey00 (and optionally SCW), with a uses/controls edge.
+4.	Tools catalog (must be real)
+o	Extract tool definitions from Developer.docx into an internal JSON catalog:
+	toolKey, signature, purpose, notes, enabled/disabled
+o	Tool node UI must dynamically change based on selected toolKey.
+5.	Properties system
+o	Right sidebar must support:
+	Editable base fields (label, description, #, determinism settings, specialization, etc.)
+	A curated Property Class dropdown → selecting it reveals Key/Value options (another dropdown).
+	Submit button applies properties to node and updates canvas rendering.
+6.	Edge types
+o	Multiple edge kinds with distinct styling/legend:
+	workflow_steps (state/step progression)
+	data_in
+	data_out
+	observes
+	controls/uses
+o	Adding an edge uses the currently selected edge kind.
+o	Workflow edges optionally auto-label with step numbers.
+7.	Resizable UI
+o	All major panels/windows resizable via dragging borders:
+	Left “Adder” sidebar resizable + hide/show
+	Right “Inspector” sidebar resizable + hide/show
+	Any internal panes (dock/overlay) resizable where possible
+o	Default sidebar width is 70% of the previous baseline.
+o	Node resizing by border/handle is required; if direct drag-resize is difficult, integrate a Cytoscape node-resize extension.
+8.	Replace the “white window”
+o	Implement a bottom-right (or floating) Selection Dock:
+	shows properties for all selected nodes
+	clicking a dock card focuses node
+	supports multi-selection display
+9.	Import/Export + determinism
+o	Export architecture to JSON (nodes/edges + properties + layout).
+o	Import JSON (deterministic when IDs provided).
+o	Ensure numbering does not imply specialization; specialization is a separate field.
+10.	PDF export
+•	Export current canvas + key properties to a PDF:
+o	include node/edge diagram screenshot/render
+o	include a properties table (per node)
+o	include legend for edge types
+•	Provide a “Export PDF” button; output a downloadable artifact in the app.
+Implementation constraints
+•	Python app, not React/TS, but may embed JS (Cytoscape extensions) as needed.
+•	Prefer Plotly Dash + dash-cytoscape because it supports:
+o	drag nodes
+o	compound nodes (SCW containers)
+o	styling and event callbacks
+•	Use a clean project structure and ship as a containerized repo.
+Deliverables (repo-quality)
+Produce a complete repository with:
+•	README.md (run locally + in Docker, ports, usage)
+•	pyproject.toml with pinned versions
+•	app/ Python package with:
+o	Dash server entrypoint
+o	cytoscape graph model (typed dataclasses or pydantic)
+o	tool catalog loader from Developer.docx (parse to JSON once; cache artifact)
+o	import/export JSON
+o	PDF export pipeline
+•	assets/ for CSS + optional JS extensions (node-resize)
+•	Dockerfile + docker-compose.yml
+•	tests/ with pytest:
+o	tool catalog parsing test
+o	JSON import/export roundtrip
+o	deterministic numbering tests
+o	minimal UI callback tests (where feasible)
+Tooling notes
+•	If a requirement is not feasible exactly (e.g., true drag-border resize without extensions), implement the closest functional equivalent and explicitly document the deviation + mitigation.
+•	Do not rely on “using the user’s ChatGPT account as an API.” Use only the uploaded files as examples and ground truth.
+Output format rules
+•	If your response risks token limits, output the repo as files (or split by directory) without truncation; never use ... placeholders.Addendum: TSX/JSX source quality + “most current” rule
+Known issue (must account for)
+•	The most recent React artifact in this chat is not buildable (syntax errors such as Unexpected token (12:19) and JSX parse/unterminated content). This is consistent with token-limit truncation / corrupted paste rather than a design requirement.
+Source selection rule (do this deterministically)
+1.	Treat all uploaded TSX/JSX files as reference implementations, not authoritative.
+2.	Determine “most current” as: latest version that compiles and runs (not the last code printed in the transcript).
+3.	If multiple TSX/JSX versions are provided:
+o	Attempt a local build for each (in order of recency from app.pipeline.pdf).
+o	Select the newest that runs; mark others as “corrupted/truncated” in notes.
+4.	If none build cleanly:
+o	Use the transcript + screenshots as the behavioral spec.
+o	Proceed directly to the Python app implementation (Dash + Cytoscape), using TSX only for UI/UX intent.
+What to do with the broken version
+•	Do not spend time “fixing” the broken TSX unless it is explicitly required for requirement extraction.
+•	The Python port is the deliverable; TSX is optional supporting context.
+________________________________________
+
+Addendum: TSX/JSX source quality + “most current” rule
+Known issue (must account for)
+•	The most recent React artifact in this chat is not buildable (syntax errors such as Unexpected token (12:19) and JSX parse/unterminated content). This is consistent with token-limit truncation / corrupted paste rather than a design requirement.
+Source selection rule (do this deterministically)
+1.	Treat all uploaded TSX/JSX files as reference implementations, not authoritative.
+2.	Determine “most current” as: latest version that compiles and runs (not the last code printed in the transcript).
+3.	If multiple TSX/JSX versions are provided:
+o	Attempt a local build for each (in order of recency from app.pipeline.pdf).
+o	Select the newest that runs; mark others as “corrupted/truncated” in notes.
+4.	If none build cleanly:
+o	Use the transcript + screenshots as the behavioral spec.
+o	Proceed directly to the Python app implementation (Dash + Cytoscape), using TSX only for UI/UX intent.
+What to do with the broken version
+•	Do not spend time “fixing” the broken TSX unless it is explicitly required for requirement extraction.
+•	The Python port is the deliverable; TSX is optional supporting context.
+________________________________________
+

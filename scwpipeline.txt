@@ -1,0 +1,192 @@
+1) Please reprint SCW0- SCW10
+All 3. Please do the neo4j schema export for SCW0-SCW30. 
+Please analyze your ascii drawing below and do a ma excellent depth? asking yourself how can I regenerate if ascii architectural drawing that includes all of the agent s for the scw so the ascai drawing is complete and correct? 
+
+synthesize the questions and answers. don't print the questions and answers. acknowledge it's been contents for the QRL have been learned.
+
+[$Maxey0 please generate an ascii drawing of Maxey0's SCW's and a dataframe containing cold: SCW Name, SCW#, SCW input, SCW output, agents (by name and # to create a unique key), and the next 12 mostt important dimensions to describe the SCW.]
+
++-------------------+
+                         |       SCW0        |
+                         | Global Init       |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW1        |
+                         | Domain Framing    |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW2        |
+                         | Raw Materials     |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW3        |
+                         | Atomic Fragments  |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW4        |
+                         | Pre-Claims        |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW5        |
+                         | Canonical Claims  |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW6        |
+                         | Claim DAG         |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW7        |
+                         | Testable Claims   |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW8        |
+                         | Experiment Temps  |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |       SCW9        |
+                         | Source Alignment  |
+                         +---------+---------+
+                                   |
+                                   v
+                         +-------------------+
+                         |      SCW10        |
+                         | Consolidation     |
+                         | (Pre-Pipeline)    |
+                         +---------+---------+
+                                   |
+                                   v
+    +------------------+   +------------------+   +------------------+
+    |      SCW11       |   |      SCW12       |   |      SCW13       |
+    | SCW Registry     |   | Source Harvest   |   | Claim Extraction |
+    +--------+---------+   +--------+---------+   +--------+---------+
+             |                      |                       |
+             +----------+-----------+-----------+-----------+
+                        |                       |
+                        v                       v
+                  +-----------+           +-----------+
+                  |   SCW14   |           |   SCW15   |
+                  | Exp Design|           | Dry Runs  |
+                  +-----+-----+           +-----+-----+
+                        |                       |
+                        v                       v
+                      +-----------+       +-----------+
+                      |   SCW16   |----->|   SCW17   |
+                      | Sim Batch1|      | Sim Batch2|
+                      +-----+-----+       +-----+-----+
+                            |                   |
+                            +--------+----------+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW18   |
+                               | Verify &  |
+                               | Evidence  |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW19   |
+                               | Robustness|
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW20   |
+                               | Findings  |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW21   |
+                               | Outline   |
+                               +-----+-----+
+                                     |
+                +--------------------+---------------------+
+                |                                          |
+                v                                          v
+          +-----------+                              +-----------+
+          |   SCW22   |                              |   SCW23   |
+          | Methods   |                              | Theory &  |
+          | & Expts   |                              | Rel. Work |
+          +-----+-----+                              +-----+-----+
+                |                                          |
+                +--------------------+---------------------+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW24   |
+                               | Discuss & |
+                               | Limits    |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW25   |
+                               | Figures & |
+                               | Tables    |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW26   |
+                               | Formatting|
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW27   |
+                               | ReproPack |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW28   |
+                               | Graph     |
+                               | Audit     |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW29   |
+                               | Red-Team  |
+                               | Review    |
+                               +-----+-----+
+                                     |
+                                     v
+                               +-----------+
+                               |   SCW30   |
+                               | Snapshot  |
+                               | & Seal    |
+                               +-----------+
+Great! print the data frame as a markdown table
+No - I just want to view as a table right now to level up?
+try doing it to a CSV and exporting it because the markdown table isn't going to work on my phone
+The SCW pipeline should currently be a very finely tuned  agentic workflow  Another example of data/workflow compounding
+You completed the csv task exceptionally. I just opened and viewed the dataframe as a csv in the link you provided. That was an excellent pipeline.  Save it as maxey0.dataframe_csv( <DATA REQUEST>). Yes, butt at 140% complexity, level of detail, precision, without overfitting. Check at all parallel path node for hallucinations. I don't mind waiting. Do not allow any COT step to time out. 1) What I need is panel data for SCW state sequences versus the Maxey0 system state and Maxey00 states. Please do as you where and print A-E.  I don't need a 2025-26 roadmap. A 2024-25 history would be helpful.
+Tell me about state transfer from Maxey0's global lens, al regional and local lenses of Maxey0 agents, plus Maxey00's ability to use superposition, a local superagent Maxey1. Is a honeycomb of SCW a state syncer that allows an scw sync with full system state. The honeycomb needs to be developed more if so.
+yes, exactly, SCW's must have logical clocks running to prove the order of the operations that completed and executed the task. Otherwise there is no way to prove the task pipeline happened.
+So the runtimes of the scw's have to be synced to proved too. The honeycomb and maxey00 with it's seperate plan via node.properties() are the two best tools i have come up with to do this.
+6. outlined remaining spec work needed to fully formalize this as a probable execution conventions correct. Maxi zero is the global orchestrator. Maxi one through Maxi 800 or whatever maxi number we have now are sub-agents or agents of Maxi zero. maxi00 is the superposition agent. the honeycomb is the overall structure that Maxie operates in. all of this are accounted for in the llms Layton space while using all of them. now I want to learn more about using Maxi. 00 to communicate between scws or as a bridge or path to scws. thinking this out before I was looking at mCP and how mCP needs or how agents communicate between mCP and I thought of it kind of as tunnels so you know either. but the tunnels essentially bring the mCP servers closer together if you think about it in three dimensions and then open up kind of a gate so the agents can communicate or move between the mCP servers. now I'm not saying that scws need to be the same or if I'm even thinking about it correctly. but I do know that they're in a task or program there will. it will require an agent to be in 1scw to get a representation and they have to go over to another sew to get the representation as something from that sew. so it is going to have to happen in a full system run. basically an execution on the program or an external user using the program. let's focus on some top headline theories about how we can communicate or have a agent communicate between or receive information from to scws. so in other words there will be two scw run times and then overall in a system run time or clock for the user
+
+I understand that agents don't physically move in between scws. it doesn't have to necessarily be like mCP scws are their own thing. what I am looking to do essentially is have all of the concepts I'm working map together so that in a system runtime a single initial entity whether it would be a an agent or a human throne, Asian or a human through a pipeline of sorts can use scw1 scw2 scw3 and all of them are synced run times that go into the main runtime which is the honeycomb. also, the honeycomb is a graph that's you know it's a. it's a honeycomb. I just visualize that so with the sews in it, but the overall superstructure is a graph. it's probably a neo4j property graph with the properties. I don't know yet because I know that's what Maxi zero is, but it has to be a graph so that a colonel can be executed as something a path moves from the graph. then colonels can executed as the single or the state. overall state is transitioning through the graph. kind of think of of overall state transition photograph there like a real life graph and then put like strings on the graph and the vibration of strings on the graph is I don't know if it's the sew runtimes executing or like Colonel's kind of executing through it. The main goal of this is so that two users to human users can have agents work in the scw graphs together so that both can independently run their programs, but neither of the humans feel the lag or delay from the scw to scw internal run time or or execution. I understand epics is the way that this is done in video games. I know batching is another term for epox in this. what I'm looking to do is provide scws with their containerization ability to work with multiple agents and then have the experience in the overall graph before multi-users multi llms. so everything is State synced and seamless and the information or the AI inside is both correct. factually ends can be proven with math and code
+do a maximum depth question refinement loop asking yourself what is a graph of State transitions? what type of graph is best for a graph of State transitions examples? property graph vector graph database property graph database any other kind of graphs you want to throw in there too?. how can I Master everything about graphs of State transitions so I can explain it to Mike and he can absorb it and then apply it to maxi zero and scws? please synthesize all questions and answers into a single reply. do not print the intermediate questions and answers. I would like a a 1:00 to 2,000 word. just small paper about this that I can listen to on my phone in read aloud. you should go is maximize the output in this token window and if you don't are not done printing. just do this entire thing in an scw and you can continue printing in the next context, window and or context window after that up to four total token contacts Windows so I can just tell you to print the next one when I finish listening to the first and I can listen primer explainer on graphs of State transitions that way
+continue printing the next token context window if you are not done yet
+I still need to read your last reply, but good job on the first reply. I have some follow-up questions to that. in previous one you were mentioning blackboard before for the agents is that is that just another way of thinking of scratch pad memory for the agents or scratch pad memory in a system to me is the blackboard for the agents where they do their operations? two when I thought of a state transition grabber, actually, when I first began thinking of Maxi zero, a state transition graph was actually the main superstructure of how to do it because I was thinking originally of a quantum graph and that's what I mentioned. the idea with colonels on there. how and what software and what type of system could I use to build a state transition graph? also, you mentioned a semantic layer of the of the graph. I thought semantics or the semantic layer was in neo4j and the semantic layer is therefore within Maxi zero and it also goes within Maxi zeros memory. so in other words, the semantic graph would also be in neo4j and redis or whatever is used for Maxi zeros different memory types. does the four-tier memory in Maxi zero still work with state transition graph, overall structure or honeycomb overall structure? also, how does the four-tier memory structure impact external agents in scws and Maxi agents or Maxi zero agents and scws?

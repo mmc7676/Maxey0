@@ -1,0 +1,226 @@
+========================================================================================
+MAXEY0 + SCW "PLUGIN" FOR CLAUDE DESKTOP (HOST) — FULL HIERARCHY + RUNTIME ORDER + PLANES
+========================================================================================
+
+LEGEND
+  [P] process/service     [C] container/capsule     [DB] datastore     [UI] dashboard
+  --> data/control flow   ==MCP== protocol boundary  ~~notify~~ events
+  (GATE) policy+budget+scope capability token (lease) that permits plane intersection
+  "CAPABILITY PLANE" = MCP server's tools/resources/prompts + its local constraints
+  "AGENT PLANE"      = Maxey# nodes + delegation edges + policy envelopes
+  "EXECUTION PLANE"  = SCW# capsules (deterministic segmentation) + transcript + sealing
+  "OBS PLANE"        = tracing/logging/ledger/replay
+
+----------------------------------------------------------------------------------------
+0) SYSTEM BOUNDARY (BOUNDED / SELF-CONTAINED) — CLAUDE HOST + MAXEY0 GOVERNOR
+----------------------------------------------------------------------------------------
+
++--------------------------------------------------------------------------------------+
+| CLAUDE DESKTOP (HOST APP) [P]                                                        |
+|--------------------------------------------------------------------------------------|
+| UI: chat, attachments, tool chooser                                                  |
+| MCP CLIENT MANAGER: N connections (1 per server)                                      |
+|  - Session A: ==MCP==> Maxey0 MCP Server (local plugin process)                       |
+|  - Session B: ==MCP==> Other MCP Server(s) (optional direct; usually via Maxey0)      |
+| Model runtime (Claude)                                                                |
++--------------------------------------------------------------------------------------+
+                |
+                |  ==MCP==  tools/resources/prompts discovery + tool calls
+                v
+
++--------------------------------------------------------------------------------------+
+| MAXEY0 "PLUGIN" (LOCAL) = MAXEY0 MCP SERVER + MCP CLIENT GATEWAY [P]                 |
+|--------------------------------------------------------------------------------------|
+|  A) Ingress Router (normalize requests, bind run_id, scw_id)                          |
+|  B) Stable Address Resolver (SAR)                                                     |
+|     - maxey0://agent/Maxey#    maxey0://scw/SCW#   maxey0://gate/GATE#                |
+|     - maxey0://tool/*          maxey0://resource/* maxey0://obs/*                     |
+|  C) Capability Discovery Aggregator                                                   |
+|     - local tool adapters + downstream MCP servers capabilities                       |
+|  D) Policy/Governance Engine (fail-closed)                                            |
+|     - tool allowlist + arg constraints + data scopes + budgets + risk gates           |
+|  E) Gate Issuer (GATE registry)                                                       |
+|     - computes policy intersection; mints (GATE) tokens for plane intersections       |
+|  F) SCW Fabric (deterministic execution capsules)                                     |
+|     - scw.create / scw.attach / scw.execute / scw.seal / scw.log                      |
+|  G) Tool Dispatcher / Adapter Layer                                                   |
+|     - routes calls to: local adapters OR downstream MCP planes via (GATE)             |
+|  H) Observability + Replay                                                            |
+|     - OTel spans, run ledger hash chain, CST transcript, replay recipes               |
+|  I) Maxey00 (Superposition Observer)                                                  |
+|     - observes: SCW events, tool calls, policy decisions, gate usage                  |
++--------------------------------------------------------------------------------------+
+         |                   |                      |                       |
+         |                   |                      |                       |
+         |                   |                      |                       |
+         |                   |                      |                       |
+         v                   v                      v                       v
+
+----------------------------------------------------------------------------------------
+1) CONTROL PLANE DIMENSIONALITY (WHAT YOUR DASHBOARD MUST RENDER/CONTROL)
+----------------------------------------------------------------------------------------
+
++--------------------------------------------------------------------------------------+
+| MAXEY0 CONTROL PLANE DASHBOARD [UI]                                                   |
+|--------------------------------------------------------------------------------------|
+| "SCW Designer" Canvas (node/edge model)                                               |
+|  - Nodes: SCW / Agent(Maxey#) / Tool / Maxey00                                        |
+|  - Edges: workflow / data_in / data_out / observes / controls / contains              |
+|  - Drag containment: Agent -> SCW  (contains)                                         |
+|  - Drag attachment: Tool  -> Agent (controls/uses)                                    |
+|  - Graph I/O: export/import canonical JSON spec                                       |
+|                                                                                      |
+| Added for this milestone:                                                             |
+|  - MCP Plane Browser: list downstream servers, tools/resources/prompts, sessions      |
+|  - Gate Inspector: show (GATE) leases per SCW (policy intersection + budgets)         |
+|  - Trace Explorer: spans per SCW tick + tool call digests + evidence pointers         |
+|  - Ledger/Replay: run ledger hash chain, CST segments, replay recipe export           |
+|  - "Dimensional toggle": AGENT PLANE vs CAPABILITY PLANE vs EXECUTION PLANE vs OBS    |
++--------------------------------------------------------------------------------------+
+
+----------------------------------------------------------------------------------------
+2) EXECUTION PLANE (SCW) — ON-DEMAND CAPSULES (CONTAINERIZED WHEN NEEDED)
+----------------------------------------------------------------------------------------
+
++--------------------------------------------------------------------------------------+
+| SCW MANAGER [P]                                                                       |
+|--------------------------------------------------------------------------------------|
+| Creates/leases SCW capsules:                                                          |
+|  - SCW0: Orchestrator capsule (root run state)                                        |
+|  - SCW1..SCWn: Specialist capsules (Maxey# contained)                                 |
+|  - SCWext: Remote capsule (optional: remote runtime / remote executor)                |
+| Each SCW lease binds:                                                                 |
+|  - determinism_policy (strict/bounded)                                                |
+|  - tick_logging (on)                                                                  |
+|  - memory_view (SP/EP/PR/PM)                                                          |
+|  - budgets (tokens/cost/time)                                                         |
+|  - tool_view (only via gates)                                                         |
+|  - sealing (CST+Merkle optional)                                                      |
++--------------------------------------------------------------------------------------+
+                 |
+                 | scw.execute (tick-based)
+                 v
+
++--------------------------------------------------------------------------------------+
+| SCW RUNTIME [P]                                                                       |
+|--------------------------------------------------------------------------------------|
+| Tick loop:                                                                            |
+|  tick_0: normalize inputs -> preconditions -> route -> plan                           |
+|  tick_1..k: tool calls (via dispatcher) + memory promotions + spawn triggers          |
+|  tick_k+1: synthesize response + finalize evidence map                                |
+| Emits: CST events + op_digests + postconditions                                       |
++--------------------------------------------------------------------------------------+
+                 |
+                 | spawn containerized capsule when runtime requires isolation
+                 v
+
++--------------------------------------------------------------------------------------+
+| SCW CAPSULE EXECUTOR [C] (container / sandbox runtime)                                |
+|--------------------------------------------------------------------------------------|
+| - Executes code/tools requiring isolation (python/node/etc)                           |
+| - Writes artifacts (files, images, reports)                                           |
+| - Returns results + digests to SCW runtime                                            |
++--------------------------------------------------------------------------------------+
+
+----------------------------------------------------------------------------------------
+3) MEMORY PLANE (SYSTEM-OF-RECORD STATE LIVES IN MAXEY0, NOT IN DOWNSTREAM MCP SERVERS)
+----------------------------------------------------------------------------------------
+
++------------------------------+     +------------------------------+     +---------------------+
+| Scratchpad (SP) [DB]         |     | Episodic (EP) [DB]           |     | Persistent (PR)     |
+| Redis / TTL / temp drafts    |     | session durable artifacts     |     | Neo4j lineage graph |
++------------------------------+     +------------------------------+     +---------------------+
+                                                   |
+                                                   v
+                                         +---------------------+
+                                         | Permanent (PM)      |
+                                         | schemas/policies     |
+                                         +---------------------+
+
+----------------------------------------------------------------------------------------
+4) CAPABILITY PLANES (DOWNSTREAM MCP SERVERS) — MULTI-PLANE, INTERSECTION VIA (GATE)
+----------------------------------------------------------------------------------------
+
+                      (GATE) tokens bind: tool allowlist + scopes + budgets + expiry
+                                     |
+                                     v
++--------------------------------------------------------------------------------------+
+| DOWNSTREAM MCP PLANE A: "Tools Server" [P]                                            |
+|--------------------------------------------------------------------------------------|
+| MCP tools/resources/prompts exposed by provider A                                      |
+| Local session state (optional), notifications ~~notify~~                               |
++--------------------------------------------------------------------------------------+
+
+                                     |
+                                     v
++--------------------------------------------------------------------------------------+
+| DOWNSTREAM MCP PLANE B: "Data Server" [P]                                             |
+|--------------------------------------------------------------------------------------|
+| Drive/Slack/GitHub/Postgres/etc via MCP tools/resources                                |
+| Local session state (optional), notifications ~~notify~~                               |
++--------------------------------------------------------------------------------------+
+
+                                     |
+                                     v
++--------------------------------------------------------------------------------------+
+| DOWNSTREAM MCP PLANE C: "Agent Plane Provider" [P]                                    |
+|--------------------------------------------------------------------------------------|
+| External agents (BYO) surfaced as callable tools/prompts/resources                     |
+| Mapped into Maxey0 stable address space: maxey0://agent/Maxey# -> provider agent id    |
++--------------------------------------------------------------------------------------+
+
+----------------------------------------------------------------------------------------
+5) TOOL DISPATCH / GATE INTERSECTION MODEL (THE "GATES" YOU DESCRIBED)
+----------------------------------------------------------------------------------------
+
+AGENT PLANE (Maxey# in SCW) intersects CAPABILITY PLANE (MCP server tools) only via GATE:
+
+   Maxey# (in SCW#) --> request tool X on plane A
+     |
+     v
+   Policy Engine: intersection(tenant ∩ maxey0 ∩ agent ∩ provider)
+     |
+     v
+   (GATE#) minted + attached to SCW# tool_view
+     |
+     v
+   Dispatcher uses (GATE#) to call downstream MCP tool
+     |
+     v
+   Tool result -> SCW transcript event -> evidence digest -> synthesize -> return to host
+
+----------------------------------------------------------------------------------------
+6) OBSERVABILITY PLANE (TRACING + LOGGING + REPLAY)
+----------------------------------------------------------------------------------------
+
++--------------------------------------------------------------------------------------+
+| OBS / DETERMINISM [P]                                                                 |
+|--------------------------------------------------------------------------------------|
+| - OpenTelemetry spans: per SCW tick + per tool call                                   |
+| - Run Ledger: hash chain over CST events                                              |
+| - CST Store: canonical transcript segments                                            |
+| - Replay Engine: re-run from transcript + artifacts (policy-controlled)               |
++--------------------------------------------------------------------------------------+
+
+========================================================================================
+RUNTIME ORDER (MINIMAL MILESTONE: CLAUDE DESKTOP HOST + MAXEY0 MCP + 2 DOWNSTREAM PLANES)
+========================================================================================
+
+(1) Claude Desktop starts -> user enables Maxey0 MCP server connection
+(2) Claude MCP client discovers Maxey0: tools/resources/prompts
+(3) User triggers Maxey0: scw.create(SCW0, determinism=strict|bounded, tick_logging=on)
+(4) Maxey0 connects (as MCP client) to downstream plane A + plane B (two MCP servers)
+(5) Maxey0 builds capability graph + policy envelopes for each plane
+(6) SCW0 runs tick loop; requests tool access -> Maxey0 issues (GATE#) per plane
+(7) Dispatcher calls downstream tools via (GATE#); results return with digests
+(8) SCW0 seals run: CST + ledger entry + replay recipe
+(9) Claude Desktop displays result + optional: opens Maxey0 dashboard panels (trace/gates)
+
+========================================================================================
+LOCAL ARTIFACTS (DASHBOARD / MCP / BRIDGE SOURCES)
+========================================================================================
+- SCW Designer (ReactFlow dashboard spec): sandbox:/mnt/data/scw_designer.docx
+- Maxey0 MCP server (Neo4j+Redis+SCWs):     sandbox:/mnt/data/mcm6.0_maxey0_mcp_server.py
+- MCP bridge (desktop/manifest tooling):    sandbox:/mnt/data/mcm0_1.2_mcpserverbridge.py
+- MCP client/server architecture sketch:    sandbox:/mnt/data/mcm6_mcp_client_server_architecture.py
+========================================================================================
