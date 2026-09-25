@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Maxey0-SuperSpace — stub MCP App host</title>
+<style>
+  :root { font-family: ui-sans-serif, system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; display: grid; grid-template-columns: 300px 1fr; height: 100vh; background: #0f0f0e; color: #e9e8e3; }
+  aside { padding: 16px; border-right: 1px solid #333; overflow: auto; }
+  h1 { font-size: 15px; margin: 0 0 4px; }
+  p.sub { font-size: 12px; color: #9a9890; margin: 0 0 16px; line-height: 1.45; }
+  fieldset { border: 1px solid #333; border-radius: 8px; padding: 10px; margin: 0 0 12px; }
+  legend { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #9a9890; padding: 0 4px; }
+  label { display: block; font-size: 13px; margin: 6px 0; cursor: pointer; }
+  button { width: 100%; padding: 8px; margin-top: 6px; border-radius: 6px; border: 1px solid #4a4a46;
+           background: #1f1e1d; color: #e9e8e3; cursor: pointer; font: inherit; font-size: 13px; }
+  button:hover { background: #2a2928; }
+  #log { font-family: ui-monospace, SFMono-Regular, monospace; font-size: 11px; line-height: 1.5;
+         white-space: pre-wrap; word-break: break-word; color: #b8b6ad; max-height: 34vh; overflow: auto;
+         border: 1px solid #333; border-radius: 8px; padding: 8px; }
+  main { position: relative; background: #1a1a19; }
+  #frameWrap { position: absolute; inset: 0; display: flex; align-items: flex-start; justify-content: center; overflow: auto; padding: 20px; }
+  iframe { width: 100%; max-width: 1160px; height: calc(100vh - 40px); border: 1px solid #333; border-radius: 10px; background: #fff; }
+  .status { font-size: 12px; margin: 8px 0 12px; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #b45309; margin-right: 6px; }
+  .dot.on { background: #15803d; }
+</style>
+</head>
+<body>
+<aside>
+  <h1>Stub MCP App host</h1>
+  <p class="sub">Implements the <code>ui/initialize</code> handshake from
+     <code>@modelcontextprotocol/ext-apps</code> over <code>postMessage</code>,
+     and serves canned tool results so the App renders its real states.</p>
+
+  <fieldset>
+    <legend>Host theme</legend>
+    <label><input type="radio" name="theme" value="light" checked /> light</label>
+    <label><input type="radio" name="theme" value="dark" /> dark</label>
+    <label><input type="checkbox" id="sendVars" checked /> send style variables</label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Tool behaviour</legend>
+    <label><input type="radio" name="mode" value="ok" checked /> succeed</label>
+    <label><input type="radio" name="mode" value="isError" /> return isError result</label>
+    <label><input type="radio" name="mode" value="throw" /> reject (JSON-RPC error)</label>
+  </fieldset>
+
+  <button id="reload">Reload App</button>
+  <div class="status"><span class="dot" id="dot"></span><span id="state">waiting for ui/initialize</span></div>
+
+  <fieldset>
+    <legend>Wire log</legend>
+    <div id="log"></div>
+  </fieldset>
+</aside>
+
+<main><div id="frameWrap"><iframe id="app" src="dist/mcp-app.html"></iframe></div></main>
+
+<script>
+// ---------------------------------------------------------------------------
+// Host side of the MCP Apps bridge, hand-written so it runs from file:// with
+// no bundler. Mirrors node_modules/@modelcontextprotocol/ext-apps/dist/src/app.js:
+//   App  -> ui/initialize (request)
+//   Host -> { protocolVersion, hostInfo, hostCapabilities, hostContext }
+//   App  -> ui/notifications/initialized
+//   App  -> tools/call (requests)
+// ---------------------------------------------------------------------------
+const PROTOCOL_VERSION = "2026-01-26";   // ext-apps LATEST_PROTOCOL_VERSION
+
+const iframe  = document.getElementById("app");
+const logEl   = document.getElementById("log");
+const dotEl   = document.getElementById("dot");
+const stateEl = document.getElementById("state");
+
+function log(dir, msg) {
+  const line = document.createElement("div");
+  line.textContent = (dir === "in" ? "\u2190 " : "\u2192 ") + msg;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+const theme    = () => document.querySelector('input[name="theme"]:checked').value;
+const mode     = () => document.querySelector('input[name="mode"]:checked').value;
+const sendVars = () => document.getElementById("sendVars").checked;
+
+const LIGHT_VARS = {
+  "--color-background-primary": "#ffffff",
+  "--color-background-secondary": "#f7f7f8",
+  "--color-background-tertiary": "#eeeeef",
+  "--color-background-danger": "#fdeaea",
+  "--color-background-success": "#e9f8ee",
+  "--color-background-warning": "#fdf4e3",
+  "--color-text-primary": "#141413",
+  "--color-text-secondary": "#5c5b57",
+  "--color-text-inverse": "#ffffff",
+  "--color-text-danger": "#8a1c1c",
+  "--color-text-success": "#14532d",
+  "--color-text-warning": "#7a4a08",
+  "--color-border-primary": "#8a8a85",
+  "--color-border-secondary": "#d6d5d0",
+  "--color-border-danger": "#c47c7c",
+  "--color-ring-primary": "#2f6feb",
+  "--font-sans": "ui-sans-serif, system-ui, sans-serif",
+  "--font-mono": "ui-monospace, SFMono-Regular, monospace",
+  "--border-radius-md": "9px",
+  "--border-radius-lg": "14px",
+  "--border-radius-full": "999px"
+};
+
+const DARK_VARS = {
+  "--color-background-primary": "#1f1e1d",
+  "--color-background-secondary": "#262625",
+  "--color-background-tertiary": "#30302e",
+  "--color-background-danger": "#3a1f1f",
+  "--color-background-success": "#16301f",
+  "--color-background-warning": "#3a2f18",
+  "--color-text-primary": "#f5f4ef",
+  "--color-text-secondary": "#b8b6ad",
+  "--color-text-inverse": "#1f1e1d",
+  "--color-text-danger": "#f7b4b4",
+  "--color-text-success": "#9be8b8",
+  "--color-text-warning": "#f0cd8d",
+  "--color-border-primary": "#6c6b66",
+  "--color-border-secondary": "#3e3e3b",
+  "--color-border-danger": "#7a4444",
+  "--color-ring-primary": "#7aa2f7",
+  "--font-sans": "ui-sans-serif, system-ui, sans-serif",
+  "--font-mono": "ui-monospace, SFMono-Regular, monospace",
+  "--border-radius-md": "9px",
+  "--border-radius-lg": "14px",
+  "--border-radius-full": "999px"
+};
+
+function hostContext() {
+  const ctx = {
+    theme: theme(),
+    displayMode: "inline",
+    availableDisplayModes: ["inline", "fullscreen"],
+    locale: "en-US",
+    timeZone: "America/Los_Angeles",
+    userAgent: "maxey0-stub-host/1.0",
+    platform: "web",
+    deviceCapabilities: { touch: false, hover: true },
+    containerDimensions: { maxWidth: 1160, maxHeight: 900 }
+  };
+  if (sendVars()) ctx.styles = { variables: theme() === "dark" ? DARK_VARS : LIGHT_VARS };
+  return ctx;
+}
+
+// --- canned tool results ---------------------------------------------------
+const structured = (obj) => ({
+  content: [{ type: "text", text: JSON.stringify(obj, null, 2) }],
+  structuredContent: obj
+});
+
+const SPECS = {
+  SCW0: { parent_id: null,   concept: "Task",      skills: ["observe", "admit"], drift_threshold: 0.15 },
+  SCW1: { parent_id: "SCW0", concept: "Analysis",  skills: ["observe"],          drift_threshold: 0.20 },
+  SCW2: { parent_id: "SCW0", concept: "Synthesis", skills: ["observe", "emit"],  drift_threshold: 0.10 }
+};
+
+function toolResult(name, args) {
+  switch (name) {
+    case "maxey0-ss.gate.inspect":
+      return structured({
+        allowed: true,
+        address: args.scw_address,
+        mode: "structural-public-gate",
+        semantic_provider: "disabled"
+      });
+    case "maxey0-ss.scw.observe_host_window":
+      return structured({
+        scope: "host-supplied",
+        hidden_model_context_access: false,
+        observed: (args.segments || []).length,
+        segments: args.segments || []
+      });
+    case "maxey0-ss.scw.create":
+      return structured({
+        id: args.scw_id, parent_id: null, concept: args.concept || "Task",
+        skills: [], constitution: {}, drift_threshold: 0.15
+      });
+    case "maxey0-ss.scw.describe":
+      return structured({
+        scw_instances: { SCW0: { open: true, owner: "maxey0" } },
+        specifications: SPECS
+      });
+    case "maxey0-ss.scw.close":
+      return structured({ closed: args.scw_id, kind: "instance", cache_entries_dropped: 0 });
+    case "maxey0-ss.scw.drift":
+      return args.anchor
+        ? structured({ scw_id: args.scw_id, anchored: true, dimension: (args.vector||[]).length, threshold: 0.15 })
+        : structured({ scw_id: args.scw_id, anchored: true, baseline: [1,0,0], current: args.vector,
+                       distance: 1.0, threshold: 0.15, drifted: true,
+                       correction: "re-anchor-and-reroute", threshold_source: "spec" });
+    case "maxey0-ss.evidence.summary":
+      return structured({ entries: 3, head: "dd347ef0862f349d", genesis: "0".repeat(64) });
+    case "maxey0-ss.evidence.attestations":
+      return structured({
+        attestations: [
+          { seq: 0, operation: "egress", agent_scw: "SCW1", target_scw: "anthropic:messages.create",
+            allowed: true, reason: "semantic provider disabled; structural SCW gate passed",
+            metadata: { kind: "provider.egress", payload_digest: "9f00538a4333ea57" } },
+          { seq: 1, operation: "read", agent_scw: "SCW2", target_scw: "SCW1",
+            allowed: false, reason: "SCW2 cannot read SCW1" }
+        ],
+        total: 2, head: "dd347ef0862f349d", chain_verifiable: true
+      });
+    case "maxey0-ss.observe.events":
+      return structured({ events: [{ kind: "scw.spec.create", scw: "SCW1" }], total: 1 });
+    case "maxey0-ss.provider.status":
+      return structured({
+        providers: {
+          anthropic: { name: "anthropic", implemented: true, configured: false,
+                       credential_present: false, credential_is_placeholder: false,
+                       credential_source: "unset", default_model: "claude-sonnet-5" },
+          openai: { name: "openai", implemented: true, configured: false,
+                    credential_present: true, credential_is_placeholder: true,
+                    credential_source: "env", default_model: "gpt-5" },
+          huggingface: { name: "huggingface", implemented: true, configured: false,
+                         credential_present: false, credential_is_placeholder: false,
+                         credential_source: "unset" }
+        },
+        configured: [], placeholder: ["openai"], unconfigured: ["anthropic", "huggingface"],
+        egress_capability: "provider.egress", values_exposed: false
+      });
+    case "maxey0-ss.provider.complete":
+      return structured({ ok: false, refused: false, provider: args.provider,
+        reason: "anthropic needs ANTHROPIC_API_KEY, which is not set.",
+        hint: "call maxey0-ss.deployment to see which providers are configured" });
+    case "maxey0-ss.auth.manifest":
+      return structured({ mode: "disabled", mode_implemented: true, configured: false,
+        admin_open: true, enforced: false, anonymous_role: "admin",
+        oidc_implemented: true, credential_values_exposed: false, sources: [], inert: [],
+        warning: "MAXEY0_AUTH_MODE=disabled and MAXEY0_PUBLIC is unset, so every caller is admin." });
+    case "maxey0-ss.deployment":
+      return structured({ environment: "development", bind: { host: "127.0.0.1", port: 8765 },
+        a2a: { secured: false, values_exposed: false }, inert: [],
+        models: { configured: [], placeholder: [], unconfigured: ["anthropic", "huggingface", "openai"] } });
+    case "maxey0-ss.health":
+      return structured({ ok: true, service: "maxey0-ss", mcp_protocol: "2026-07-28",
+        app_artifact: { kind: "built", path: "mcp-app.html", bytes: 482235, sha256: "stub" } });
+    case "maxey0-ss.cache.status":
+      return structured({ entries: 0,
+        policy: { default_ttl_ms: 300000, default_scope: "server", active: true },
+        application_cache: { entries: 2, metrics: { hits: 1, misses: 1, writes: 1, hit_rate: 0.5 } } });
+    case "maxey0-ss.distribution":
+      return structured({ product: "Maxey0-SuperSpace", version: "0.3.0",
+        mcp_protocol: "2026-07-28", platforms: ["a2a","chatgpt","claude","claude-code","claude-desktop","codex","harness","mcp","sdk"],
+        harnesses: ["claude-agent-sdk","openai-agents","langchain","google-adk","microsoft","nvidia"] });
+    default:
+      return structured({ note: "stub host has no canned result for " + name });
+  }
+}
+
+// --- bridge ----------------------------------------------------------------
+function reply(id, result) {
+  iframe.contentWindow.postMessage({ jsonrpc: "2.0", id, result }, "*");
+  log("out", "result id=" + id);
+}
+function replyError(id, code, message) {
+  iframe.contentWindow.postMessage({ jsonrpc: "2.0", id, error: { code, message } }, "*");
+  log("out", "error id=" + id + " " + message);
+}
+
+window.addEventListener("message", (event) => {
+  if (event.source !== iframe.contentWindow) return;
+  const msg = event.data;
+  if (!msg || msg.jsonrpc !== "2.0") return;
+
+  if (msg.id === undefined || msg.id === null) {          // notification
+    if (msg.method !== "ui/notifications/size-changed") log("in", "notify " + msg.method);
+    if (msg.method === "ui/notifications/initialized") {
+      dotEl.classList.add("on");
+      stateEl.textContent = "connected";
+    }
+    return;
+  }
+
+  log("in", msg.method + " id=" + msg.id);
+
+  switch (msg.method) {
+    case "ui/initialize":
+      reply(msg.id, {
+        protocolVersion: PROTOCOL_VERSION,
+        hostInfo: { name: "Maxey0 stub host", version: "1.0.0" },
+        hostCapabilities: {
+          serverTools: { listChanged: false },
+          serverResources: { listChanged: false },
+          openLinks: {},
+          logging: {}
+        },
+        hostContext: hostContext()
+      });
+      stateEl.textContent = "ui/initialize answered";
+      break;
+
+    case "tools/call": {
+      const name = msg.params && msg.params.name;
+      const args = (msg.params && msg.params.arguments) || {};
+      const m = mode();
+      if (m === "throw") {
+        replyError(msg.id, -32010, "Tool execution origin is not configured");
+      } else if (m === "isError") {
+        reply(msg.id, {
+          isError: true,
+          content: [{ type: "text", text: "Gate denied: capability not granted for " + name }]
+        });
+      } else {
+        reply(msg.id, toolResult(name, args));
+      }
+      break;
+    }
+
+    case "ui/open-link":
+    case "ui/message":
+    case "ui/update-model-context":
+    case "ui/download-file":
+    case "ping":
+      reply(msg.id, {});
+      break;
+
+    default:
+      replyError(msg.id, -32601, "Method not found: " + msg.method);
+  }
+});
+
+document.getElementById("reload").addEventListener("click", () => {
+  dotEl.classList.remove("on");
+  stateEl.textContent = "reloading";
+  logEl.textContent = "";
+  iframe.src = iframe.src;
+});
+document.querySelectorAll('input[name="theme"], #sendVars').forEach((el) =>
+  el.addEventListener("change", () => document.getElementById("reload").click())
+);
+</script>
+</body>
+</html>

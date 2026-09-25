@@ -1,0 +1,239 @@
+{
+  "provenance": {
+    "what_this_is": "A deterministic reconstruction of the gate decisions for a three-agent run, replayed from the recorded role outputs.",
+    "what_this_is_not": "The live AttestationLog from the processes that dispatched the agents. The driver builds a fresh CharteredFormation per invocation, so the chains from the maker, checker and judge briefs were not retained.",
+    "why_it_still_verifies": "The charter and the deposited artifacts are identical, so the replayed decisions match the dispatched ones. The chain hashes are the replay's own.",
+    "to_make_it_a_dispatch_record": "Persist provider.log across invocations, or run the formation in one process."
+  },
+  "task": "Maxey0-SuperSpace computes a prompt-cache breakpoint and never emits it. Propose the minimal, concrete change that makes shared context referenced rather than copied per role.",
+  "windows": {
+    "maker": "SCW1",
+    "checker": "SCW2",
+    "judge": "SCW3"
+  },
+  "briefs": [
+    {
+      "agent_scw": "SCW1",
+      "supplied": [
+        {
+          "scw": "SCW1",
+          "name": "evidence.md",
+          "tokens": 310
+        },
+        {
+          "scw": "SCW1",
+          "name": "maker.output.md",
+          "tokens": 832
+        }
+      ],
+      "withheld": [
+        {
+          "scw": "SCW2",
+          "name": "checker.output.md"
+        },
+        {
+          "scw": "SCW3",
+          "name": "judge.output.md"
+        }
+      ],
+      "supplied_tokens": 1142
+    },
+    {
+      "agent_scw": "SCW2",
+      "supplied": [
+        {
+          "scw": "SCW1",
+          "name": "evidence.md",
+          "tokens": 310
+        },
+        {
+          "scw": "SCW1",
+          "name": "maker.output.md",
+          "tokens": 832
+        },
+        {
+          "scw": "SCW2",
+          "name": "checker.output.md",
+          "tokens": 931
+        }
+      ],
+      "withheld": [
+        {
+          "scw": "SCW3",
+          "name": "judge.output.md"
+        }
+      ],
+      "supplied_tokens": 2073
+    },
+    {
+      "agent_scw": "SCW3",
+      "supplied": [
+        {
+          "scw": "SCW1",
+          "name": "evidence.md",
+          "tokens": 310
+        },
+        {
+          "scw": "SCW1",
+          "name": "maker.output.md",
+          "tokens": 832
+        },
+        {
+          "scw": "SCW2",
+          "name": "checker.output.md",
+          "tokens": 931
+        },
+        {
+          "scw": "SCW3",
+          "name": "judge.output.md",
+          "tokens": 943
+        }
+      ],
+      "withheld": [],
+      "supplied_tokens": 3016
+    }
+  ],
+  "accounting": {
+    "supplied_tokens_total": 6231,
+    "distinct_tokens": 3016,
+    "duplicated_tokens": 3215,
+    "withheld_count": 3
+  },
+  "evidence": {
+    "entries": 15,
+    "allowed": 12,
+    "denied": 3,
+    "by_operation": {
+      "spawn": 3,
+      "read": 12
+    },
+    "providers": [
+      "structural"
+    ],
+    "head": "f467aa9e639993a465c33923e23e9f803f0b4b2ef564f29ba38e93ada3a4b55d",
+    "chain_intact": true,
+    "verified": true
+  },
+  "crossings": [
+    {
+      "allowed": true,
+      "operation": "spawn",
+      "agent_scw": "SCW1",
+      "target_scw": "SCW0",
+      "reason": "chartered under the parent constitution",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "spawn",
+      "agent_scw": "SCW2",
+      "target_scw": "SCW0",
+      "reason": "chartered under the parent constitution",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "spawn",
+      "agent_scw": "SCW3",
+      "target_scw": "SCW0",
+      "reason": "chartered under the parent constitution",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW1",
+      "target_scw": "SCW1",
+      "reason": "same window",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW1",
+      "target_scw": "SCW1",
+      "reason": "same window",
+      "provider": "structural"
+    },
+    {
+      "allowed": false,
+      "operation": "read",
+      "agent_scw": "SCW1",
+      "target_scw": "SCW2",
+      "reason": "target is outside the chartered constitution",
+      "provider": "structural"
+    },
+    {
+      "allowed": false,
+      "operation": "read",
+      "agent_scw": "SCW1",
+      "target_scw": "SCW3",
+      "reason": "target is outside the chartered constitution",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW2",
+      "target_scw": "SCW1",
+      "reason": "target is in the declared read set",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW2",
+      "target_scw": "SCW1",
+      "reason": "target is in the declared read set",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW2",
+      "target_scw": "SCW2",
+      "reason": "same window",
+      "provider": "structural"
+    },
+    {
+      "allowed": false,
+      "operation": "read",
+      "agent_scw": "SCW2",
+      "target_scw": "SCW3",
+      "reason": "target is outside the chartered constitution",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW3",
+      "target_scw": "SCW1",
+      "reason": "target is in the declared read set",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW3",
+      "target_scw": "SCW1",
+      "reason": "target is in the declared read set",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW3",
+      "target_scw": "SCW2",
+      "reason": "target is in the declared read set",
+      "provider": "structural"
+    },
+    {
+      "allowed": true,
+      "operation": "read",
+      "agent_scw": "SCW3",
+      "target_scw": "SCW3",
+      "reason": "same window",
+      "provider": "structural"
+    }
+  ]
+}

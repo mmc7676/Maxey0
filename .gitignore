@@ -1,0 +1,44 @@
+__pycache__/
+*.pyc
+.env
+
+# Real run output, produced by actually executing an experiment or a
+# cross-window run with this software -- not something the software ships
+# with. The code that writes these (experiment.py, cross_window.py) creates
+# the directories itself on first use. experiments/maxey0_example_loops.json
+# is reference content (worked examples), not run output, so it stays tracked.
+experiments/exp-*/
+experiments/cross-window/*.json
+
+# Build output
+dist/
+.claude/
+
+# Built front end. `ui/` is optional and the Studio runs without it;
+# `npm run build` produces this, and a committed bundle would be one
+# more thing that can drift from the source it was built from.
+server/maxey0_studio/static/app/
+
+# MCP App build output
+mcp_apps/super_space_react/node_modules/
+# The built MCP App is the one build output that ships: the server serves it,
+# the edge publishes its sha256, and a fresh clone without it fails. Keep the
+# rest of this dist/ ignored.
+!mcp_apps/super_space_react/dist/
+mcp_apps/super_space_react/dist/*
+!mcp_apps/super_space_react/dist/mcp-app.html
+
+# Project virtualenv used by .mcp.json
+.venv/
+
+# Wrangler local dev state and build temp
+workers/mcp-edge/.wrangler/
+workers/mcp-edge/node_modules/
+
+# Python build metadata
+*.egg-info/
+.pytest_cache/
+
+# Real secrets. Only the .example files are tracked.
+.env
+config/credentials.json

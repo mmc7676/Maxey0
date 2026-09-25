@@ -1,0 +1,12 @@
+# What the sdist carries beyond the maxey0_ss package.
+#
+# setup.py copies server/ and the MCP App into the wheel, and `python -m build`
+# builds the wheel from the sdist rather than from the checkout, so a file
+# left out here is a file missing from every released wheel. Exclusions are
+# kept in step with IGNORE in setup.py (and so with scripts/build_planes.py).
+graft server
+prune server/maxey0_studio/static/app
+global-exclude *.py[cod] *.map
+
+include mcp_apps/super_space.html
+include mcp_apps/super_space_react/dist/mcp-app.html

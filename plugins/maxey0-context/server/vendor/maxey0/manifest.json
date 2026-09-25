@@ -1,0 +1,3717 @@
+{
+ "bundle": "maxey0-okf",
+ "okf_version": "0.1",
+ "version": "1.7.0",
+ "purpose": "Maxey0-OKF — the Open Knowledge Format v0.1 edition of the Maxey0 system. skill-selection index — load once per session, score tags against task, load ranked docs on demand",
+ "concepts": [
+  {
+   "id": "memory",
+   "title": "Memory",
+   "concept_type": "architecture",
+   "tags": [
+    "memory",
+    "tier",
+    "promotion",
+    "lifecycle",
+    "consolidation",
+    "episodic",
+    "working",
+    "persistent",
+    "semantic"
+   ],
+   "path": "/memory/memory.md"
+  },
+  {
+   "id": "orchestration",
+   "title": "Orchestration",
+   "concept_type": "architecture",
+   "tags": [
+    "orchestrate",
+    "route",
+    "delegate",
+    "hierarchy",
+    "plan",
+    "swarm"
+   ],
+   "path": "/orchestration/orchestration.md"
+  },
+  {
+   "id": "protocol",
+   "title": "Protocol",
+   "concept_type": "protocol",
+   "tags": [
+    "protocol",
+    "a2a",
+    "mcp",
+    "handoff",
+    "envelope",
+    "schema"
+   ],
+   "path": "/protocol/protocol.md"
+  },
+  {
+   "id": "observability",
+   "title": "Observability",
+   "concept_type": "observability",
+   "tags": [
+    "observability",
+    "trace",
+    "telemetry",
+    "span",
+    "audit",
+    "monitor"
+   ],
+   "path": "/observability/observability.md"
+  },
+  {
+   "id": "evaluation",
+   "title": "Evaluation",
+   "concept_type": "observability",
+   "tags": [
+    "evaluation",
+    "score",
+    "drift",
+    "shadow",
+    "benchmark",
+    "kpi"
+   ],
+   "path": "/evaluation/evaluation.md"
+  },
+  {
+   "id": "governance",
+   "title": "Governance",
+   "concept_type": "governance",
+   "tags": [
+    "governance",
+    "policy",
+    "constraint",
+    "egress",
+    "compliance",
+    "constitution"
+   ],
+   "path": "/governance/governance.md"
+  },
+  {
+   "id": "latent",
+   "title": "Latent Space",
+   "concept_type": "research",
+   "tags": [
+    "latent",
+    "embedding",
+    "anchor",
+    "subspace",
+    "disclosed-approximation",
+    "trilateration",
+    "sae"
+   ],
+   "path": "/latent/latent.md"
+  },
+  {
+   "id": "knowledge-graph",
+   "title": "Knowledge Graph",
+   "concept_type": "knowledge",
+   "tags": [
+    "graph",
+    "node",
+    "edge",
+    "okf",
+    "link",
+    "ontology"
+   ],
+   "path": "/knowledge-graph/knowledge-graph.md"
+  },
+  {
+   "id": "reasoning",
+   "title": "Reasoning",
+   "concept_type": "reasoning",
+   "tags": [
+    "reasoning",
+    "frame",
+    "anchor",
+    "context",
+    "recursion",
+    "meta"
+   ],
+   "path": "/reasoning/reasoning.md"
+  },
+  {
+   "id": "claim-verification",
+   "title": "Claim Verification",
+   "concept_type": "reasoning",
+   "tags": [
+    "claim",
+    "provenance",
+    "citation",
+    "lineage",
+    "evidence",
+    "hallucination"
+   ],
+   "path": "/claim-verification/claim-verification.md"
+  },
+  {
+   "id": "infrastructure",
+   "title": "Infrastructure",
+   "concept_type": "architecture",
+   "tags": [
+    "infrastructure",
+    "runtime",
+    "sandbox",
+    "container",
+    "execution",
+    "isolation",
+    "deploy"
+   ],
+   "path": "/infrastructure/infrastructure.md"
+  },
+  {
+   "id": "io-contract",
+   "title": "I/O Contract",
+   "concept_type": "protocol",
+   "tags": [
+    "io",
+    "contract",
+    "schema",
+    "endpoint",
+    "negotiation",
+    "api"
+   ],
+   "path": "/io-contract/io-contract.md"
+  },
+  {
+   "id": "context-management",
+   "title": "Context Management",
+   "concept_type": "architecture",
+   "tags": [
+    "context",
+    "scw",
+    "packing",
+    "lineage",
+    "boundary",
+    "token-budget",
+    "structured-context-window"
+   ],
+   "path": "/context-management/context-management.md"
+  },
+  {
+   "id": "superposition",
+   "title": "Superposition",
+   "concept_type": "architecture",
+   "tags": [
+    "superposition",
+    "tick",
+    "mirror",
+    "parallel",
+    "arbitration",
+    "shared-state",
+    "actor-critic"
+   ],
+   "path": "/superposition/superposition.md"
+  },
+  {
+   "id": "registry",
+   "title": "Registry",
+   "concept_type": "architecture",
+   "tags": [
+    "registry",
+    "agents",
+    "roster",
+    "capability",
+    "repo",
+    "index"
+   ],
+   "path": "/registry/registry.md"
+  },
+  {
+   "id": "agentic-loops",
+   "title": "Agentic Loops",
+   "concept_type": "architecture",
+   "tags": [
+    "loop",
+    "chain",
+    "pipeline",
+    "scw",
+    "partition",
+    "isolation",
+    "battery",
+    "hardening"
+   ],
+   "path": "/agentic-loops/agentic-loops.md"
+  }
+ ],
+ "skills": [
+  {
+   "id": "multi-tier-memory-management",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Multi-Tier Memory Management",
+   "description": "Classifies, stores, summarizes, and promotes memory items across the five tiers through typed API contracts with evidence-gated promotion.",
+   "tags": [
+    "memory",
+    "tier",
+    "promotion",
+    "classify",
+    "api"
+   ],
+   "memory_tier": "semantic",
+   "path": "/memory/skills/multi-tier-memory-management/SKILL.md",
+   "agents": [
+    {
+     "name": "Memory Manager",
+     "slug": "memory-manager",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Working Memory Manager",
+     "slug": "working-memory-manager",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "episodic-memory-engineering",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Episodic Memory Engineering",
+   "description": "Engineers the episodic tier: turn chains, session summaries, handoff state, and drift snapshots — all resumable, time-stamped, and summarized at session close.",
+   "tags": [
+    "episodic",
+    "session",
+    "turn",
+    "summary",
+    "handoff",
+    "drift"
+   ],
+   "memory_tier": "episodic",
+   "path": "/memory/skills/episodic-memory-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Conversation Importer Agent",
+     "slug": "conversation-importer-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Conversation Store Agent",
+     "slug": "conversation-store-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Session Store Manager",
+     "slug": "session-store-manager",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "working-memory-management",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Working Memory Management",
+   "description": "Manages the working (scratchpad) tier: volatile in-flight state, TTL enforcement, and guaranteed purge at session close.",
+   "tags": [
+    "working",
+    "scratchpad",
+    "volatile",
+    "ttl",
+    "purge",
+    "transient"
+   ],
+   "memory_tier": "working",
+   "path": "/memory/skills/working-memory-management/SKILL.md",
+   "agents": [
+    {
+     "name": "Working Memory Manager",
+     "slug": "working-memory-manager",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Session Store Manager",
+     "slug": "session-store-manager",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "semantic-memory-engineering",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Semantic Memory Engineering",
+   "description": "Engineers the semantic tier — the OKF bundle itself: concept extraction, graph construction, alias normalization, and the promotion gate that admits items from episodic.",
+   "tags": [
+    "semantic",
+    "concept",
+    "graph",
+    "extraction",
+    "alias",
+    "okf"
+   ],
+   "memory_tier": "semantic",
+   "path": "/memory/skills/semantic-memory-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "persistent-memory-management",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Persistent Memory Management",
+   "description": "Manages the persistent tier: durable agent facts, versioned preferences, long-term observations — written rarely, always with a promotion evidence chain.",
+   "tags": [
+    "persistent",
+    "durable",
+    "version",
+    "preference",
+    "long-term"
+   ],
+   "memory_tier": "persistent",
+   "path": "/memory/skills/persistent-memory-management/SKILL.md",
+   "agents": [
+    {
+     "name": "Database Architect",
+     "slug": "database-architect",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph Store Agent",
+     "slug": "graph-store-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Vector Store Agent",
+     "slug": "vector-store-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "memory-promotion-policy-engineering",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Memory Promotion Policy Engineering",
+   "description": "Designs and enforces the gates that move items between tiers: relevance, evidence, consistency, reuse, and policy checks — with quarantine and repair paths for failures.",
+   "tags": [
+    "promotion",
+    "gate",
+    "policy",
+    "quarantine",
+    "repair",
+    "consolidation"
+   ],
+   "memory_tier": "episodic",
+   "path": "/memory/skills/memory-promotion-policy-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "hierarchical-agent-orchestration",
+   "concept": "orchestration",
+   "concept_type": "architecture",
+   "title": "Hierarchical Agent Orchestration",
+   "description": "Decomposes tasks into DAG-shaped unit plans and routes each unit to a primary+checker specialist pair under budget and policy constraints.",
+   "tags": [
+    "orchestrate",
+    "route",
+    "delegate",
+    "plan",
+    "dag",
+    "budget"
+   ],
+   "memory_tier": "episodic",
+   "path": "/orchestration/skills/hierarchical-agent-orchestration/SKILL.md",
+   "agents": [
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "DR Coordinator",
+     "slug": "dr-coordinator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-registry-management",
+   "concept": "orchestration",
+   "concept_type": "architecture",
+   "title": "Agent Registry Management",
+   "description": "Manages the 777-agent registry: hydration, search, role-based filtering, and the serving layer that skill-selection queries hit.",
+   "tags": [
+    "registry",
+    "agent",
+    "search",
+    "filter",
+    "hydrate"
+   ],
+   "memory_tier": "episodic",
+   "path": "/orchestration/skills/agent-registry-management/SKILL.md",
+   "agents": [
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "API Gateway Engineer",
+     "slug": "api-gateway-engineer",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "swarm-intelligence",
+   "concept": "orchestration",
+   "concept_type": "architecture",
+   "title": "Swarm Intelligence",
+   "description": "Coordinates agent swarms for embarrassingly parallel tasks: spawn, collect, reconcile — with convergence gates and contradiction resolution.",
+   "tags": [
+    "swarm",
+    "parallel",
+    "spawn",
+    "collect",
+    "reconcile"
+   ],
+   "memory_tier": "episodic",
+   "path": "/orchestration/skills/swarm-intelligence/SKILL.md",
+   "agents": [
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "DR Coordinator",
+     "slug": "dr-coordinator",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-to-agent-protocol-engineering",
+   "concept": "protocol",
+   "concept_type": "protocol",
+   "title": "Agent-to-Agent Protocol Engineering",
+   "description": "Defines, validates, versions, and adapts schema-checked A2A envelopes so any conformant agent can exchange work with the network.",
+   "tags": [
+    "a2a",
+    "envelope",
+    "schema",
+    "handoff",
+    "version"
+   ],
+   "memory_tier": "episodic",
+   "path": "/protocol/skills/agent-to-agent-protocol-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "LangChain Adapter Agent",
+     "slug": "langchain-adapter-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "model-context-protocol-engineering",
+   "concept": "protocol",
+   "concept_type": "protocol",
+   "title": "Model Context Protocol Engineering",
+   "description": "Builds and operates MCP servers: tool registration, capability advertisement, auth, and the lazy-load manifest pattern.",
+   "tags": [
+    "mcp",
+    "server",
+    "tool",
+    "capability",
+    "manifest"
+   ],
+   "memory_tier": "episodic",
+   "path": "/protocol/skills/model-context-protocol-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Runner API Keeper",
+     "slug": "runner-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "multi-mcp-federation",
+   "concept": "protocol",
+   "concept_type": "protocol",
+   "title": "Multi-MCP Federation",
+   "description": "Federates multiple MCP servers behind a unified discovery surface; routes tool calls to the right server without exposing federation internals to callers.",
+   "tags": [
+    "federation",
+    "mcp",
+    "discovery",
+    "routing",
+    "multi-server"
+   ],
+   "memory_tier": "episodic",
+   "path": "/protocol/skills/multi-mcp-federation/SKILL.md",
+   "agents": [
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Runner API Keeper",
+     "slug": "runner-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "protocol-translation",
+   "concept": "protocol",
+   "concept_type": "protocol",
+   "title": "Protocol Translation",
+   "description": "Translates between A2A, MCP, and foreign agent frameworks' message shapes without loss of contract fields.",
+   "tags": [
+    "translation",
+    "adapter",
+    "foreign",
+    "bridge",
+    "interop"
+   ],
+   "memory_tier": "episodic",
+   "path": "/protocol/skills/protocol-translation/SKILL.md",
+   "agents": [
+    {
+     "name": "LangChain Adapter Agent",
+     "slug": "langchain-adapter-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Runner API Keeper",
+     "slug": "runner-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "ai-observability",
+   "concept": "observability",
+   "concept_type": "observability",
+   "title": "AI Observability",
+   "description": "Instruments every boundary with spans under the a2a.* and maxey0.okf.* namespaces, assembles replayable trace trees, and diagnoses from them.",
+   "tags": [
+    "trace",
+    "span",
+    "otel",
+    "telemetry",
+    "audit"
+   ],
+   "memory_tier": "episodic",
+   "path": "/observability/skills/ai-observability/SKILL.md",
+   "agents": [
+    {
+     "name": "OTel Collector Agent",
+     "slug": "otel-collector-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Debugger Agent",
+     "slug": "debugger-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "OTel Module Agent",
+     "slug": "otel-module-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Grafana Agent",
+     "slug": "grafana-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-trace-analysis",
+   "concept": "observability",
+   "concept_type": "observability",
+   "title": "Agent Trace Analysis",
+   "description": "Consumes trace trees and produces causal diagnoses: failing paths, root causes, and minimal reproductions.",
+   "tags": [
+    "trace",
+    "diagnosis",
+    "root-cause",
+    "analysis",
+    "replay"
+   ],
+   "memory_tier": "episodic",
+   "path": "/observability/skills/agent-trace-analysis/SKILL.md",
+   "agents": [
+    {
+     "name": "Debugger Agent",
+     "slug": "debugger-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "OTel Collector Agent",
+     "slug": "otel-collector-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "OTel Module Agent",
+     "slug": "otel-module-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Grafana Agent",
+     "slug": "grafana-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "memory-access-telemetry",
+   "concept": "observability",
+   "concept_type": "observability",
+   "title": "Memory Access Telemetry",
+   "description": "Instruments tier reads and writes: access patterns, promotion events, and tier-crossing latencies — the data that makes memory policy auditable.",
+   "tags": [
+    "memory",
+    "telemetry",
+    "access",
+    "pattern",
+    "tier"
+   ],
+   "memory_tier": "episodic",
+   "path": "/observability/skills/memory-access-telemetry/SKILL.md",
+   "agents": [
+    {
+     "name": "OTel Collector Agent",
+     "slug": "otel-collector-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Debugger Agent",
+     "slug": "debugger-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "context-utilization-analytics",
+   "concept": "observability",
+   "concept_type": "observability",
+   "title": "Context Utilization Analytics",
+   "description": "Measures what entered a context window and how much of it was actually used: utilization ratios, dead-weight identification, and packing efficiency signals.",
+   "tags": [
+    "context",
+    "utilization",
+    "analytics",
+    "efficiency",
+    "packing"
+   ],
+   "memory_tier": "episodic",
+   "path": "/observability/skills/context-utilization-analytics/SKILL.md",
+   "agents": [
+    {
+     "name": "Debugger Agent",
+     "slug": "debugger-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "OTel Collector Agent",
+     "slug": "otel-collector-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "SCW Packing Schema Agent",
+     "slug": "scw-packing-schema-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-evaluation",
+   "concept": "evaluation",
+   "concept_type": "observability",
+   "title": "Agent Evaluation",
+   "description": "Mirrors runs read-only to produce evidence-chained EvalReports and frame-labeled DriftSignals across reference frames A, B, and D.",
+   "tags": [
+    "evaluate",
+    "score",
+    "drift",
+    "shadow",
+    "compare"
+   ],
+   "memory_tier": "episodic",
+   "path": "/evaluation/skills/agent-evaluation/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Drift Detector",
+     "slug": "drift-detector",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "swarm-evaluation",
+   "concept": "evaluation",
+   "concept_type": "observability",
+   "title": "Swarm Evaluation",
+   "description": "Evaluates swarm outputs: coverage, contradiction rate, and convergence quality across the collected set.",
+   "tags": [
+    "swarm",
+    "coverage",
+    "contradiction",
+    "convergence",
+    "eval"
+   ],
+   "memory_tier": "episodic",
+   "path": "/evaluation/skills/swarm-evaluation/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "DR Coordinator",
+     "slug": "dr-coordinator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "enterprise-constitution-evaluation",
+   "concept": "evaluation",
+   "concept_type": "observability",
+   "title": "Enterprise Constitution Evaluation",
+   "description": "Evaluates whether deployed agents conform to their declared constitutional constraints — live compliance scoring, not just design-time analysis.",
+   "tags": [
+    "constitution",
+    "compliance",
+    "conformance",
+    "enterprise",
+    "live"
+   ],
+   "memory_tier": "persistent",
+   "path": "/evaluation/skills/enterprise-constitution-evaluation/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "retrieval-attribution-evaluation",
+   "concept": "evaluation",
+   "concept_type": "observability",
+   "title": "Retrieval Attribution Evaluation",
+   "description": "Scores retrieval quality by tracing outputs back to their sources: did the system surface the right items, were they actually used, were attributions correct?",
+   "tags": [
+    "retrieval",
+    "attribution",
+    "recall",
+    "precision",
+    "sourcing"
+   ],
+   "memory_tier": "episodic",
+   "path": "/evaluation/skills/retrieval-attribution-evaluation/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Querier",
+     "slug": "provenance-querier",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "constitutional-constraint-enforcement",
+   "concept": "governance",
+   "concept_type": "governance",
+   "title": "Constitutional Constraint Enforcement",
+   "description": "Gates every proposed action against a versioned policy registry with cited allow/deny verdicts and audited enforcement.",
+   "tags": [
+    "policy",
+    "gate",
+    "constraint",
+    "egress",
+    "deny"
+   ],
+   "memory_tier": "persistent",
+   "path": "/governance/skills/constitutional-constraint-enforcement/SKILL.md",
+   "agents": [
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Policy Proxy",
+     "slug": "policy-proxy",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "enterprise-agent-governance",
+   "concept": "governance",
+   "concept_type": "governance",
+   "title": "Enterprise Agent Governance",
+   "description": "Governs agent deployments at organizational scale: approval workflows, audit logs, policy versioning, and rollback.",
+   "tags": [
+    "enterprise",
+    "governance",
+    "approval",
+    "audit",
+    "rollback"
+   ],
+   "memory_tier": "persistent",
+   "path": "/governance/skills/enterprise-agent-governance/SKILL.md",
+   "agents": [
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Policy Proxy",
+     "slug": "policy-proxy",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "enterprise-constitution-modeling",
+   "concept": "governance",
+   "concept_type": "governance",
+   "title": "Enterprise Constitution Modeling",
+   "description": "Authors and versions the policy documents that enforcement gates read: law definitions, scope declarations, exception protocols.",
+   "tags": [
+    "constitution",
+    "modeling",
+    "law",
+    "policy",
+    "authoring"
+   ],
+   "memory_tier": "persistent",
+   "path": "/governance/skills/enterprise-constitution-modeling/SKILL.md",
+   "agents": [
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Policy Proxy",
+     "slug": "policy-proxy",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "cross-organization-policy-negotiation",
+   "concept": "governance",
+   "concept_type": "governance",
+   "title": "Cross-Organization Policy Negotiation",
+   "description": "Negotiates compatible policy scopes between organizations sharing agents or data: intersection finding, conflict resolution, escalation.",
+   "tags": [
+    "cross-org",
+    "negotiation",
+    "policy",
+    "conflict",
+    "intersection"
+   ],
+   "memory_tier": "persistent",
+   "path": "/governance/skills/cross-organization-policy-negotiation/SKILL.md",
+   "agents": [
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Policy Proxy",
+     "slug": "policy-proxy",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "LangChain Adapter Agent",
+     "slug": "langchain-adapter-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "enterprise-memory-isolation",
+   "concept": "governance",
+   "concept_type": "governance",
+   "title": "Enterprise Memory Isolation",
+   "description": "Enforces memory isolation between organizational tenants: scope separation, access controls, and audit of cross-tenant operations.",
+   "tags": [
+    "isolation",
+    "tenant",
+    "enterprise",
+    "memory",
+    "access-control"
+   ],
+   "memory_tier": "persistent",
+   "path": "/governance/skills/enterprise-memory-isolation/SKILL.md",
+   "agents": [
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Working Memory Manager",
+     "slug": "working-memory-manager",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Database Architect",
+     "slug": "database-architect",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "latent-triangulation",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Latent Triangulation",
+   "description": "Estimates latent position and movement from anchor-relative distances over matched pre/post snapshots — disclosed-approximation (full-stream and subspace projection); causally validated, method-honesty labeled.",
+   "tags": [
+    "latent",
+    "anchor",
+    "trilateration",
+    "disclosed-approximation",
+    "causal",
+    "position"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/latent-triangulation/SKILL.md",
+   "agents": [
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Magnitude Spectrum Mapper",
+     "slug": "magnitude-spectrum-mapper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "latent-space-engineering",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Latent Space Engineering",
+   "description": "Builds and maintains the embedding-space substrate: vector stores, snapshot capture with metadata, cross-modal alignment — that all latent measurement skills depend on.",
+   "tags": [
+    "latent",
+    "vector",
+    "snapshot",
+    "substrate",
+    "alignment"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/latent-space-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Vector Store Agent",
+     "slug": "vector-store-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cross-Modality Mapper",
+     "slug": "cross-modality-mapper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "latent-space-mapping",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Latent Space Mapping",
+   "description": "Produces navigable maps of latent regions via projection methods (PCA/SVD, UMAP) with distortion budgets declared per map and disclosed-approximation annotation.",
+   "tags": [
+    "map",
+    "projection",
+    "pca",
+    "umap",
+    "distortion",
+    "disclosed-approximation"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/latent-space-mapping/SKILL.md",
+   "agents": [
+    {
+     "name": "Latent Mapper",
+     "slug": "latent-mapper",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "PCA Cartographer",
+     "slug": "pca-cartographer",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "UMAP Navigator",
+     "slug": "umap-navigator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "latent-topology-analysis",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Latent Topology Analysis",
+   "description": "Characterizes latent region shape — neighborhoods, manifold structure, connectivity — from geometry-preserving graph constructions rather than raw projections.",
+   "tags": [
+    "topology",
+    "manifold",
+    "neighborhood",
+    "geometry",
+    "connectivity"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/latent-topology-analysis/SKILL.md",
+   "agents": [
+    {
+     "name": "Neighborhood Graph Builder",
+     "slug": "neighborhood-graph-builder",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Isomap Surveyor",
+     "slug": "isomap-surveyor",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "UMAP Navigator",
+     "slug": "umap-navigator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "magnitude-spectrum-analysis",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Magnitude Spectrum Analysis",
+   "description": "Analyzes magnitude distributions across latent dimensions under the superposition/polysemanticity discipline: variance ≠ causal weight, controls mandatory.",
+   "tags": [
+    "magnitude",
+    "spectrum",
+    "superposition",
+    "variance",
+    "noise-floor"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/magnitude-spectrum-analysis/SKILL.md",
+   "agents": [
+    {
+     "name": "Magnitude Spectrum Mapper",
+     "slug": "magnitude-spectrum-mapper",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "PCA Cartographer",
+     "slug": "pca-cartographer",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "sparse-autoencoder-interpretability",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Sparse Autoencoder Interpretability",
+   "description": "Trains and curates SAE feature dictionaries with the workspace caveat built in: SAE decoder directions are not automatically report-available.",
+   "tags": [
+    "sae",
+    "autoencoder",
+    "feature",
+    "dictionary",
+    "interpretability"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/sparse-autoencoder-interpretability/SKILL.md",
+   "agents": [
+    {
+     "name": "SAE Engineer",
+     "slug": "sae-engineer",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "SAE Trainer",
+     "slug": "sae-trainer",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Feature Set Curator",
+     "slug": "feature-set-curator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "latent-feature-attribution",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Latent Feature Attribution",
+   "description": "Attributes model behavior to latent features with causal grading: interventional evidence outranks correlational saliency; every attribution declares its evidence grade.",
+   "tags": [
+    "attribution",
+    "feature",
+    "causal",
+    "saliency",
+    "evidence-grade"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/latent-feature-attribution/SKILL.md",
+   "agents": [
+    {
+     "name": "Feature Attribution Analyst",
+     "slug": "feature-attribution-analyst",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Feature Set Curator",
+     "slug": "feature-set-curator",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "SAE Engineer",
+     "slug": "sae-engineer",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "latent-world-construction",
+   "concept": "latent",
+   "concept_type": "research",
+   "title": "Latent World Construction",
+   "description": "Constructs bounded scenario representations in latent terms with declared assumptions, tracked divergence, and disclosed-approximation state.",
+   "tags": [
+    "world",
+    "scenario",
+    "construct",
+    "divergence",
+    "assumption"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/latent-world-construction/SKILL.md",
+   "agents": [
+    {
+     "name": "Latent World Constructor",
+     "slug": "latent-world-constructor",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cross-Modality Mapper",
+     "slug": "cross-modality-mapper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "knowledge-graph-engineering",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Knowledge Graph Engineering",
+   "description": "Maintains the OKF-serialized graph through diffable document edits, integrity verification, alias normalization, and structure-informed routing.",
+   "tags": [
+    "graph",
+    "okf",
+    "link",
+    "frontmatter",
+    "serialize"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/knowledge-graph-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Neighborhood Graph Builder",
+     "slug": "neighborhood-graph-builder",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "property-graph-memory-engineering",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Property Graph Memory Engineering",
+   "description": "Engineers property graph representations for agent memory: node schemas, edge semantics, and traversal patterns.",
+   "tags": [
+    "property-graph",
+    "schema",
+    "node",
+    "edge",
+    "traversal"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/property-graph-memory-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph Store Agent",
+     "slug": "graph-store-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "graph-memory-construction",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Graph Memory Construction",
+   "description": "Constructs graph memories from raw agent outputs: entity extraction, relationship inference, and deduplication.",
+   "tags": [
+    "graph",
+    "construction",
+    "extraction",
+    "entity",
+    "dedup"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/graph-memory-construction/SKILL.md",
+   "agents": [
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "graph-neural-network-routing",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Graph Neural Network Routing",
+   "description": "Routes agent selection and skill matching using GNN features over the knowledge graph: neighborhood density, hub centrality, path distance.",
+   "tags": [
+    "gnn",
+    "routing",
+    "centrality",
+    "neighborhood",
+    "hub"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/graph-neural-network-routing/SKILL.md",
+   "agents": [
+    {
+     "name": "Latent GNN Router",
+     "slug": "latent-gnn-router",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Neighborhood Graph Builder",
+     "slug": "neighborhood-graph-builder",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "temporal-knowledge-graph-management",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Temporal Knowledge Graph Management",
+   "description": "Manages time-stamped knowledge graph evolution: versioned edges, temporal queries, and change-event propagation.",
+   "tags": [
+    "temporal",
+    "versioned",
+    "evolution",
+    "time-stamp",
+    "change"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/temporal-knowledge-graph-management/SKILL.md",
+   "agents": [
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "memory-graph-evolution",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Memory Graph Evolution",
+   "description": "Engineers how the knowledge graph grows and prunes over time: addition protocols, deprecation, and garbage collection.",
+   "tags": [
+    "evolution",
+    "growth",
+    "pruning",
+    "deprecation",
+    "lifecycle"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/memory-graph-evolution/SKILL.md",
+   "agents": [
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "hybrid-vector-graph-memory",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Hybrid Vector-Graph Memory",
+   "description": "Combines vector search (fast approximate retrieval) with graph traversal (exact relational queries) into a unified memory access layer.",
+   "tags": [
+    "hybrid",
+    "vector",
+    "graph",
+    "retrieval",
+    "combined"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/hybrid-vector-graph-memory/SKILL.md",
+   "agents": [
+    {
+     "name": "Vector Store Agent",
+     "slug": "vector-store-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Neighborhood Graph Builder",
+     "slug": "neighborhood-graph-builder",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "research-paper-integration",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Research Paper Integration",
+   "description": "Integrates a new research paper into the bundle: extract concepts, derive skills, map registry agents or propose new ones, enumerate operational topics, and materialize an application — the pipeline that produced this skill's examples/.",
+   "tags": [
+    "paper",
+    "integration",
+    "ingest",
+    "extract",
+    "topics"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/research-paper-integration/SKILL.md",
+   "agents": [
+    {
+     "name": "Seed Agent Graph Agent",
+     "slug": "seed-agent-graph-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "superposition-observation",
+   "concept": "superposition",
+   "concept_type": "architecture",
+   "title": "Superposition Observation",
+   "description": "Maxey00's standing mirror: read-only shadow observation of every run, annotating quality, latency, cost, and drift without touching the observed workflow.",
+   "tags": [
+    "mirror",
+    "shadow",
+    "observe",
+    "annotate",
+    "read-only"
+   ],
+   "memory_tier": "episodic",
+   "path": "/superposition/skills/superposition-observation/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Drift Detector",
+     "slug": "drift-detector",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Temporal Drift Agent",
+     "slug": "temporal-drift-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "same-tick-arbitration",
+   "concept": "superposition",
+   "concept_type": "architecture",
+   "title": "Same-Tick Arbitration",
+   "description": "Receives outputs from two or more agents on the exact same logical tick and evaluates them against one shared state to test which output does X according to Y — real-time execution races, live integration checks, A/B at identical state.",
+   "tags": [
+    "same-tick",
+    "arbitrate",
+    "a-b",
+    "race",
+    "shared-state"
+   ],
+   "memory_tier": "episodic",
+   "path": "/superposition/skills/same-tick-arbitration/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "actor-critic-parallelism",
+   "concept": "superposition",
+   "concept_type": "architecture",
+   "title": "Actor-Critic Parallelism",
+   "description": "Runs propose/critique agent pairs and symmetric mirror-mode parallels under an arbiter: one agent proposes, one critiques, promotion only through reconciliation.",
+   "tags": [
+    "actor-critic",
+    "mirror-mode",
+    "propose",
+    "critique",
+    "arbiter"
+   ],
+   "memory_tier": "episodic",
+   "path": "/superposition/skills/actor-critic-parallelism/SKILL.md",
+   "agents": [
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Agentic Runner Agent",
+     "slug": "agentic-runner-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "shared-state-synchronization",
+   "concept": "superposition",
+   "concept_type": "architecture",
+   "title": "Shared-State Synchronization",
+   "description": "Engineers the tick discipline that makes agentic superposition real: parallel and multithreaded GPU execution such that compute ticks are shorter than latent state transitions, with barriers, warp-style consensus votes, and atomic promotion.",
+   "tags": [
+    "tick",
+    "barrier",
+    "synchronize",
+    "warp",
+    "atomic"
+   ],
+   "memory_tier": "working",
+   "path": "/superposition/skills/shared-state-synchronization/SKILL.md",
+   "agents": [
+    {
+     "name": "Superposition Runtime Engineer",
+     "slug": "superposition-runtime-engineer",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "MCP Runner Agent",
+     "slug": "mcp-runner-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "superposition-coordinate-mapping",
+   "concept": "superposition",
+   "concept_type": "architecture",
+   "title": "Superposition Coordinate Mapping",
+   "description": "Logs, maps, and learns superposition coordinates from latent state transitions using state-vector-machine models, so simultaneous states become a navigable, learnable record.",
+   "tags": [
+    "coordinate",
+    "state-vector",
+    "transition",
+    "map",
+    "learn"
+   ],
+   "memory_tier": "semantic",
+   "path": "/superposition/skills/superposition-coordinate-mapping/SKILL.md",
+   "agents": [
+    {
+     "name": "State Vector Cartographer",
+     "slug": "state-vector-cartographer",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Magnitude Spectrum Mapper",
+     "slug": "magnitude-spectrum-mapper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "reasoning-frame-engineering",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Reasoning Frame Engineering",
+   "description": "Binds reasoning passes to versioned frames with mined anchors and rationale-complete context packages, recursing under discipline.",
+   "tags": [
+    "frame",
+    "anchor",
+    "context",
+    "packing",
+    "rationale"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/reasoning-frame-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "cognitive-architecture-engineering",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Cognitive Architecture Engineering",
+   "description": "Designs the overall cognitive layout of an agent: which reasoning passes run in sequence, which in parallel, and how results compose.",
+   "tags": [
+    "cognitive",
+    "architecture",
+    "layout",
+    "compose",
+    "parallel"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/cognitive-architecture-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "cognitive-anchor-extraction",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Cognitive Anchor Extraction",
+   "description": "Mines stable reference points from behavioral evidence: the anchors that reasoning frames are built around.",
+   "tags": [
+    "anchor",
+    "extraction",
+    "reference",
+    "behavioral",
+    "evidence"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/cognitive-anchor-extraction/SKILL.md",
+   "agents": [
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Magnitude Spectrum Mapper",
+     "slug": "magnitude-spectrum-mapper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "anchor-based-reasoning",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Anchor-Based Reasoning",
+   "description": "Executes reasoning passes anchored to declared reference points; conclusions carry the anchor set that produced them.",
+   "tags": [
+    "anchor",
+    "reasoning",
+    "reference",
+    "conclusion",
+    "provenance"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/anchor-based-reasoning/SKILL.md",
+   "agents": [
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Magnitude Spectrum Mapper",
+     "slug": "magnitude-spectrum-mapper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "recursive-self-reflection",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Recursive Self-Reflection",
+   "description": "Implements bounded self-reflection loops: depth-limited, summary-gated, stopping when marginal value falls below epsilon.",
+   "tags": [
+    "reflection",
+    "recursive",
+    "depth",
+    "bounded",
+    "epsilon"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/recursive-self-reflection/SKILL.md",
+   "agents": [
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "world-based-reasoning",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "World-Based Reasoning",
+   "description": "Reasons inside a declared world model: assumptions explicit, conclusions scoped to the world, divergence from base world tracked.",
+   "tags": [
+    "world",
+    "model",
+    "assumption",
+    "scope",
+    "divergence"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/world-based-reasoning/SKILL.md",
+   "agents": [
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Latent World Constructor",
+     "slug": "latent-world-constructor",
+     "role": "support",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "multi-world-reasoning",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Multi-World Reasoning",
+   "description": "Runs parallel reasoning passes in multiple worlds; compares and reconciles conclusions across worlds.",
+   "tags": [
+    "multi-world",
+    "parallel",
+    "compare",
+    "reconcile",
+    "counterfactual"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/multi-world-reasoning/SKILL.md",
+   "agents": [
+    {
+     "name": "Latent World Constructor",
+     "slug": "latent-world-constructor",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "meta-reasoning",
+   "concept": "reasoning",
+   "concept_type": "reasoning",
+   "title": "Meta-Reasoning",
+   "description": "Reasons about reasoning: selects frames, evaluates which anchor sets are appropriate, and decides when to recurse or stop.",
+   "tags": [
+    "meta",
+    "selection",
+    "evaluate",
+    "recurse",
+    "stop"
+   ],
+   "memory_tier": "working",
+   "path": "/reasoning/skills/meta-reasoning/SKILL.md",
+   "agents": [
+    {
+     "name": "Frames Steward",
+     "slug": "frames-steward",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Miner",
+     "slug": "anchor-miner",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "claim-lineage-analysis",
+   "concept": "claim-verification",
+   "concept_type": "reasoning",
+   "title": "Claim Lineage Analysis",
+   "description": "Records signed generation-time provenance, classifies every claim by its support, and answers lineage queries end to end.",
+   "tags": [
+    "claim",
+    "provenance",
+    "lineage",
+    "citation",
+    "evidence"
+   ],
+   "memory_tier": "episodic",
+   "path": "/claim-verification/skills/claim-lineage-analysis/SKILL.md",
+   "agents": [
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Conversation Ingestor",
+     "slug": "conversation-ingestor",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "hallucination-localization",
+   "concept": "claim-verification",
+   "concept_type": "reasoning",
+   "title": "Hallucination Localization",
+   "description": "Localizes hallucinations to specific spans: which part of the output is unsupported, at what evidence level.",
+   "tags": [
+    "hallucination",
+    "localization",
+    "span",
+    "unsupported",
+    "evidence"
+   ],
+   "memory_tier": "episodic",
+   "path": "/claim-verification/skills/hallucination-localization/SKILL.md",
+   "agents": [
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Querier",
+     "slug": "provenance-querier",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "hallucination-attribution",
+   "concept": "claim-verification",
+   "concept_type": "reasoning",
+   "title": "Hallucination Attribution",
+   "description": "Attributes hallucinations to their cause: retrieval failure, inference error, context gap, or compression loss.",
+   "tags": [
+    "hallucination",
+    "attribution",
+    "cause",
+    "retrieval",
+    "inference"
+   ],
+   "memory_tier": "episodic",
+   "path": "/claim-verification/skills/hallucination-attribution/SKILL.md",
+   "agents": [
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Querier",
+     "slug": "provenance-querier",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Conversation Ingestor",
+     "slug": "conversation-ingestor",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "reasoning-path-instrumentation",
+   "concept": "claim-verification",
+   "concept_type": "reasoning",
+   "title": "Reasoning Path Instrumentation",
+   "description": "Instruments the reasoning path: which steps led to which claims, so reasoning audits are replayable.",
+   "tags": [
+    "reasoning",
+    "path",
+    "instrument",
+    "audit",
+    "replay"
+   ],
+   "memory_tier": "episodic",
+   "path": "/claim-verification/skills/reasoning-path-instrumentation/SKILL.md",
+   "agents": [
+    {
+     "name": "Debugger Agent",
+     "slug": "debugger-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "OTel Collector Agent",
+     "slug": "otel-collector-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-runtime-engineering",
+   "concept": "infrastructure",
+   "concept_type": "architecture",
+   "title": "Agent Runtime Engineering",
+   "description": "Executes agent code inside enforced resource and isolation contracts, priced by risk budget, with purge-on-completion state discipline.",
+   "tags": [
+    "runtime",
+    "execute",
+    "sandbox",
+    "resource",
+    "limit"
+   ],
+   "memory_tier": "working",
+   "path": "/infrastructure/skills/agent-runtime-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Scanner",
+     "slug": "security-scanner",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Sandbox Runner",
+     "slug": "sandbox-runner",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Backup & Restore",
+     "slug": "backup-restore",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-infrastructure-engineering",
+   "concept": "infrastructure",
+   "concept_type": "architecture",
+   "title": "Agent Infrastructure Engineering",
+   "description": "Designs and provisions the infrastructure layer for agent deployments: compute, networking, secret management, and health monitoring.",
+   "tags": [
+    "infrastructure",
+    "provision",
+    "networking",
+    "secret",
+    "health"
+   ],
+   "memory_tier": "working",
+   "path": "/infrastructure/skills/agent-infrastructure-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Scanner",
+     "slug": "security-scanner",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Integration Engineer",
+     "slug": "integration-engineer",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "API Gateway Agent",
+     "slug": "api-gateway-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agent-platform-engineering",
+   "concept": "infrastructure",
+   "concept_type": "architecture",
+   "title": "Agent Platform Engineering",
+   "description": "Builds the platform abstractions agents run on: scheduling, load balancing, autoscaling, and the observability integrations the platform provides.",
+   "tags": [
+    "platform",
+    "schedule",
+    "autoscale",
+    "balancing",
+    "observability"
+   ],
+   "memory_tier": "working",
+   "path": "/infrastructure/skills/agent-platform-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Scanner",
+     "slug": "security-scanner",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "API Gateway Agent",
+     "slug": "api-gateway-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Incident Commander",
+     "slug": "incident-commander",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "multi-tenant-agent-infrastructure",
+   "concept": "infrastructure",
+   "concept_type": "architecture",
+   "title": "Multi-Tenant Agent Infrastructure",
+   "description": "Provisions and isolates agent infrastructure across tenants: resource quotas, network separation, and tenant-scoped secret stores.",
+   "tags": [
+    "tenant",
+    "isolation",
+    "quota",
+    "network-separation",
+    "provisioning"
+   ],
+   "memory_tier": "working",
+   "path": "/infrastructure/skills/multi-tenant-agent-infrastructure/SKILL.md",
+   "agents": [
+    {
+     "name": "Context Boundary Warden",
+     "slug": "context-boundary-warden",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Security Scanner",
+     "slug": "security-scanner",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "distributed-agent-runtime-engineering",
+   "concept": "infrastructure",
+   "concept_type": "architecture",
+   "title": "Distributed Agent Runtime Engineering",
+   "description": "Operates agent runtimes across distributed compute: work distribution, fault tolerance, state coherence, and split-brain prevention.",
+   "tags": [
+    "distributed",
+    "fault-tolerance",
+    "coherence",
+    "split-brain",
+    "work-distribution"
+   ],
+   "memory_tier": "working",
+   "path": "/infrastructure/skills/distributed-agent-runtime-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Security Scanner",
+     "slug": "security-scanner",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Backup & Restore",
+     "slug": "backup-restore",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Incident Commander",
+     "slug": "incident-commander",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "tool-schema-negotiation",
+   "concept": "io-contract",
+   "concept_type": "protocol",
+   "title": "Tool Schema Negotiation",
+   "description": "Publishes owned, versioned service contracts; discovers and negotiates capabilities before first call; tests contracts in both directions.",
+   "tags": [
+    "schema",
+    "contract",
+    "endpoint",
+    "negotiate",
+    "tolerant-reader"
+   ],
+   "memory_tier": "episodic",
+   "path": "/io-contract/skills/tool-schema-negotiation/SKILL.md",
+   "agents": [
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Runner API Keeper",
+     "slug": "runner-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "tool-capability-discovery",
+   "concept": "io-contract",
+   "concept_type": "protocol",
+   "title": "Tool Capability Discovery",
+   "description": "Discovers what tools and capabilities are available in the current environment: MCP servers, APIs, and local capabilities.",
+   "tags": [
+    "discovery",
+    "capability",
+    "tool",
+    "mcp",
+    "environment"
+   ],
+   "memory_tier": "episodic",
+   "path": "/io-contract/skills/tool-capability-discovery/SKILL.md",
+   "agents": [
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Runner API Keeper",
+     "slug": "runner-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "context-infrastructure-engineering",
+   "concept": "io-contract",
+   "concept_type": "protocol",
+   "title": "Context Infrastructure Engineering",
+   "description": "Engineers the infrastructure that serves context to agents: retrieval endpoints, caching layers, and contract-validated context APIs.",
+   "tags": [
+    "context",
+    "infrastructure",
+    "retrieval",
+    "cache",
+    "api"
+   ],
+   "memory_tier": "episodic",
+   "path": "/io-contract/skills/context-infrastructure-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "inference-pipeline-engineering",
+   "concept": "io-contract",
+   "concept_type": "protocol",
+   "title": "Inference Pipeline Engineering",
+   "description": "Engineers the pipeline from request to model inference: batching, routing, caching, and contract-validated responses.",
+   "tags": [
+    "inference",
+    "pipeline",
+    "batch",
+    "routing",
+    "cache"
+   ],
+   "memory_tier": "episodic",
+   "path": "/io-contract/skills/inference-pipeline-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "API Gateway Agent",
+     "slug": "api-gateway-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "ai-platform-engineering",
+   "concept": "io-contract",
+   "concept_type": "protocol",
+   "title": "AI Platform Engineering",
+   "description": "Engineers the end-to-end AI platform: model serving, tool integration, agent orchestration endpoints, and platform-level observability.",
+   "tags": [
+    "platform",
+    "serving",
+    "integration",
+    "orchestration",
+    "endpoint"
+   ],
+   "memory_tier": "episodic",
+   "path": "/io-contract/skills/ai-platform-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Code Interpreter Agent",
+     "slug": "code-interpreter-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Memory API Keeper",
+     "slug": "memory-api-keeper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "API Gateway Agent",
+     "slug": "api-gateway-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "structured-context-world-engineering",
+   "concept": "context-management",
+   "concept_type": "architecture",
+   "title": "Structured Context World Engineering",
+   "description": "Designs and builds SCWs: schema-governed context packages with declared sections, budgets, and inclusion rationale. Primary mechanism for 75-85% per-turn token cost reduction by loading only task-relevant agents and knowledge.",
+   "tags": [
+    "scw",
+    "schema",
+    "section",
+    "budget",
+    "token-cost",
+    "structured"
+   ],
+   "memory_tier": "working",
+   "path": "/context-management/skills/structured-context-world-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "SCW ReasoningFrame Schema Agent",
+     "slug": "scw-reasoningframe-schema-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "SCW Packing Schema Agent",
+     "slug": "scw-packing-schema-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "context-packing-optimization",
+   "concept": "context-management",
+   "concept_type": "architecture",
+   "title": "Context Packing Optimization",
+   "description": "Optimizes what enters a context window against token budgets: selection, compression, ordering — every exclusion justified, every compression lossless for contract fields.",
+   "tags": [
+    "packing",
+    "token-budget",
+    "compression",
+    "selection",
+    "ordering"
+   ],
+   "memory_tier": "working",
+   "path": "/context-management/skills/context-packing-optimization/SKILL.md",
+   "agents": [
+    {
+     "name": "SCW Packing Schema Agent",
+     "slug": "scw-packing-schema-agent",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "SCW ReasoningFrame Schema Agent",
+     "slug": "scw-reasoningframe-schema-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "context-lineage-tracking",
+   "concept": "context-management",
+   "concept_type": "architecture",
+   "title": "Context Lineage Tracking",
+   "description": "Tracks where every context element came from: source, transformation chain, inclusion rationale — so any packed context can answer provenance queries element by element.",
+   "tags": [
+    "lineage",
+    "provenance",
+    "element",
+    "inclusion",
+    "query"
+   ],
+   "memory_tier": "episodic",
+   "path": "/context-management/skills/context-lineage-tracking/SKILL.md",
+   "agents": [
+    {
+     "name": "Provenance Logger",
+     "slug": "provenance-logger",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Querier",
+     "slug": "provenance-querier",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "context-persistence-engineering",
+   "concept": "context-management",
+   "concept_type": "architecture",
+   "title": "Context Persistence Engineering",
+   "description": "Persists and restores context state across sessions: what survives session close, in which tier, and how restoration reconstructs a working context faithfully.",
+   "tags": [
+    "persistence",
+    "session",
+    "restore",
+    "checkpoint",
+    "tier"
+   ],
+   "memory_tier": "episodic",
+   "path": "/context-management/skills/context-persistence-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Working Memory Manager",
+     "slug": "working-memory-manager",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Vector Store Agent",
+     "slug": "vector-store-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Artifact Store",
+     "slug": "artifact-store",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "context-boundary-engineering",
+   "concept": "context-management",
+   "concept_type": "architecture",
+   "title": "Context Boundary Engineering",
+   "description": "Engineers the boundaries between contexts: isolation between agents, scopes, and tenants; declared crossings only; leakage as a first-class failure.",
+   "tags": [
+    "boundary",
+    "isolation",
+    "scope",
+    "tenant",
+    "leakage"
+   ],
+   "memory_tier": "working",
+   "path": "/context-management/skills/context-boundary-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Context Boundary Warden",
+     "slug": "context-boundary-warden",
+     "role": "primary",
+     "provenance": "proposed"
+    },
+    {
+     "name": "Security Sentinel",
+     "slug": "security-sentinel",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Policy Proxy",
+     "slug": "policy-proxy",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Working Memory Manager",
+     "slug": "working-memory-manager",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "memory-context-compress",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Memory Context Compress — Memory Concept Extraction & Context Window Compression",
+   "description": "Compiles a session transcript or account memory surface into a normalized, deduplicated memory checkpoint and a token-budgeted resume packet, so a fresh context window continues the work without replaying raw history.",
+   "tags": [
+    "checkpoint",
+    "extraction",
+    "compression",
+    "resume",
+    "session",
+    "context-window",
+    "provenance",
+    "dedup",
+    "memory",
+    "memconext"
+   ],
+   "memory_tier": "episodic",
+   "path": "/memory/skills/memory-context-compress/SKILL.md",
+   "agents": [
+    {
+     "name": "Memory Manager",
+     "slug": "memory-manager",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "repo-decomp",
+   "concept": "registry",
+   "concept_type": "architecture",
+   "title": "Repo Decomposition Tree",
+   "description": "Generates the full labeled decomposition of the OKF repo - every .md/.py/.json across all concept/skill/agent/asset levels, labeled L0-L5.",
+   "tags": [
+    "repo",
+    "decomp",
+    "tree",
+    "map",
+    "index",
+    "skeleton",
+    "paper",
+    "outline"
+   ],
+   "memory_tier": "working",
+   "path": "/registry/skills/repo-decomp/SKILL.md"
+  },
+  {
+   "id": "anchor-field-engineering",
+   "concept": "latent",
+   "concept_type": "architecture",
+   "title": "Anchor Field Engineering",
+   "description": "Defines and binds the field space an anchor set lives in: node-property binding, same-sync-same-scale invariants, named field registration under data/anchors/ - trilateration works in any conforming field.",
+   "tags": [
+    "anchor",
+    "field",
+    "space",
+    "binding",
+    "scale",
+    "sync",
+    "trilateration",
+    "register"
+   ],
+   "memory_tier": "semantic",
+   "path": "/latent/skills/anchor-field-engineering/SKILL.md"
+  },
+  {
+   "id": "procedural-memory-engineering",
+   "concept": "memory",
+   "concept_type": "architecture",
+   "title": "Procedural Memory Engineering",
+   "description": "Engineers the procedural tier - the skill bundles as memory: creation = memorization, revision = consolidation, deprecation = forgetting, git history = lineage.",
+   "tags": [
+    "memory",
+    "procedural",
+    "skill-lifecycle",
+    "consolidation",
+    "deprecation",
+    "versioning"
+   ],
+   "memory_tier": "procedural",
+   "path": "/memory/skills/procedural-memory-engineering/SKILL.md",
+   "agents": [
+    {
+     "name": "Memory Manager",
+     "slug": "memory-manager",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Promotion Policy Agent",
+     "slug": "promotion-policy-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Provenance Signer",
+     "slug": "provenance-signer",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "knowledge-graph-federation",
+   "concept": "knowledge-graph",
+   "concept_type": "knowledge",
+   "title": "Knowledge Graph Federation",
+   "description": "Owns OKF-to-external-KG interoperability: node/edge/property mapping contracts, sync direction, and the MCP host/client bridge pattern with Claude as host holding 1:N connections.",
+   "tags": [
+    "graph",
+    "federation",
+    "interop",
+    "mcp",
+    "host",
+    "client",
+    "mapping",
+    "neo4j",
+    "sparql"
+   ],
+   "memory_tier": "semantic",
+   "path": "/knowledge-graph/skills/knowledge-graph-federation/SKILL.md",
+   "agents": [
+    {
+     "name": "MCP Bridge",
+     "slug": "mcp-bridge",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "QA Agent",
+     "slug": "qa-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Graph Store Agent",
+     "slug": "graph-store-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "agentic-deep-search",
+   "concept": "orchestration",
+   "concept_type": "architecture",
+   "title": "Agentic Deep Search",
+   "description": "Superactivation deep search - the original $Maxey0: parallel multi-corpus retrieval lanes, per-SCW overlays, superimpose validation, multi-hop refinement, fused ranked evidence view.",
+   "tags": [
+    "search",
+    "deep-search",
+    "superactivation",
+    "multi-hop",
+    "retrieval",
+    "lanes",
+    "fusion",
+    "ranking"
+   ],
+   "memory_tier": "episodic",
+   "path": "/orchestration/skills/agentic-deep-search/SKILL.md",
+   "agents": [
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Latent Mapper",
+     "slug": "latent-mapper",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Anchor Metrics",
+     "slug": "anchor-metrics",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "orbital-selection",
+   "concept": "orchestration",
+   "concept_type": "architecture",
+   "title": "Orbital Selection",
+   "description": "Hierarchical routing across the concept/skill/agent orbital planes - each an anchor field touched in one superposed pass per level, with cross-plane coherence arbitration, beam-descent and lexical fallbacks, all bounded by the RECUR loop contract.",
+   "tags": [
+    "routing",
+    "selection",
+    "orbital",
+    "plane",
+    "field",
+    "superimpose",
+    "beam",
+    "coherence",
+    "traversal"
+   ],
+   "memory_tier": "working",
+   "path": "/orchestration/skills/orbital-selection/SKILL.md",
+   "agents": [
+    {
+     "name": "Graph GNN Router",
+     "slug": "graph-gnn-router",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Retrieval Orchestrator",
+     "slug": "retrieval-orchestrator",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "scw-partition-isolation",
+   "concept": "agentic-loops",
+   "concept_type": "architecture",
+   "title": "SCW Partition Isolation",
+   "description": "The two architectures that partition a loop's context: in-window (typed regions, tool-layer refusal) and cross-window (one model call per agent, isolation by construction).",
+   "tags": [
+    "scw",
+    "partition",
+    "isolation",
+    "region",
+    "bridge",
+    "disjointness",
+    "in-window",
+    "cross-window"
+   ],
+   "memory_tier": "working",
+   "path": "/agentic-loops/skills/scw-partition-isolation/SKILL.md",
+   "agents": [
+    {
+     "name": "Context Window Architect",
+     "slug": "context-window-architect",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "SCW ReasoningFrame Schema Agent",
+     "slug": "scw-reasoningframe-schema-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "SCW Packing Schema Agent",
+     "slug": "scw-packing-schema-agent",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Context Boundary Warden",
+     "slug": "context-boundary-warden",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  },
+  {
+   "id": "loop-composition-battery",
+   "concept": "agentic-loops",
+   "concept_type": "architecture",
+   "title": "Loop Composition Battery",
+   "description": "The live multi-agent battery and the loop-dataset build pipeline that hardens the 74 Maxey0-native loops into real SCW harnesses.",
+   "tags": [
+    "battery",
+    "composition",
+    "maker-checker-judge",
+    "debate-peer",
+    "pipeline",
+    "nested",
+    "hardening",
+    "dataset"
+   ],
+   "memory_tier": "working",
+   "path": "/agentic-loops/skills/loop-composition-battery/SKILL.md",
+   "agents": [
+    {
+     "name": "SuperAgent Orchestrator",
+     "slug": "superagent-orchestrator",
+     "role": "primary",
+     "provenance": "registry"
+    },
+    {
+     "name": "Superposition Agent",
+     "slug": "superposition-agent",
+     "role": "checker",
+     "provenance": "registry"
+    },
+    {
+     "name": "Cost Guard",
+     "slug": "cost-guard",
+     "role": "support",
+     "provenance": "registry"
+    },
+    {
+     "name": "Compliance Auditor",
+     "slug": "compliance-auditor",
+     "role": "support",
+     "provenance": "registry"
+    }
+   ]
+  }
+ ],
+ "registry": "/registry/registry.json",
+ "a2a_card": "/a2a/agent-card.json",
+ "trilaterate": "/scripts/trilaterate.py"
+}

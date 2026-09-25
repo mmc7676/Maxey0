@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Maxey0 A2A Request",
+  "type": "object",
+  "required": ["sender", "task"],
+  "properties": {
+    "sender": {"type": "string"},
+    "task": {"type": "string"},
+    "topic": {"type": ["string", "null"]},
+    "concept": {"type": ["string", "null"]},
+    "skill": {"type": ["string", "null"]},
+    "requested_loop": {"type": ["string", "null"]},
+    "context": {"type": "object"}
+  },
+  "additionalProperties": false
+}

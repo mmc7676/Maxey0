@@ -1,0 +1,27 @@
+Maxey0-SuperSpace source archive
+==================================
+
+version       : 0.3.0
+commit        : d3b232d606e86d647988ff73d5062cff7d01cb45
+subject       : Use American English spelling throughout
+branch        : release/0.3.0
+tree state    : clean
+files         : 949
+uncompressed  : 11.73 MiB
+selected by   : git
+secret scan   : clean (949 files read)
+
+Contents are every file `git ls-files` reports as tracked, plus the
+built MCP App bundle, minus anything matching a credential path. So
+`.git`, `.venv`, `__pycache__`, `node_modules`, caches, compiled
+artefacts, `.env*` and `config/credentials.json` are all absent — not
+because a list says so, but because `.gitignore` does and this archive
+is derived from it.
+
+To use:
+  python -m venv .venv
+  .venv/Scripts/pip install -e .          (Windows)
+  .venv/bin/pip install -e .              (POSIX)
+  .venv/Scripts/python -m pytest -q
+
+Installable bundles are built separately with scripts/build_package.py.

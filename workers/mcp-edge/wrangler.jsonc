@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "maxey0-ss-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-14",
+  "observability": { "enabled": true },
+
+  // The MCP App artifact is imported as a text module, not fetched at runtime.
+  // An MCP App is delivered as one self-contained document; the edge must be
+  // able to serve it with no origin and no second request.
+  "rules": [{ "type": "Text", "globs": ["**/*.html"], "fallthrough": true }],
+
+  "vars": {
+    // Seconds the edge may cache catalog responses (tools/list, resources/*).
+    "MAXEY0_CATALOG_TTL": "300"
+    // MAXEY0_ORIGIN is set via `wrangler secret put MAXEY0_ORIGIN`, not here.
+  },
+
+  // Custom domain. The maxey0.com zone is Active in Cloudflare.
+  "routes": [
+    { "pattern": "mcp.maxey0.com", "custom_domain": true }
+  ]
+}

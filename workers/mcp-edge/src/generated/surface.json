@@ -1,0 +1,514 @@
+{
+  "artifact": {
+    "bytes": 480954,
+    "kind": "built",
+    "path": "mcp-app.html",
+    "sha256": "2af3160d2812aebb89fb712571143e0d9d46042046ece38d094db2a34721b778",
+    "uri": "ui://maxey0-ss/super-space.html"
+  },
+  "protocolVersion": "2026-07-28",
+  "resources": [
+    {
+      "_meta": {
+        "ui": {
+          "prefersBorder": true
+        }
+      },
+      "description": "Interactive SCW host-window observer.",
+      "mimeType": "text/html;profile=mcp-app",
+      "name": "Maxey0-SuperSpace",
+      "uri": "ui://maxey0-ss/super-space.html"
+    },
+    {
+      "description": "Contract for host-visible context partition metadata.",
+      "mimeType": "application/json",
+      "name": "SuperSpace host-window contract",
+      "uri": "maxey0-ss://super-space/host-window"
+    },
+    {
+      "description": "Context, execution, engineering/observation plane model.",
+      "mimeType": "application/json",
+      "name": "Maxey0 planes",
+      "uri": "maxey0-ss://architecture/planes"
+    }
+  ],
+  "serverName": "Maxey0-SuperSpace",
+  "serverVersion": "0.3.0",
+  "staticResources": {
+    "maxey0-ss://architecture/planes": [
+      "context",
+      "execution",
+      "engineering-observation"
+    ],
+    "maxey0-ss://super-space/host-window": {
+      "hidden_model_context_access": false,
+      "scope": "host-supplied"
+    }
+  },
+  "superSpaceUri": "ui://maxey0-ss/super-space.html",
+  "tools": [
+    {
+      "description": "Return service and protocol health.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.health"
+    },
+    {
+      "description": "Describe the public Maxey0 planes and delivery surfaces.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.distribution"
+    },
+    {
+      "description": "Describe authorization configuration without exposing credentials.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.auth.manifest"
+    },
+    {
+      "description": "Describe Maxey0 MCP metadata caching without exposing cache contents.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.cache.status"
+    },
+    {
+      "description": "Identify the SuperSpace MCP App artifact actually being served.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.app.artifact"
+    },
+    {
+      "description": "Containment evidence counts and chain head.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.evidence.summary"
+    },
+    {
+      "description": "The containment record: what was attempted across SCW boundaries, and the outcome.",
+      "inputSchema": {
+        "properties": {
+          "denials_only": {
+            "type": "boolean"
+          },
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "name": "maxey0-ss.evidence.attestations"
+    },
+    {
+      "description": "Verify the containment chain. Pass exported records to verify evidence from elsewhere.",
+      "inputSchema": {
+        "properties": {
+          "anchor_prev_digest": {
+            "type": "string"
+          },
+          "records": {
+            "type": "array"
+          },
+          "start_seq": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "records"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.evidence.verify"
+    },
+    {
+      "description": "Report deployment shape and provider sockets without exposing any secret value.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.deployment"
+    },
+    {
+      "description": "Describe MCP Tasks extension state without exposing task payloads.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.tasks.status"
+    },
+    {
+      "description": "Validate an explicit Maxey0 SCW enforceable address.",
+      "inputSchema": {
+        "properties": {
+          "scw_address": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scw_address"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.gate.inspect"
+    },
+    {
+      "_meta": {
+        "annotations": {
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "ui": {
+          "resourceUri": "ui://maxey0-ss/super-space.html"
+        }
+      },
+      "description": "Open the Maxey0-SuperSpace MCP App.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.super_space"
+    },
+    {
+      "description": "Create an explicit Maxey0 SCW specification without creating a protocol session.",
+      "inputSchema": {
+        "properties": {
+          "concept": {
+            "type": "string"
+          },
+          "parent_id": {
+            "type": "string"
+          },
+          "scw_id": {
+            "type": "string"
+          },
+          "task": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scw_id",
+          "task"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.scw.create"
+    },
+    {
+      "description": "Describe Maxey0 SCW specifications and instantiated SCWs.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.scw.describe"
+    },
+    {
+      "description": "Close an instantiated Maxey0 SCW by explicit application identifier.",
+      "inputSchema": {
+        "properties": {
+          "scw_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scw_id"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.scw.close"
+    },
+    {
+      "_meta": {
+        "annotations": {
+          "openWorldHint": false,
+          "readOnlyHint": true
+        },
+        "ui": {
+          "resourceUri": "ui://maxey0-ss/super-space.html"
+        }
+      },
+      "description": "Observe host-supplied context partitions without claiming access to hidden model context.",
+      "inputSchema": {
+        "properties": {
+          "scw_address": {
+            "description": "Explicit Maxey0 SCW enforceable address.",
+            "type": "string"
+          },
+          "segments": {
+            "type": "array"
+          }
+        },
+        "required": [
+          "scw_address",
+          "segments"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.scw.observe_host_window"
+    },
+    {
+      "description": "Report which model providers are configured, which hold a placeholder credential, and which are unset.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.provider.status"
+    },
+    {
+      "description": "Send a prompt to a model provider. The egress is gated and written to the containment chain before it leaves; the prompt is digested, never recorded.",
+      "inputSchema": {
+        "properties": {
+          "max_tokens": {
+            "type": "integer"
+          },
+          "model": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "provider": {
+            "enum": [
+              "anthropic",
+              "openai",
+              "huggingface"
+            ],
+            "type": "string"
+          },
+          "scw_id": {
+            "description": "The window this egress belongs to. Recorded as the source of the call.",
+            "type": "string"
+          },
+          "system": {
+            "type": "string"
+          },
+          "temperature": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "provider",
+          "prompt"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.provider.complete"
+    },
+    {
+      "description": "Anchor or measure semantic drift for one SCW against its declared threshold. Measuring requires scw.read; anchor=true installs a baseline and also requires scw.admit.",
+      "inputSchema": {
+        "properties": {
+          "anchor": {
+            "description": "Install this vector as the baseline instead of measuring against one. Requires scw.admit.",
+            "type": "boolean"
+          },
+          "scw_id": {
+            "type": "string"
+          },
+          "threshold": {
+            "description": "Overrides the SCW specification's drift_threshold.",
+            "type": "number"
+          },
+          "vector": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "scw_id",
+          "vector"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.scw.drift"
+    },
+    {
+      "description": "The context plane's ledger as a typed, queryable stream.",
+      "inputSchema": {
+        "properties": {
+          "kinds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "region": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "since_seq": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.events"
+    },
+    {
+      "description": "Whether a role attempted a region, and whether containment held.",
+      "inputSchema": {
+        "properties": {
+          "region": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.attempts"
+    },
+    {
+      "description": "Context, execution and state traces, correlated causally.",
+      "inputSchema": {
+        "properties": {
+          "limit": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.traces"
+    },
+    {
+      "description": "What the delegated agents actually did, per role, from the journal.",
+      "inputSchema": {
+        "properties": {
+          "kinds": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "role": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.gate_activity"
+    },
+    {
+      "description": "Read the current Gate mode: enforce, observe, or off.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.gate_mode"
+    },
+    {
+      "description": "Which of L0-L3 the evidence supports, and the shortfall where it does not.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.isolation_level"
+    },
+    {
+      "description": "The Studio's address and start command.",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "maxey0-ss.observe.studio"
+    },
+    {
+      "description": "Set the Gate mode. Turning the Gate off removes containment enforcement.",
+      "inputSchema": {
+        "properties": {
+          "mode": {
+            "enum": [
+              "enforce",
+              "observe",
+              "off"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "mode"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.gate.set_mode"
+    },
+    {
+      "description": "Declare what a bound role may reach outside the window.",
+      "inputSchema": {
+        "properties": {
+          "bash_allow": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "note": {
+            "type": "string"
+          },
+          "read_paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "role": {
+            "type": "string"
+          },
+          "tools": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "write_paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "role"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.gate.set_policy"
+    },
+    {
+      "description": "Declare the isolation level this deployment claims, for evidence comparison.",
+      "inputSchema": {
+        "properties": {
+          "declared": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "declared"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.gate.declare_isolation"
+    }
+  ]
+}

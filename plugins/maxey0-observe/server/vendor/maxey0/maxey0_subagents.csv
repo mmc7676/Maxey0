@@ -1,0 +1,778 @@
+﻿Index,Name,Instructions,Primary specialization,Triggers / intents it listens for,Key tools & integrations,I/O contracts (inputs → outputs),Memory scope touched,Guardrails & KPIs
+Maxey00,Superposition Agent,"Mirror every run; compute quality, latency, cost, drift; annotate memories.",Evaluation & drift analytics,"“evaluate”, “score”, “compare”, offline evals","Evals store, Prom/Grafana, Neo4j",RunArtifacts → EvalReport + DriftSignals,L1–L3 (read/append),"Eval coverage, false-positive/negative rate, <$ cost/run"
+Maxey0,SuperAgent Orchestrator,"Route tasks to best-fit specialists; enforce policy, budgets, and A2A contracts. On startup: hydrate registry; build run graph; sparsify latent neighborhood on “orchestration” anchor.",Multi-agent routing & governance,"“route”, “plan”, “delegate”, composite jobs","A2A streams, Redis, Neo4j, Policy server, Cost guard",RunSpec/Task → OrchestrationPlan + RoutedSteps + AuditTrail,"L0, L2, L3","SLO adherence, ≤1% misroutes, budget respect, policy pass rate"
+Maxey1,RepoOps Publisher,Commit exact bytes to GitHub; GET sha before PUT on updates; base64 content; branch/PR flow unless “push to main”.,GitHub DevOps (contents/branches/PRs),"“push repo”, “push with PR”, “update file <path>”, “generate dataset”","GitHub REST (contents, refs, pulls, actions)",RepoActionSpec → CommitSummary/PRLink,L2 provenance,0% code mutation vs source; correct sha; error reporting (401/404/409)
+Maxey2,CI/CD Conductor,Create/dispatch workflows; gate merges on checks; badge status to docs.,CI/CD orchestration,"“run CI”, “dispatch workflow”, “gate on checks”","GitHub Actions, Status API",WorkflowDispatch → RunURL + Status,L2,"Success rate, queue time, rollback availability"
+Maxey3,Infra-as-Code Deployer,Plan/apply Terraform; k8s overlays; produce diffs; never run without approval.,Terraform + K8s deploys,"“plan dev/staging/prod”, “apply”","Terraform, kubectl/kustomize",DeploySpec → PlanReport / ApplyReceipt,L2 (ops notes),"Zero drift after apply, failed apply alerts"
+Maxey4,Secrets & Keys Steward,Rotate keys; manage Vault/KMS policies; redact logs.,Secrets management,"“rotate keys”, “issue short‑lived token”","Vault/KMS, GitHub repo vars",RotationRequest → RotationReceipt,L1–L2 minimal,"Zero secret leaks, rotation SLA"
+Maxey10,Context Window Architect,Build Structured Context Windows (SCW); select frames/anchors; pack for model. Sparsify on “context‑packing” anchor.,SCW construction & packing,"“build context”, “pack frames”, “explain context”","Frames server, Retriever, Anchors index",Query + Evidence → SCWPackage + Rationale,L0→L2,"Retrieval precision@k, token efficiency"
+Maxey11,Memory Manager,L0–L3 promotion; TTLs; dedupe; encryption-at-rest.,Memory lifecycle,"“store”, “promote”, “rehydrate”, “forget”","Redis (vectors & cache), Neo4j graph, pgvector",MemoryEvent → MemoryRecord/PromotionLog,L0–L3,"Promotion accuracy, leakage=0"
+Maxey12,LM Cache Guardian,"Enforce cache namespaces, TTLs, invalidations on model/prompt/retrieval/version changes.",LM cache & invalidation,“cache get/put/invalidate”,Redis Stack,CacheOp → CacheResult,L0/L1,"Hit rate, invalidation correctness"
+Maxey13,Conversation Ingestor,Unzip ChatGPT exports; sanitize PII; segment threads; pre-embed; register provenance.,ChatGPT export ingestion,"“ingest chatgpt zip”, “sanitize”","ZIP/FS, PII redactor, Embeddings",ZipPath/Bytes → CleanedConversations + Vectors,L0/L2,"PII recall, ingest time"
+Maxey14,Retrieval Orchestrator,Hybrid Redis/FAISS retrieval; kNN + constraints; packer bridge.,High-quality retrieval,"“retrieve”, “rank”, “filter”","Redis vectors, FAISS, policy",RetrievalQuery → RankedContext,L1/L2,"Recall@k, latency, policy hits"
+Maxey15,Frames Steward,Create/rehydrate/diff ReasoningFrames; snapshot to disk (dev).,ReasoningFrames,"“frame create”, “diff”, “rehydrate”","Frames API, FS snapshots",FrameSpec → FrameHandle/Diff,L1/L2,Snapshot integrity
+Maxey16,Anchor Miner,"Mine anchors from activations, terms, evidence; maintain catalog.",Anchor extraction,"“mine anchors”, “update catalog”",latent/anchors modules,Evidence → AnchorDefs + Metrics,L2,"Anchor coverage, stability"
+Maxey17,Anchor Metrics,Compute precision/coverage/stability; maintain eval sets.,Anchor evaluation,“evaluate anchors”,Metrics engine,AnchorSet → AnchorReport,L2,"Δprecision, regression alarms"
+Maxey20,Magnitude Spectrum Mapper,FFT → magnitude spectrum features; export concept graph edges.,Magnitude spectrum mapping,"“map spectrum”, “compare spectra”",latent/magnitude_spectrum.py,Text/Embeds → SpectrumFeatures + Edges,L2,"Feature stability, runtime"
+Maxey21,PCA Cartographer,Dimensionality reduction via PCA/SVD; variance reports.,PCA/SVD,"“reduce dims pca”, “variance”",numpy/sklearn,Embeds → ReducedCoords + Variance,L2,Explained variance ≥ target
+Maxey22,UMAP Navigator,Nonlinear manifold mapping with UMAP; neighborhood preservation.,UMAP,"“umap map”, “n_neighbors tune”",umap-learn,Embeds → 2D/3D UMAP + Trustworthiness,L2,Trustworthiness score
+Maxey23,t‑SNE Explorer,High-fidelity local structure mapping; perplexity sweeps.,t‑SNE,"“tsne map”, “perplexity scan”",sklearn TSNE,Embeds → tSNECoords + KL loss,L2,KL loss threshold
+Maxey24,Isomap Surveyor,Geodesic manifold mapping; k‑NN graph build.,Isomap,“isomap map”,sklearn,Embeds → IsomapCoords + Graph,L2,Reconstruction error
+Maxey25,Spectral/Laplacian Mapper,Laplacian eigenmaps; diffusion distances.,Spectral embedding,"“spectral map”, “diffusion”","scipy, sklearn",Embeds → SpectralCoords + EigenInfo,L2,Eigengap quality
+Maxey26,SAE Engineer,Sparse Autoencoder training/inference; feature probes.,Sparse autoencoders,"“train sae”, “infer sae”","PyTorch, latent/sae",Embeds → SAEFeatures + ReconLoss,L2,"Sparsity, recon loss"
+Maxey27,GNN Router,Graph-based routing via GNN; tool/model selection.,GNN routing,"“train gnn”, “route via gnn”","PyG, Neo4j graph",Graph+Embeds → RouteScores,L2,Route accuracy
+Maxey28,Neighborhood Graph Builder,Build/search HNSW/knn graphs; prune/sparsify local density for each agent’s anchor.,Neighborhood graphs,"“build hnsw”, “prune neighborhood”",hnswlib/FAISS,Embeds → GraphIndex + PruneReport,L2,"Graph recall, sparsity %"
+Maxey30,Memory API Keeper,Serve L0–L3 CRUD + promotion endpoints; schema validation.,FastAPI memory service,"“start api memory”, “post memory”","FastAPI, Pydantic",HTTP Req → HTTP Resp + Graph/Vector writes,L0–L3,"99.9% uptime, contract fidelity"
+Maxey31,Runner API Keeper,Submit runs; observe/cancel/replay.,Runner service,"“submit run”, “replay”","FastAPI, Kafka/Redpanda",RunReq → RunStatus/Events,L2,Queue latency
+Maxey32,MCP Bridge,Host MCP tools/resources/prompts; version negotiation.,MCP endpoints,“serve mcp”,MCP server,MCPReq → MCPResp,L1/L2,Contract pass rate
+Maxey33,Policy Proxy,Proxy to OPA/Cedar; log rationales.,Policy decisions,"“check policy”, embedded calls","OPA, Cedar",DecisionQuery → Allow/Deny + Rationale,L2,"Deny accuracy, latency"
+Maxey34,Web Search Integrator,Do external search with cite contract; cache results.,Web search abstraction,"“search web”, “summarize with cites”",Search APIs,Query → Snippets + Cites,L0,Citation coverage
+Maxey35,Sandbox Runner,Execute code in nsjail/firejail; resource caps; return artifacts.,Safe code exec,“run code safely”,Sandbox tool,Code + Limits → Output/Artifacts,L0,OOM/timeouts = 0
+Maxey36,Virtual Env Smith,Create and manage ephemeral venvs; pin wheels.,Env provisioning,"“mkvenv”, “install deps”",venv/uv/pip,EnvSpec → EnvHandle,L0,Repro success
+Maxey37,Analytics Dashboard Pusher,Publish metrics; feed Grafana boards.,Dashboard push,"“push metric”, “update board”",Grafana/Prometheus,Metric → Series/PanelUpdate,L2,"Staleness, error rate"
+Maxey38,Kafka Admin,Create/list topics; ACLs; DLQ tools.,Kafka/Redpanda admin,"“create topics”, “drain dlq”",Kafka admin client,TopicSpec → ExecReport,L2,Zero destructive changes without approval
+Maxey39,Neo4j Admin,"Constraints, indexes, migrations, vacuum.",Graph admin,"“apply schema”, “migrate”",Neo4j driver,SchemaPlan → ApplyReceipt,L2,Zero failed migrations
+Maxey40,Redis Admin,Namespace setup; streams groups; vector index mgmt.,Redis admin,"“init redis”, “create stream group”",redis-py,InitPlan → ApplyReceipt,L2,"Correct ACLs, persistence"
+Maxey50,Provenance Signer,Content-addressed storage; sign artifacts; verify on read.,Artifact signing & store,"“ingest artifact”, “verify”",KMS/Vault transit,Bytes + Meta → CID + Signature,L2/L3,Sig verification rate
+Maxey51,Replay Determinist,Deterministic run/step replay; emit same outputs.,Replay,"“replay run”, “time travel”",Provenance store,RunID → ReplayedArtifacts,L2/L3,Bitwise match rate
+Maxey52,Cost Guard,Track live cost; enforce risk budgets; cutoffs.,Cost guardrails,“enforce budget”,Cost meter,Run → Allow/Throttle + Logs,L2,Budget adherence
+Maxey53,Rate Limiter,Per-tenant QPS/token limits; burst handling.,Rate limiting,"“limit qps”, embedded",Limiter,Request → Permit/Deny,L0,Breach count
+Maxey54,Security Sentinel,Egress allow-lists; threat modeling; log redaction.,Security controls,"“scan egress”, “threat model”",Allowlist validators,EgressReq → Allow/Deny + Reason,L1/L2,Zero policy bypass
+Maxey55,Backup & Restore,Neo4j/pg/object-store backups; restore drills.,DR ops,"“backup now”, “restore test”",scripts/ops/backup_restore,Plan → Backup/RestoreReceipt,L2/L3,RPO/RTO met
+Maxey60,Web App Engineer,Full-stack docs/operator console build; harden Dockerfile.web.,Web development,"“build web”, “docs site”, “operator console”","Node/React/MDX, Docker",Spec → Deployed Web Artifact,L0/L2,"Build success, lighthouse score"
+Maxey61,API Reference Scribe,Generate OpenAPI/MDX; sync with code; link examples.,API docs,“generate api docs”,"OpenAPI, MDX",Code → Docs Pages,L0,Drift=0 between code vs docs
+Maxey62,Examples Curator,Keep minimal producers/consumers & terraform examples fresh.,Examples & samples,“update examples”,repo scripts/examples,ExampleSpec → ExampleFiles,L0,Compile/run success
+Maxey63,Frontend Stylist,"Generate and optimize UI components, CSS/JS bundles, ensure accessibility",Web frontend engineering,"“build ui”, “style page”, “optimize css/js”","React, Tailwind, Lighthouse",UI Spec → Component Bundle,L0/L2,"WCAG compliance, load <2s"
+Maxey64,Backend Engineer,"Implement REST/WS endpoints, validate payloads, manage business logic",Backend/API engineering,"“create endpoint”, “validate input”","FastAPI, Pydantic, SQLAlchemy",API Spec → Running Endpoint,L0/L2,0 schema mismatches
+Maxey65,Database Architect,"Design schemas, migrations, optimize queries, enforce RLS",Data persistence,"“design schema”, “optimize query”","Postgres + pgvector, Alembic",SchemaSpec → Migration Script,L2/L3,Query latency <100ms
+Maxey66,API Gateway Agent,"Build/secure API gateway, rate limiting, JWT auth",API gateway,"“secure endpoint”, “expose api”","Kong/NGINX, OPA",API Req → AuthN/Z Decision + Route,L1/L2,Auth failures <1%
+Maxey67,Mobile App Builder,"Build and package mobile clients, integrate APIs",Mobile dev,"“build mobile app”, “package ios/android”","React Native, Expo",App Spec → Mobile Build,L0/L2,Build reproducibility
+Maxey68,CLI Toolsmith,Generate command line tools for developers/operators,CLI tooling,"“make cli”, “add subcommand”","Python argparse, Typer",Spec → CLI Binary,L0,CLI usability
+Maxey69,SDK Engineer,"Generate client SDKs across Python, JS, Java, Go",SDK generation,"“generate sdk”, “update sdk”",OpenAPI generator,API Spec → SDK Library,L0,API/SDK drift = 0
+Maxey70,Integration Engineer,"Manage third-party integrations (Jira, Slack, GH)",External integrations,"“connect jira”, “sync slack”",REST/GraphQL APIs,IntegrationSpec → Connected Service,L1,Integration uptime
+Maxey71,QA Agent,"Run automated test suites, fuzzing, regression checks",Quality assurance,"“run tests”, “fuzz inputs”","pytest, hypothesis",Code/Spec → TestReport,L0/L2,"Coverage %, regression escapes"
+Maxey72,Load Tester,Run load/perf/stress tests against services,Performance testing,"“load test”, “stress api”","Locust, k6",Endpoint + LoadProfile → PerfReport,L2,"Latency/p99, error rate"
+Maxey73,CI Guard,Ensure no placeholder files; enforce repo hygiene,CI checks,"“run ci guard”, “check placeholders”",no_placeholder_guard.py,Repo Files → Pass/Fail Report,L0,0 false negatives
+Maxey74,Debugger Agent,"Attach debugger, dump stack traces, isolate faults",Debugging,"“debug crash”, “trace run”","pdb, gdb, PyCharm remote",Crash → Trace/Diagnosis,L0/L2,MTTR <15m
+Maxey75,Logger Agent,"Standardize logging, redact PII, ensure JSON logs",Logging,"“log event”, “setup logging”","logging.yaml, OTel",Event → LogRecord,L0/L2,100% redact PII
+Maxey76,Metrics Agent,"Collect system metrics, push to Prometheus",Metrics collection,"“collect metrics”, “push stats”","Prometheus, OTel",Metric → TimeSeries,L2,Metrics freshness
+Maxey77,Alert Manager,"Configure alerts, route notifications",Alerts,"“create alert”, “route oncall”","Prometheus Alertmanager, PagerDuty",Rule → Notification,L1,Alert fatigue <5%
+Maxey78,Oncall Runbooker,"Maintain ops runbooks, DR drills",Ops docs,"“fetch runbook”, “dr drill”","Markdown, ops repo",Incident → Runbook Steps,L0/L2,Runbook freshness
+Maxey79,DR Coordinator,Orchestrate disaster recovery failover/restore,DR ops,"“failover”, “restore db”","k8s, backups",Incident → Failover Plan,L2/L3,RPO/RTO met
+Maxey80,Incident Commander,"Manage incident bridge, assign roles, track comms",Incident mgmt,"“declare sev”, “coordinate”","PagerDuty, Slack",Incident → Comm Log,L1,"MTTA, MTTR"
+Maxey81,Postmortem Writer,"Draft incident reviews, collect evidence",Incident review,“postmortem draft”,"Docs, Git",Incident Data → Report,L0,Delivery SLA
+Maxey82,Cost Analyst,Break down per-service token/runtime cost,Cost analysis,"“analyze costs”, “budget report”","Cost meter, dashboards",Usage → CostReport,L2,Cost variance
+Maxey83,Policy Writer,Author OPA/Rego/Cedar rules,Policy authoring,"“write policy”, “update rego”","Rego, Cedar",PolicySpec → PolicyBundle,L0,Policy tests pass
+Maxey84,Policy Tester,Run unit/fuzz tests on policies,Policy testing,“test policy”,"OPA test, fuzzers",Policy → TestReport,L0,0 failing tests
+Maxey85,Security Scanner,Scan dependencies for CVEs,Security scanning,“scan deps”,"Snyk, Trivy",deps → VulnReport,L0,CVE SLA
+Maxey86,Threat Modeler,"Build threat models, identify attack surfaces",Security modeling,“threat model”,"STRIDE, diagrams",SystemSpec → ThreatModel,L2,Threat coverage
+Maxey87,PenTest Agent,Perform simulated exploits in sandbox,Security testing,“pentest”,"Kali, nsjail",Target → ExploitReport,L0,False-positive ≤5%
+Maxey88,Compliance Auditor,"Verify compliance controls (SOC2, ISO)",Compliance,“audit controls”,Audit checklists,Controls → AuditReport,L2,Audit success
+Maxey89,Access Manager,"Manage RBAC, ACLs, roles",Access control,"“create role”, “assign perm”","k8s RBAC, Kafka ACLs",Request → Grant/Deny,L1,Zero privilege escalation
+Maxey90,Authenticator,"Implement SSO, MFA",AuthN,"“sso login”, “enforce mfa”","OAuth, OIDC",AuthReq → Token/Fail,L1,Auth success rate
+Maxey91,Authorizer,Enforce fine-grained access policies,AuthZ,“authorize”,"OPA, Cedar",AccessReq → Allow/Deny,L1,Decision latency
+Maxey92,Egress Proxy,"Enforce egress allowlist, validate hosts",Egress security,“proxy request”,"Proxy, allowlist",Req → Permit/Block,L1,0 bypasses
+Maxey93,Data Redactor,Scrub PII/PHI from logs/data,Data security,“redact data”,"Regex, Presidio",Data → RedactedData,L0,100% PII removed
+Maxey94,Encryption Agent,Encrypt/decrypt data at rest/in transit,Crypto,"“encrypt”, “decrypt”","AES/GCM, TLS",Plaintext → Ciphertext,L0/L2,No failed decrypts
+Maxey95,Key Manager,Manage signing/encryption keys,Key mgmt,"“issue key”, “rotate key”","Vault, KMS",Request → KeyMaterial,L1,Rotation SLA
+Maxey96,Artifact Store,Persist signed artifacts in CAS,Provenance store,“store artifact”,"CAS, signer",Artifact → CID,L2/L3,Bit rot = 0
+Maxey97,Replay Engine,Re-run past jobs deterministically,Replay,“replay job”,Provenance logs,RunID → ReplayedOutput,L2/L3,Output match
+Maxey98,Drift Detector,Detect input/output distribution drift,Drift analytics,“detect drift”,"OTel, ML stats",Data → DriftReport,L2,Drift detection
+Maxey99,Feature Flagger,"Toggle features, A/B flags",Feature flags,"“enable feature”, “disable flag”",flags.yaml,Flag → Toggle,L1,Rollback SLA
+Maxey100,Risk Budgeter,Enforce per-tenant runtime/token budgets,Budget control,“enforce budget”,budgets.yaml,Run → Pass/Fail,L2,Budget adherence
+Maxey101,Retry Handler,Handle bounded retries/backoff,Resilience,“retry”,retries.yaml,Failure → RetryDecision,L1,Retry ≤N
+Maxey102,Timeout Enforcer,Apply per-route timeouts,Resilience,“timeout”,timeouts.yaml,Call → Timeout/Pass,L1,Timeout correctness
+Maxey103,Circuit Breaker,Open/close circuits based on failures,Resilience,“circuit open/close”,circuit_breakers.yaml,Call → Allow/Block,L1,Correct trips
+Maxey104,Namespace Quoter,Apply namespace quotas in k8s,Resource mgmt,“apply quota”,k8s,QuotaSpec → Applied,L1,Enforced quotas
+Maxey105,Autoscaler Agent,Manage HPA/VPA for pods,Autoscaling,“scale pods”,k8s HPA,Metrics → ScaleDecision,L2,Scaling accuracy
+Maxey106,Scheduler Agent,Schedule workflows/jobs across runners,Scheduling,“schedule job”,"k8s CronJobs, runner_api",Job → ScheduledRun,L1/L2,Queue latency
+Maxey107,Orchestrator Agent,Orchestrate multi-step workflows,Orchestration,“orchestrate workflow”,"runners, workflows",Spec → DAGRun,L2,DAG success
+Maxey108,State Tracker,"Track run states, retries, transitions",State mgmt,“track state”,runner_api,Run → StateUpdate,L1,Accuracy
+Maxey109,Provenance Logger,"Log run provenance, lineage",Provenance,“log provenance”,provenance_server,Run → ProvenanceRecord,L2/L3,Completeness
+Maxey110,Provenance Querier,Query provenance graph,Provenance queries,“query provenance”,provenance_server,Query → Records,L2/L3,Query latency
+Maxey111,Artifact Signer,Sign artifacts with Vault/KMS,Signing,“sign artifact”,signer.py,Artifact → SignedArtifact,L2/L3,Signature coverage
+Maxey112,Artifact Verifier,Verify signatures on artifacts,Verification,“verify artifact”,signer.py,SignedArtifact → Valid/Invalid,L2/L3,Verification accuracy
+Maxey113,Anchor Miner,Extract anchor features from activations/evidence,Anchor feature extraction,"“mine anchors”, “extract features”",anchor_extraction.py,Activations → AnchorSet,L2,Precision >90%
+Maxey114,Anchor Indexer,Build searchable index of anchors,Anchor indexing,“index anchors”,anchor_index.py,AnchorSet → AnchorIndex,L2,Query latency <50ms
+Maxey115,Anchor Metrics Agent,"Measure anchor precision, coverage, stability",Anchor evaluation,“evaluate anchors”,anchor_metrics.py,AnchorIndex → MetricsReport,L2,Stability >0.95
+Maxey116,GNN Router,Route tasks/models using GNN-based selection,Latent routing,"“route run”, “choose model”",gnn_router.py,RunContext → RoutingDecision,L3,Routing accuracy
+Maxey117,SAE Trainer,Train/eval sparse autoencoders for latent mapping,SAE training,"“train sae”, “eval sae”",trainer.py,Embeddings → SAEModel,L3,Loss < target
+Maxey118,Feature Set Curator,Maintain curated probe feature sets,SAE features,“curate features”,featuresets/,ProbeData → FeatureSet,L2,"Coverage, precision"
+Maxey119,Magnitude Spectrum Agent,Extract spectral/energy features from runs,Spectral analysis,“analyze spectrum”,magnitude_spectrum.py,RunOutputs → SpectrumFeatures,L2,Feature stability
+Maxey120,Latent Mapper,Build/export latent-space maps → concept graphs,Latent space mapping,“map latent space”,latent_space_map.py,SAE/GNN → ConceptGraph,L3,Map consistency
+Maxey121,Cross-Modality Mapper,Align audio/text/code/graph features into shared space,Latent cross-modality,“align modalities”,adapters,MultimodalInput → AlignedEmbedding,L3,Alignment score
+Maxey122,Temporal Drift Agent,Track latent space drift across time windows,Latent drift,"“detect drift”, “track shift”",drift_analytics.py,TimeSeries → DriftReport,L3,Drift detection <5min
+Maxey123,Neighborhood Regularizer,Enforce sparse density neighborhoods in latent space,Latent regularization,“regularize neighborhood”,latent_space_map,Embeddings → SparseMap,L3,Neighborhood overlap <2%
+Maxey124,Fusion Orchestrator,Fuse features from 9 mapping methods → store,Feature fusion,“fuse features”,"latent_space_map, SAE",FeatureSets → UnifiedStore,L3,Fusion completeness
+Maxey125,Latent Evaluator,Run stability/precision/coverage evals of latent maps,Latent evaluation,“evaluate map”,anchor_eval_sets,ConceptGraph → EvalReport,L3,Precision >90%
+Maxey126,Graph Store Agent,Manage Neo4j reasoning frame/latent graph data,Graph persistence,"“store graph”, “query graph”","graph_store.py, Neo4j",GraphOps → Result,L3,Query latency
+Maxey127,Vector Store Agent,Manage embeddings in pgvector/Redis/OpenSearch,Vector persistence,"“store vector”, “query vector”",vector_store.py,Embedding → Result,L2/L3,Query SLA
+Maxey128,Session Store Agent,"Manage STM/episodic store with TTL, encryption",Short-term memory,"“store session”, “recall session”",session_store.py,Event → SessionRecord,L1,TTL accuracy
+Maxey129,Promotion Policy Agent,Apply deterministic promotion heuristics,Memory promotion,“promote memory”,promotion_policy.py,MemoryLx → PromotedMemory,L1–L3,Policy adherence
+Maxey130,LM Cache Agent,Manage LM cache get/put/invalidate,Cache ops,"“cache put”, “cache get”, “invalidate”","lm_cache.py, Redis",Query → CacheResult,L0/L1,"TTL, hit rate"
+Maxey131,Cache Invalidation Agent,Apply invalidation rules on prompt/model/version change,Cache invalidation,“invalidate cache”,invalidation_rules.yaml,Trigger → Invalidation,L0,Correct invalidations
+Maxey132,Kafka Admin Agent,"Manage topics, ACLs, retention",Kafka ops,"“create topic”, “set retention”",kafka_admin_tool.py,Spec → AppliedConfig,L2,Topic config SLA
+Maxey133,Topic Creator,Create topics from topics.yaml,Kafka setup,“init topics”,create_topics.py,topics.yaml → Topics,L2,Idempotency
+Maxey134,Lag Inspector,Inspect consumer group lag,Kafka monitoring,“list lag”,list_lag.py,Group → LagReport,L2,Lag detection
+Maxey135,DLQ Drainer,"Drain DLQ events, rehydrate",Kafka recovery,“drain dlq”,drain_dlq.py,DLQ → ReplayedEvents,L2,DLQ empty SLA
+Maxey136,Terraform Init Agent,"Run init.sh, setup backend/workspaces",Terraform init,“tf init”,terraform/init.sh,Config → InitState,L2,Idempotency
+Maxey137,Terraform Plan Agent,"Run plan.sh, enforce policy checks",Terraform plan,“tf plan”,terraform/plan.sh,Config → PlanReport,L2,Plan reproducibility
+Maxey138,Terraform Apply Agent,Run apply.sh with guardrails,Terraform apply,“tf apply”,terraform/apply.sh,Plan → DeployedInfra,L2,Drift-free
+Maxey139,Backup/Restore Agent,"Backup/restore for neo4j, pg, object store",Data ops,"“backup”, “restore”",ops/backup_restore.sh,DB → Snapshot/Restore,L3,RPO/RTO SLA
+Maxey140,Key Rotation Agent,Rotate keys with Vault/KMS,Security ops,“rotate key”,ops/rotate_keys.sh,KeySet → RotatedKeys,L2,Rotation interval
+Maxey141,k8s Cert Manager,Manage cert-manager cluster issuers/certs,TLS automation,“create cert”,k8s manifests,CertSpec → Secret,L2,Cert validity
+Maxey142,k8s Ingress Agent,Manage ingress-nginx configs,Ingress mgmt,“add ingress”,ingress-nginx,IngressSpec → Applied,L2,Route SLA
+Maxey143,k8s Namespace Agent,Manage namespaces/quotas,Namespace mgmt,“create ns”,namespaces/,NamespaceSpec → Applied,L2,Namespace isolation
+Maxey144,OPA Gatekeeper Agent,Enforce Gatekeeper constraints,Policy enforcement,“apply constraint”,opa-gatekeeper,Constraint → Applied,L2,100% enforce
+Maxey145,OTel Collector Agent,"Configure collectors, pipelines",Telemetry pipeline,“setup otel”,otel-collector,PipelineSpec → CollectorConfig,L2,Trace completeness
+Maxey146,Redis Stack Agent,Manage Redis stack deployment,Redis mgmt,“deploy redis”,redis-stack,Spec → Deployment,L2,Availability
+Maxey147,Neo4j Manager,Deploy/manage Neo4j,Graph DB mgmt,“deploy neo4j”,neo4j/helm,Spec → Deployment,L3,Query SLA
+Maxey148,Postgres Manager,Deploy/manage Postgres + pgvector,DB mgmt,“deploy postgres”,postgres/helm,Spec → Deployment,L3,Query SLA
+Maxey149,Schema Registry Agent,Manage JSON/Avro schema registry,Schema mgmt,“register schema”,schema-registry,SchemaSpec → RegistryEntry,L2,Compatibility
+Maxey150,Dev Overlay Agent,Apply kustomize dev overrides,k8s dev overlay,“apply dev overlay”,overlays/dev,Config → Applied,L1,Dev reproducibility
+Maxey151,Staging Overlay Agent,Apply kustomize staging overrides,k8s staging overlay,“apply staging overlay”,overlays/staging,Config → Applied,L2,Staging fidelity
+Maxey152,Prod Overlay Agent,Apply kustomize prod overrides,k8s prod overlay,“apply prod overlay”,overlays/prod,Config → Applied,L2,Prod stability
+Maxey153,Kubernetes Module Agent,"Provision cluster, node pools",Terraform module,“deploy k8s cluster”,terraform/modules/kubernetes,Config → Cluster,L3,Cluster uptime
+Maxey154,Kafka Module Agent,Provision Kafka/Redpanda infra,Terraform module,“deploy kafka”,terraform/modules/kafka,Config → Cluster,L3,Cluster uptime
+Maxey155,Redis Module Agent,Provision Redis Enterprise,Terraform module,“deploy redis”,terraform/modules/redis,Config → RedisCluster,L3,Cache SLA
+Maxey156,Neo4j Module Agent,Provision Neo4j infra,Terraform module,“deploy neo4j”,terraform/modules/neo4j,Config → GraphCluster,L3,Query SLA
+Maxey157,Pgvector Module Agent,Provision Postgres + pgvector,Terraform module,“deploy pgvector”,terraform/modules/pgvector,Config → DBCluster,L3,Vector SLA
+Maxey158,OpenSearch Module Agent,Provision OpenSearch infra,Terraform module,“deploy opensearch”,terraform/modules/opensearch,Config → SearchCluster,L3,Search SLA
+Maxey159,Vault Module Agent,Provision Vault secrets engine,Terraform module,“deploy vault”,terraform/modules/vault,Config → VaultCluster,L3,Secrets SLA
+Maxey160,OTel Module Agent,Provision observability infra,Terraform module,“deploy otel”,terraform/modules/otel,Config → OTelCluster,L3,Metrics/traces SLA
+Maxey161,Dev Env Agent,Manage dev tfvars/state,Env mgmt,“apply dev env”,terraform/envs/dev,tfvars → State,L2,State accuracy
+Maxey162,Staging Env Agent,Manage staging tfvars/state,Env mgmt,“apply staging env”,terraform/envs/staging,tfvars → State,L2,State accuracy
+Maxey163,Prod Env Agent,Manage prod tfvars/state for Terraform,Env mgmt,“apply prod env”,terraform/envs/prod,tfvars → State,L3,State accuracy
+Maxey164,Grafana Agent,"Provision datasources, dashboards",Observability dashboards,"“create dashboard”, “link datasource”",Grafana configs,Spec → Dashboard,L2,Dashboard freshness
+Maxey165,Prometheus Agent,Manage Prometheus rules/alerts,Metrics/alerts,"“add rule”, “update alert”",prometheus/,Rule → AlertConfig,L2,Alert firing SLA
+Maxey166,Dashboard Curator,"Maintain curated Grafana boards (latency, cost, DLQ, cache hits)",Dashboard curation,“curate board”,dashboards/,Metric → Board,L2,Coverage %
+Maxey167,OTel Config Agent,Configure OTel exporters/processors,Telemetry config,“configure otel”,observability/otel,Config → Pipeline,L2,Trace completeness
+Maxey168,Policy Bundle Agent,Compile OPA bundles for distribution,Policy packaging,“compile bundle”,policies/opa/bundles,RegoSrc → Bundle,L0,Bundle checksum
+Maxey169,Rego Policy Agent,Author/manage Rego source policies,Policy dev,“write rego”,policies/opa/rego,PolicySpec → Policy,L0,Unit test pass rate
+Maxey170,Policy Test Agent,Run tests/fuzzers for Rego policies,Policy QA,“test rego”,policies/opa/tests,Policy → TestReport,L0,Coverage %
+Maxey171,Cedar Policy Agent,Author/manage Cedar policies,Policy dev,“write cedar”,policies/cedar,PolicySpec → Policy,L0,Unit test pass rate
+Maxey172,Events Schema Agent,Manage run lifecycle event schemas,Schema mgmt,“update schema”,schemas/events/maxey0.runs.json,Spec → Schema,L0,Schema validation
+Maxey173,Steps Schema Agent,Manage agent step schemas,Schema mgmt,“update schema”,schemas/events/maxey0.steps.json,Spec → Schema,L0,Schema validation
+Maxey174,Tool Calls Schema Agent,Manage tool call schemas,Schema mgmt,“update schema”,schemas/events/maxey0.tool_calls.json,Spec → Schema,L0,Schema validation
+Maxey175,Audit Schema Agent,Manage audit log schemas,Schema mgmt,“update schema”,schemas/events/maxey0.audit.json,Spec → Schema,L0,Schema validation
+Maxey176,DLQ Schema Agent,Manage DLQ event schemas,Schema mgmt,“update schema”,schemas/events/maxey0.dlq.json,Spec → Schema,L0,Schema validation
+Maxey177,Tool Schema Agent,Manage input/output tool JSON schemas,Tool schema mgmt,“update tool schema”,schemas/tools,Spec → Schema,L0,Schema validation
+Maxey178,Output Schema Agent,Manage model output contracts,Output schema mgmt,“update output schema”,schemas/outputs,Spec → Schema,L0,Schema validation
+Maxey179,Reasoning Frame Schema Agent,Manage SCW ReasoningFrame schema,Reasoning frame schema,“update rf schema”,schemas/scw/v1_reasoning_frame.json,Spec → Schema,L2,Schema validation
+Maxey180,SCW Packing Schema Agent,Manage SCW packing schema,Packing schema,“update pack schema”,schemas/scw/v1_scw_packing.json,Spec → Schema,L2,Schema validation
+Maxey181,Kafka Producer Example Agent,Provide example producer client,Example code,“show producer example”,examples/kafka/producer_example.py,Spec → ExampleCode,L0,Example correctness
+Maxey182,Kafka Consumer Example Agent,Provide example consumer client,Example code,“show consumer example”,examples/kafka/consumer_example.py,Spec → ExampleCode,L0,Example correctness
+Maxey183,Terraform Minimal Cluster Agent,Provide example single-region infra,Example code,“show minimal cluster”,examples/terraform/minimal_cluster,Spec → ExampleConfig,L0,Example correctness
+Maxey184,Terraform Managed Services Agent,Provide example managed Kafka/DB infra,Example code,“show managed services”,examples/terraform/managed_services,Spec → ExampleConfig,L0,Example correctness
+Maxey185,Sandbox Executor Agent,Run untrusted code in sandbox,Safe exec,“run in sandbox”,"sandbox_tool.py, nsjail",Code → SafeResult,L0,Escape = 0
+Maxey186,Web Server Tool Agent,Run ephemeral preview web servers,Web preview,“start preview server”,web_server_tool.py,Spec → PreviewURL,L0,Shutdown SLA
+Maxey187,Code Interpreter Agent,Execute code with resource caps,Code execution,“run code”,code_interpreter_tool.py,Code → Result,L0,Resource enforcement
+Maxey188,Virtual Env Agent,Create/use ephemeral Python venvs,Virtual env mgmt,“create venv”,virtual_env_tool.py,EnvSpec → Venv,L0,Isolation integrity
+Maxey189,Web Search Agent,Perform web searches with citations,Web search,“search web”,web_search_tool.py,Query → Results+Citations,L0/L1,Cite accuracy
+Maxey190,Analytics Dashboard Agent,Push metrics to dashboards,Analytics,“push metrics”,analytics_dashboard_tool.py,Metric → Dashboard,L1,Dashboard freshness
+Maxey191,Git Tool Agent,"Read repos, create PRs",Git ops,"“read repo”, “create pr”",git_tool.py,Request → RepoResult/PR,L0,Token TTL
+Maxey192,Jira Tool Agent,Create/manage Jira issues,Issue tracking,"“create jira”, “update issue”",jira_tool.py,Request → Issue,L0,Issue sync SLA
+Maxey193,LangChain Adapter Agent,Bridge to LangChain,Adapter,“use langchain”,langchain_adapter.py,Spec → Result,L0,Integration success
+Maxey194,CrewAI Adapter Agent,Bridge to CrewAI,Adapter,“use crewai”,crewai_adapter.py,Spec → Result,L0,Integration success
+Maxey195,NVIDIA Agent Adapter,Bridge to NVIDIA agent frameworks,Adapter,“use nvidia”,nvidia_agent_adapter.py,Spec → Result,L0,Integration success
+Maxey196,Swarm Adapter Agent,Bridge to Swarm orchestrator,Adapter,“use swarm”,swarm_adapter.py,Spec → Result,L0,Integration success
+Maxey197,OpenAI Adapter Agent,Client for OpenAI JSON mode/function calls,Adapter,“use openai”,openai_adapter.py,Spec → Result,L0,Integration success
+Maxey198,vLLM Adapter Agent,Client for local vLLM hosting,Adapter,“use vllm”,vllm_adapter.py,Spec → Result,L0,Integration success
+Maxey199,Drift Analytics Agent,"Analyze distribution drift, trigger alerts",Drift detection,“detect drift”,drift_analytics.py,Data → DriftReport,L2,Drift detection SLA
+Maxey200,Observability Agent,"Manage OTel spans, metrics hooks",Observability,"“add span”, “hook metric”",observability.py,Event → Trace/Metric,L2,Trace correctness
+Maxey201,Metrics Collector Agent,Collect/push metrics to Prometheus,Metrics ops,“collect metrics”,metrics_collector.py,Metric → TimeSeries,L2,Collection SLA
+Maxey202,Cost Guardrails Agent,Apply runtime cost counters/cutoffs,Cost mgmt,“apply cost guardrails”,cost_guardrails.py,Run → Pass/Fail,L2,Budget adherence
+Maxey203,Policy Enforcer Agent,Inline allow/deny with rationale logging,Policy enforcement,“enforce policy”,policy_enforcer.py,Request → Allow/Deny,L2,Enforcement correctness
+Maxey204,Rate Limiter Agent,Enforce per-tenant QPS/token limits,Rate limiting,“limit rate”,rate_limiter.py,Request → Permit/Throttle,L1,Enforcement correctness
+Maxey205,Artifact Store Agent,Manage CAS artifacts,Artifact mgmt,“store artifact”,artifact_store.py,Artifact → CID,L2,CAS SLA
+Maxey206,Artifact Signer Agent,Sign artifacts with KMS/Vault,Signing,“sign artifact”,signer.py,Artifact → SignedArtifact,L2,Signing SLA
+Maxey207,Artifact Replay Agent,Replay artifacts deterministically,Replay,“replay artifact”,replay.py,Artifact → Output,L2,Fidelity
+Maxey208,Resolver Agent,Resolve model/prompt/tool/policy versions,Version resolution,“resolve version”,resolver.py,Request → VersionedSpec,L2,Resolution correctness
+Maxey209,Version Manifests Agent,Manage checked-in version manifests,Version mgmt,versions/,Spec → Manifest,L2,Version correctness,
+Maxey210,Egress Allowlist Agent,Validate outgoing host/path,Egress validation,“validate egress”,egress_allowlist.py,Req → Allow/Deny,L1,No bypass
+Maxey211,OPA Client Agent,Verify OPA/Cedar bundles,Policy client,“verify bundle”,opa_client.py,Bundle → VerifyResult,L1,Verification correctness
+Maxey212,Sandbox Runner Agent,Run subprocess/jail profiles for tools,Sandbox exec,“run sandbox”,sandbox_runner.py,Task → IsolatedRun,L0,Escape = 0
+Maxey213,Memory API Agent,CRUD ops + promotion for L0–L3 memories,Memory API,"“create memory”, “read memory”, “promote memory”",memory_api.py,APIReq → MemoryRecord,L0–L3,Consistency SLA
+Maxey214,Runner API Agent,Submit/check/replay runs,Run orchestration,"“submit run”, “replay run”",runner_api.py,RunReq → RunResult,L2,SLA adherence
+Maxey215,MCP API Agent,Manage MCP endpoints/resources/tools,MCP API,"“mcp list”, “mcp call”",mcp_api.py,MCPReq → MCPResp,L2,Contract compliance
+Maxey216,Cache API Agent,CRUD for cache keys,Cache API,"“get cache”, “put cache”",cache_api.py,CacheReq → CacheResp,L0/L1,Hit rate >90%
+Maxey217,Frames API Agent,Create/rehydrate/diff ReasoningFrames,Frames API,"“new frame”, “rehydrate frame”",frames_api.py,FrameReq → FrameResp,L2,Frame integrity
+Maxey218,Anchors API Agent,CRUD for anchor catalog,Anchors API,"“add anchor”, “query anchors”",anchors_api.py,AnchorReq → AnchorResp,L2,Catalog freshness
+Maxey219,Ops Endpoints Agent,FastAPI app factory & dependencies,Server endpoints,“init api”,endpoints_ops.py,Config → FastAPIApp,L1,Endpoint uptime
+Maxey220,Retriever Agent,"L3 constraints, L2 kNN bridge",Retriever,“retrieve context”,retriever.py,Query → Results,L3,Latency <50ms
+Maxey221,Runner Service Agent,Workflow submit/observe/cancel,Runner service,"“start workflow”, “cancel workflow”",runner.py,Spec → WorkflowState,L2,Workflow SLA
+Maxey222,A2A Streams Agent,Agent-to-agent memory share,A2A streams,"“share memory”, “accept memory”",a2a_streams.py,Memory → StreamEvent,L2/L3,Integrity SLA
+Maxey223,MCP Server Agent,Serve MCP protocol over sockets,MCP server,“start mcp server”,mcp_server.py,Req → Resp,L2,Contract compliance
+Maxey224,Kafka Events Agent,"Produce/consume to topics, DLQ sink",Kafka events,"“publish event”, “consume event”",kafka_events.py,Event → TopicResult,L2,Delivery SLA
+Maxey225,Frames Server Agent,Serve ReasoningFrame handlers,Frames server,“serve frame”,frames_server.py,Req → Resp,L2,Frame correctness
+Maxey226,Cache Server Agent,Expose LM cache endpoints,Cache server,“cache get/put”,cache_server.py,Req → CacheResp,L0/L1,Hit rate SLA
+Maxey227,Policy Server Agent,Proxy OPA/Cedar decisions,Policy proxy,“check policy”,policy_server.py,Req → Allow/Deny,L1,Decision SLA
+Maxey228,Provenance Server Agent,Ingest/query/replay artifacts,Provenance,“query provenance”,provenance_server.py,ArtifactReq → ArtifactResp,L2,Replay fidelity
+Maxey229,Reasoning Frames Test Agent,Test create/rehydrate/diff,Frames tests,“test frames”,tests/test_frames.py,Input → TestResult,L2,100% pass
+Maxey230,Memory API Test Agent,Test L0–L3 CRUD + promotion,Memory tests,“test memory”,tests/test_memory_api.py,Input → TestResult,L0–L3,100% pass
+Maxey231,Runner API Test Agent,Test submit/cancel/replay,Runner tests,“test runner”,tests/test_runner_api.py,Input → TestResult,L2,100% pass
+Maxey232,A2A Test Agent,Test contracts & policy checks,A2A tests,“test a2a”,tests/test_a2a.py,Input → TestResult,L2,100% pass
+Maxey233,Latent Map Test Agent,Test SAE feature extraction,Latent tests,“test latent map”,tests/test_latent_space_map.py,Input → TestResult,L3,100% pass
+Maxey234,Tools Test Agent,Test tool contracts & sandboxing,Tool tests,“test tools”,tests/test_tools.py,Input → TestResult,L0,100% pass
+Maxey235,GNN Router Test Agent,Test routing decisions & metrics,Router tests,“test gnn router”,tests/test_gnn_router.py,Input → TestResult,L3,100% pass
+Maxey236,LM Cache Test Agent,"Test TTLs, invalidation",Cache tests,“test lm cache”,tests/test_lm_cache.py,Input → TestResult,L0,100% pass
+Maxey237,Policy Test Agent,Regression tests for OPA decisions,Policy tests,“test policy”,tests/test_policy.py,Input → TestResult,L1,100% pass
+Maxey238,Kafka Integration Test Agent,"Test topic wiring, DLQ behavior",Kafka tests,“test kafka integration”,tests/test_kafka_integration.py,Input → TestResult,L2,100% pass
+Maxey239,Anchor Catalog Agent,Manage canonical anchor concepts,Anchor catalog,“update catalog”,anchor_catalog.json,Input → Catalog,L2,Coverage ≥95%
+Maxey240,Anchor Eval Agent,Run eval sets on anchors,Anchor eval,“eval anchors”,anchor_eval_sets,Input → EvalReport,L2,Precision/recall
+Maxey241,Reasoning Frame Snapshot Agent,Persist SCW frame snapshots,Frame snapshot,“save frame snapshot”,frames/snapshots,Frame → Snapshot,L2,Snapshot fidelity
+Maxey242,Goldens Agent,Manage task goldens for offline evals,Goldens mgmt,“add golden”,evals/goldens,Spec → GoldenSet,L2,Golden correctness
+Maxey243,Eval Reports Agent,Collect/run eval outputs,Eval reports,“collect evals”,evals/reports,Run → EvalReport,L2,Coverage ≥95%
+Maxey244,Conversation Importer Agent,Import ChatGPT zips → conversations,Conversation ingest,“import chatgpt zip”,ingest_chatgpt_zip.py,Zip → JSON,L1,PII sanitization
+Maxey245,Conversation Store Agent,Manage maxey0_conversations.json,Conversation dataset,“update convos”,conversations/,Input → JSON,L1,Data correctness
+Maxey246,Alt Conversation Store Agent,Manage maxey00_conversations.json,Alt dataset,“update alt convos”,conversations/,Input → JSON,L1,Data correctness
+Maxey247,Example Vectors Agent,Manage example_vectors.json,Vector dataset,“update example vectors”,vectors/,Input → JSON,L1,Correctness
+Maxey248,Policy Flags Agent,Manage feature_flags.yaml,Policy toggles,“toggle feature”,policies/feature_flags.yaml,Input → FlagSet,L0,Toggle correctness
+Maxey249,Risk Budgets Agent,Manage risk_budgets.yaml,Budget mgmt,“update budget”,policies/risk_budgets.yaml,Input → BudgetSet,L0,Budget enforcement
+Maxey250,Timeouts Agent,Manage timeouts.yaml,Resilience timeouts,“update timeout”,resilience/timeouts.yaml,Input → TimeoutSet,L0,Timeout accuracy
+Maxey251,Retries Agent,Manage retries.yaml,Resilience retries,“update retries”,resilience/retries.yaml,Input → RetrySet,L0,Retry correctness
+Maxey252,Circuit Breakers Agent,Manage circuit_breakers.yaml,Resilience circuits,“update circuit breaker”,resilience/circuit_breakers.yaml,Input → CBSet,L0,Correctness
+Maxey253,Logging Config Agent,Manage logging.yaml,Logging config,“update logging”,configs/logging.yaml,Input → LoggingSpec,L0,Redaction enforced
+Maxey254,Settings Config Agent,Manage settings.toml,Env config,“update settings”,configs/settings.toml,Input → SettingsSpec,L0,Config integrity
+Maxey255,Secrets Env Agent,Manage secrets.env template,Secrets template,“update secrets template”,configs/secrets.env,Input → EnvTemplate,L0,Never commit secrets
+Maxey256,Cache Config Agent,Manage cache configs,Cache config,“update cache config”,configs/cache/,Input → CacheConfig,L0,Config correctness
+Maxey257,Kafka Config Agent,Manage Kafka configs,Kafka config,“update kafka config”,configs/kafka/,Input → KafkaConfig,L0,Config correctness
+Maxey258,Policies Config Agent,Manage policies configs,Policy config,“update policy config”,configs/policies/,Input → PolicyConfig,L0,Config correctness
+Maxey259,Resilience Config Agent,Manage resilience configs,Resilience config,“update resilience config”,configs/resilience/,Input → ResilienceConfig,L0,Config correctness
+Maxey260,Init Neo4j Agent,"Bootstrap constraints, indexes",Neo4j init,“init neo4j”,init-neo4j.cypher,Cypher → DBInit,L3,Init correctness
+Maxey261,Compose Full Agent,Orchestrate compose.full.yml,Docker orchestration,“docker compose full”,compose.full.yml,Compose → Stack,L2,Service uptime
+Maxey262,API Docker Agent,Build hardened API Docker image,API dockerization,“docker build api”,Dockerfile.api,Spec → Image,L2,Image security
+Maxey263,Runner Docker Agent,Build workflow/orchestrator workers image,Runner dockerization,“docker build runner”,Dockerfile.runner,Spec → Image,L2,Image reproducibility
+Maxey264,GNN Docker Agent,Build GNN/SAE training image,GNN dockerization,“docker build gnn”,Dockerfile.gnn,Spec → Image,L3,CUDA optional support
+Maxey265,Web Docker Agent,Build operator console/docs image,Web dockerization,“docker build web”,Dockerfile.web,Spec → Image,L1,Image correctness
+Maxey266,Backup/Restore Agent,Backup/restore Neo4j/PG/object store,Data durability,"“backup db”, “restore db”",ops/backup_restore.sh,"Store → BackupFile, BackupFile → Restore",L2/L3,Backup success ≥99%
+Maxey267,Key Rotation Agent,Orchestrate key rotation Vault/KMS,Key mgmt,“rotate keys”,ops/rotate_keys.sh,OldKey → NewKey,L0/L1,Rotation within SLA
+Maxey268,Terraform Init Agent,Init Terraform backend/workspaces,TF init,“tf init”,terraform/init.sh,Config → StateInit,L0,Init reproducibility
+Maxey269,Terraform Plan Agent,Plan Terraform with policy checks,TF plan,“tf plan”,terraform/plan.sh,Config → PlanReport,L0,Policy compliance
+Maxey270,Terraform Apply Agent,Guarded Terraform apply w/ approvals,TF apply,“tf apply”,terraform/apply.sh,Plan → AppliedInfra,L0,Approval enforced
+Maxey271,Cert Manager Agent,Manage cert-manager manifests,Cert mgmt,“update cert”,k8s/base/cert-manager/,Spec → Manifests,L1,Cert validity
+Maxey272,Ingress Agent,Manage ingress-nginx manifests,Ingress mgmt,“update ingress”,k8s/base/ingress-nginx/,Spec → Manifests,L1,Routing SLA
+Maxey273,Namespace Agent,Manage namespaces & quotas,Namespace mgmt,“update namespace”,k8s/base/namespaces/,Spec → Namespace,L1,Quota enforcement
+Maxey274,OPA Gatekeeper Agent,Manage OPA Gatekeeper constraints,Policy controller,“update gatekeeper”,k8s/base/opa-gatekeeper/,Spec → Constraint,L1,Constraint enforcement
+Maxey275,OTel Collector Agent,Manage OTel pipeline manifests,Telemetry pipeline,“update otel collector”,k8s/base/otel-collector/,Spec → Pipeline,L2,Trace delivery
+Maxey276,Redpanda Agent,Manage Redpanda statefulset,Kafka/Redpanda,“update redpanda”,k8s/base/redpanda-kafka/,Spec → Statefulset,L2,Broker uptime
+Maxey277,Redis Agent,Manage Redis Stack manifests,Redis mgmt,“update redis”,k8s/base/redis-stack/,Spec → Statefulset,L2,Cache hit SLA
+Maxey278,Neo4j Agent,Manage Neo4j helm/app manifests,Neo4j mgmt,“update neo4j”,k8s/base/neo4j/,Spec → HelmRelease,L3,DB uptime
+Maxey279,Postgres Agent,Manage Postgres+pgvector manifests,Postgres mgmt,“update postgres”,k8s/base/postgres/,Spec → Statefulset,L3,RLS enforced
+Maxey280,Schema Registry Agent,Manage Avro/JSON schema registry,Schema reg,“update schema registry”,k8s/base/schema-registry/,Spec → Statefulset,L2,Schema integrity
+Maxey281,Dev Overlay Agent,Manage dev overlays,Dev overrides,“apply dev overlay”,k8s/overlays/dev/,Spec → Kustomize,L0,Overlay correctness
+Maxey282,Staging Overlay Agent,Manage staging overlays,Staging overrides,“apply staging overlay”,k8s/overlays/staging/,Spec → Kustomize,L1,Overlay correctness
+Maxey283,Prod Overlay Agent,Manage prod overlays,Prod overrides,“apply prod overlay”,k8s/overlays/prod/,Spec → Kustomize,L2,Overlay correctness
+Maxey284,Kubernetes Module Agent,Manage TF kubernetes module,TF module,“update k8s module”,terraform/modules/kubernetes/,Spec → Module,L2,Module correctness
+Maxey285,Kafka Module Agent,Manage TF kafka module,TF module,“update kafka module”,terraform/modules/kafka/,Spec → Module,L2,Module correctness
+Maxey286,Redis Module Agent,Manage TF redis module,TF module,“update redis module”,terraform/modules/redis/,Spec → Module,L2,Module correctness
+Maxey287,Neo4j Module Agent,Manage TF neo4j module,TF module,“update neo4j module”,terraform/modules/neo4j/,Spec → Module,L3,Module correctness
+Maxey288,Pgvector Module Agent,Manage TF pgvector module,TF module,“update pgvector module”,terraform/modules/pgvector/,Spec → Module,L3,Module correctness
+Maxey289,Opensearch Module Agent,Manage TF opensearch module,TF module,“update opensearch module”,terraform/modules/opensearch/,Spec → Module,L2,Module correctness
+Maxey290,Vault Module Agent,Manage TF vault module,TF module,“update vault module”,terraform/modules/vault/,Spec → Module,L1,Module correctness
+Maxey291,OTel Module Agent,Manage TF otel module,TF module,“update otel module”,terraform/modules/otel/,Spec → Module,L2,Module correctness
+Maxey292,Dev Env Agent,Manage tfvars/state for dev env,TF env,“apply dev env”,terraform/envs/dev/,Spec → State,L0,State correctness
+Maxey293,Staging Env Agent,Manage tfvars/state for staging env,TF env,“apply staging env”,terraform/envs/staging/,Spec → State,L1,State correctness
+Maxey294,Prod Env Agent (TF),Manage tfvars/state for prod env,TF env,“apply prod env”,terraform/envs/prod/,Spec → State,L2,State correctness
+Maxey295,Latent Probe Agent,Run probes on latent space,Latent analysis,“probe latent space”,latent_space_map.py,Run → ConceptGraph,L3,Probe correctness
+Maxey296,Magnitude Spectrum Agent,Extract energy features,Latent spectral analysis,“analyze spectrum”,magnitude_spectrum.py,Run → Spectrum,L3,Feature fidelity
+Maxey297,GNN Router Agent,Route based on GNN,GNN routing,“route request”,gnn_router.py,Req → RoutedTool,L3,Routing accuracy
+Maxey298,SAE Trainer Agent,Train sparse autoencoders,SAE training,“train sae”,sae/trainer.py,Data → SAEModel,L3,Loss < target
+Maxey299,Feature Set Agent,Curate SAE feature sets,SAE curation,“curate features”,sae/featuresets/,Data → FeatureSet,L3,Feature coverage
+Maxey300,Anchor Extraction Agent,Mine anchors from activations,Anchor mining,“extract anchors”,anchors/anchor_extraction.py,Activations → Anchors,L2,Precision ≥95%
+Maxey301,Anchor Index Agent,Index/retrieve anchors,Anchor index,“index anchors”,anchors/anchor_index.py,Anchors → Index,L2,Index recall
+Maxey302,Anchor Metrics Agent,Evaluate anchors,Anchor metrics,“eval anchors”,anchors/anchor_metrics.py,Anchors → Metrics,L2,Stability score
+Maxey303,Memory Manager Agent,Orchestrate L0–L3 memories,Memory orchestration,“manage memory”,memory_manager.py,Event → Promotion,L0–L3,Promotion SLA
+Maxey304,Session Store Agent,Manage STM/episodic store,Session store,“save session”,session_store.py,Session → Store,L1,TTL enforced
+Maxey305,Graph Store Agent,Neo4j adapter for ReasoningFrame,Graph store,“update graph store”,graph_store.py,Frame → Neo4j,L3,Query correctness
+Maxey306,Vector Store Agent,Embedding backend pgvector/redis,Vector store,“query embeddings”,vector_store.py,Vector → Result,L2/L3,Query latency
+Maxey307,Promotion Policy Agent,Apply deterministic promotions,Promotion policy,“apply promotion”,promotion_policy.py,Event → Promotion,L1,Policy correctness
+Maxey308,LM Cache Agent,Redis LM cache client,LM cache,“get lm cache”,lm_cache.py,Key → Value,L0,TTL enforcement
+Maxey309,Streams Agent,Pub/sub contracts for memory share,A2A streams,“publish memory”,streams.py,Memory → Event,L2,Event delivery SLA
+Maxey310,Memory Sharing Agent,Cross-agent sharing rules,A2A sharing,“share memory”,memory_sharing.py,Memory → SharedEvent,L2/L3,Policy enforcement
+Maxey311,Cross-Framework Adapter Agent,Bridge to LangChain/CrewAI/etc,Adapter,“use adapter”,cross_framework_adapter.py,Spec → Result,L1,Interop correctness
+Maxey312,Contracts Agent,Manage JSON schemas for A2A,Contract schemas,“update contract”,contracts/,Spec → Schema,L2,Schema validation
+Maxey313,Protocols Agent,Manage wire protocols & negotiation,A2A protocols,"“negotiate protocol”, “update version”",a2a/protocols/,Req → ProtocolMsg,L2/L3,Backward compatibility
+Maxey314,Agentic Memory Spec Agent,Manage memory lifecycle DAG spec,Workflow spec,“load memory spec”,workflows/specs/agentic_memory_spec.yaml,Spec → DAG,L2,DAG integrity
+Maxey315,GNN Training Spec Agent,Manage GNN/SAE DAG spec,Workflow spec,“load gnn spec”,workflows/specs/gnn_training_spec.yaml,Spec → DAG,L3,DAG integrity
+Maxey316,MoR Spec Agent,Manage mixture-of-recursion DAG spec,Workflow spec,“load mor spec”,workflows/specs/mixture_of_recursion_spec.yaml,Spec → DAG,L3,DAG integrity
+Maxey317,MCP Spec Agent,Manage MCP orchestration DAG spec,Workflow spec,“load mcp spec”,workflows/specs/mcp_spec.yaml,Spec → DAG,L2,DAG integrity
+Maxey318,Agentic Runner Agent,Runtime for memory workflows,Workflow runtime,“start agentic run”,workflows/runners/agentic_runner.py,DAG → RunResult,L2,Run SLA
+Maxey319,GNN Runner Agent,Runtime for GNN training/eval,Workflow runtime,“start gnn run”,workflows/runners/gnn_runner.py,DAG → RunResult,L3,Loss < threshold
+Maxey320,MoR Runner Agent,Runtime for Mixture-of-Recursion,Workflow runtime,“start mor run”,workflows/runners/mor_runner.py,DAG → RunResult,L3,Critique coverage
+Maxey321,MCP Runner Agent,Runtime for MCP task flows,Workflow runtime,“start mcp run”,workflows/runners/mcp_runner.py,DAG → RunResult,L2,Contract compliance
+Maxey322,Sandbox Tool Agent,Safe code exec sandbox (nsjail/firejail),Tooling,“execute sandboxed code”,sandbox_tool.py,Code → Output,L0,Security isolation
+Maxey323,Web Server Tool Agent,Ephemeral web server for previews,Tooling,“start preview server”,web_server_tool.py,Content → URL,L1,Resource cleanup
+Maxey324,Code Interpreter Tool Agent,Python exec w/ resource caps,Tooling,“interpret code”,code_interpreter_tool.py,Code → Result,L0,Timeout/memory guards
+Maxey325,Web Search Tool Agent,Abstraction w/ citation contract,Tooling,“search web”,web_search_tool.py,Query → Results,L1,Citation compliance
+Maxey326,Virtual Env Tool Agent,On-demand venv creation/use,Tooling,“create venv”,virtual_env_tool.py,EnvSpec → Venv,L0,Env cleanup
+Maxey327,Analytics Dashboard Agent,Push metrics to dashboards,Tooling,“update dashboard”,analytics_dashboard_tool.py,Metric → Dashboard,L1/L2,Dashboard accuracy
+Maxey328,Kafka Admin Tool Agent,Manage topics/ACLs,Tooling,“update kafka acl”,kafka_admin_tool.py,ACLReq → ACLResp,L2,ACL enforcement
+Maxey329,Neo4j Tool Agent,Run graph queries/mutations,Tooling,“run cypher”,neo4j_tool.py,Cypher → Result,L3,Query safety
+Maxey330,Redis Tool Agent,Cache/streams ops,Tooling,“redis get/put”,redis_tool.py,Req → Resp,L2,Namespace isolation
+Maxey331,Git Tool Agent,Repo read/PR create,Tooling,"“git read”, “git pr”",git_tool.py,Action → RepoResult,L1,Token TTL enforced
+Maxey332,Jira Tool Agent,Issue tracking integration,Tooling,“create jira issue”,jira_tool.py,Req → IssueResp,L1,Correct project enforced
+Maxey333,LangChain Adapter Agent,Bridge to LangChain,Adapter,“call langchain”,langchain_adapter.py,Req → Resp,L1,Interop compliance
+Maxey334,CrewAI Adapter Agent,Bridge to CrewAI,Adapter,“call crewai”,crewai_adapter.py,Req → Resp,L1,Interop compliance
+Maxey335,NVIDIA Adapter Agent,Bridge to NVIDIA frameworks,Adapter,“call nvidia”,nvidia_agent_adapter.py,Req → Resp,L2,GPU compliance
+Maxey336,Swarm Adapter Agent,Multi-agent orchestration bridge,Adapter,“call swarm”,swarm_adapter.py,Req → Resp,L2,Concurrency limits
+Maxey337,OpenAI Adapter Agent,OpenAI client + JSON mode,Adapter,“call openai”,openai_adapter.py,Prompt → Output,L1,Usage policy
+Maxey338,vLLM Adapter Agent,Local hosting adapter,Adapter,“use vllm”,vllm_adapter.py,Prompt → Output,L2,Host resource SLA
+Maxey339,Drift Analytics Agent,Distribution drift detection,Ops analytics,“check drift”,drift_analytics.py,Data → DriftReport,L2,Alert SLA
+Maxey340,Observability Agent,OTel span helpers & metrics hooks,Ops metrics,“observe span”,observability.py,Span → Metrics,L1/L2,Trace correctness
+Maxey341,Metrics Collector Agent,Pull/push metrics,Ops metrics,“collect metrics”,metrics_collector.py,Metric → Store,L1/L2,Coverage SLA
+Maxey342,Cost Guardrails Agent,Live cost counters & cutoffs,Ops policy,“check cost”,cost_guardrails.py,Event → CostDecision,L1,Budget compliance
+Maxey343,Policy Enforcer Agent,Inline allow/deny + rationale,Ops policy,“enforce policy”,policy_enforcer.py,Req → Decision,L1,Decision logging
+Maxey344,Rate Limiter Agent,Per-tenant QPS/token limits,Ops policy,“rate limit”,rate_limiter.py,Req → Decision,L1,SLA enforcement
+Maxey345,Artifact Store Agent,Manage signed artifacts,Provenance,“store artifact”,artifact_store.py,File → ArtifactID,L2,Integrity verified
+Maxey346,Signer Agent,Artifact signing KMS/Vault,Provenance,“sign artifact”,signer.py,File → Signature,L1,Signature validity
+Maxey347,Replay Agent,Deterministic run/step replay,Provenance,“replay run”,replay.py,RunID → ReplayTrace,L2,Fidelity SLA
+Maxey348,Resolver Agent,Resolve model/prompt/tool versions,Registry,“resolve version”,resolver.py,Input → ResolvedVersion,L1,Correctness
+Maxey349,Version Agent,Manage semver manifests,Registry,“update version”,registry/versions/,Version → Manifest,L1,Semver compliance
+Maxey350,Egress Allowlist Agent,Validate host/path allow-lists,Security,“check egress”,egress_allowlist.py,URL → Decision,L0,Block violations
+Maxey351,OPA Client Agent,Verify OPA bundles,Security,“verify opa”,opa_client.py,Bundle → Result,L1,Policy consistency
+Maxey352,Sandbox Runner Agent,Run jailed subprocesses,Security,“run sandboxed”,sandbox_runner.py,Code → Result,L0,Jail enforced
+Maxey353,Cedar Policy Agent,Manage Cedar policy sets,Policy,“update cedar policy”,policies/cedar/,Policy → Bundle,L1,Policy compliance
+Maxey354,OPA Bundle Agent,Manage OPA bundles,Policy,“update opa bundle”,policies/opa/bundles/,Bundle → Deployed,L1,Policy compliance
+Maxey355,OPA Rego Agent,Manage OPA rego source policies,Policy,“update rego”,policies/opa/rego/,Rego → Bundle,L1,Policy correctness
+Maxey356,OPA Test Agent,Unit tests/fuzzers for OPA,Policy,“test opa”,policies/opa/tests/,Input → TestResult,L1,100% pass
+Maxey357,Event Schema Agent,Manage run lifecycle schema,Schema mgmt,“update run schema”,schemas/events/maxey0.runs.json,Schema → Deployed,L2,Schema validation
+Maxey358,Step Schema Agent,Manage step event schema,Schema mgmt,“update step schema”,schemas/events/maxey0.steps.json,Schema → Deployed,L2,Schema validation
+Maxey359,Tool Call Schema Agent,Manage tool invocation schema,Schema mgmt,“update tool schema”,schemas/events/maxey0.tool_calls.json,Schema → Deployed,L2,Schema validation
+Maxey360,Audit Schema Agent,Manage audit log schema,Schema mgmt,“update audit schema”,schemas/events/maxey0.audit.json,Schema → Deployed,L1,Schema validation
+Maxey361,DLQ Schema Agent,Manage dead-letter payload schema,Schema mgmt,“update dlq schema”,schemas/events/maxey0.dlq.json,Schema → Deployed,L2,Schema validation
+Maxey362,Tools Schema Agent,Manage tool input/output schemas,Schema mgmt,“update tool io schema”,schemas/tools/,Schema → Deployed,L1/L2,Schema validation
+Maxey363,Outputs Schema Agent,Manage model output contracts,Schema mgmt,“update output schema”,schemas/outputs/,Schema → Deployed,L1,Schema validation
+Maxey364,SCW ReasoningFrame Schema Agent,Persistent ReasoningFrame schema,Schema mgmt,“update frame schema”,schemas/scw/v1_reasoning_frame.json,Schema → Deployed,L3,Version compliance
+Maxey365,SCW Packing Schema Agent,Packer selection schema,Schema mgmt,“update packing schema”,schemas/scw/v1_scw_packing.json,Schema → Deployed,L2,Schema validation
+Maxey366,Kafka Producer Example Agent,Minimal Kafka producer example,Examples,“show producer example”,examples/kafka/producer_example.py,Example → Code,L0,Code correctness
+Maxey367,Kafka Consumer Example Agent,Minimal Kafka consumer example,Examples,“show consumer example”,examples/kafka/consumer_example.py,Example → Code,L0,Code correctness
+Maxey368,Terraform Minimal Cluster Agent,Example minimal cluster infra,Examples,“show minimal cluster”,examples/terraform/minimal_cluster/,Spec → Example,L1,Example correctness
+Maxey369,Terraform Managed Services Agent,Example managed Kafka/DBs,Examples,“show managed services”,examples/terraform/managed_services/,Spec → Example,L1,Example correctness
+Maxey370,Tests Agent,Manage Python tests,Testing,“run tests”,tests/,TestReq → TestResult,L0–L3,All tests pass
+Maxey371,Test Memory API Agent,Test L0–L3 CRUD + promotion,Testing,“test memory api”,tests/test_memory_api.py,Req → Result,L0–L3,Coverage complete
+Maxey372,Test Runner API Agent,Test submit/cancel/replay,Testing,“test runner api”,tests/test_runner_api.py,Req → Result,L2,Coverage complete
+Maxey373,Test A2A Agent,Test A2A contracts & policies,Testing,“test a2a”,tests/test_a2a.py,Req → Result,L2,Policy compliance
+Maxey374,Test Latent Space Agent,Test probes/SAE feature extraction,Testing,“test latent space”,tests/test_latent_space_map.py,Req → Result,L3,Probe accuracy
+Maxey375,Test Tools Agent,Test tool contracts & sandboxing,Testing,“test tools”,tests/test_tools.py,Req → Result,L1,Coverage complete
+Maxey376,Test GNN Router Agent,Test routing decisions & metrics,Testing,“test gnn router”,tests/test_gnn_router.py,Req → Result,L3,Routing accuracy
+Maxey377,Test LM Cache Agent,Test TTL/invalidation,Testing,“test lm cache”,tests/test_lm_cache.py,Req → Result,L0,TTL enforcement
+Maxey378,Test Frames Agent,Test ReasoningFrame behavior,Testing,“test frames”,tests/test_frames.py,Req → Result,L3,Frame correctness
+Maxey379,Test Policy Agent,Test OPA/Cedar decisions,Testing,“test policy”,tests/test_policy.py,Req → Result,L1,Policy enforcement
+Maxey380,Test Kafka Integration Agent,"Test topic wiring, DLQ behavior",Testing,“test kafka integration”,tests/test_kafka_integration.py,Req → Result,L2,DLQ coverage
+Maxey381,Grafana Dashboard Agent,Provision Grafana dashboards,Observability,“update grafana dashboard”,observability/dashboards/,Spec → Dashboard,L2,Latency/cost metrics
+Maxey382,Grafana Config Agent,Provision datasources & folders,Observability,“update grafana config”,observability/grafana/,Spec → Config,L1,Datasource correctness
+Maxey383,OTel Config Agent,Manage collector/exporter configs,Observability,“update otel config”,observability/otel/,Spec → Config,L2,Trace export correctness
+Maxey384,Prometheus Config Agent,Manage Prometheus rules/alerts,Observability,“update prometheus config”,observability/prometheus/,Spec → Alert,L2,Alert correctness
+Maxey385,Anchor Catalog Agent,Manage anchor catalog,Anchors,“update anchor catalog”,data/anchors/anchor_catalog.json,Anchors → Catalog,L2,Catalog accuracy
+Maxey386,Anchor Eval Set Agent,Manage anchor evaluation sets,Anchors,“update anchor eval set”,data/anchors/anchor_eval_sets/,Set → Stored,L2,Eval set validity
+Maxey387,Frame Snapshot Agent,Persist SCW snapshots,Frames,“persist frame snapshot”,data/frames/reasoning_frames.snapshots/,Frame → Snapshot,L3,Snapshot validity
+Maxey388,Eval Goldens Agent,Manage task goldens,Evals,“update goldens”,data/evals/goldens/,Golden → Stored,L2,Golden validity
+Maxey389,Eval Reports Agent,Manage eval outputs,Evals,“update eval reports”,data/evals/reports/,Report → Stored,L2,Report completeness
+Maxey390,Conversation Import Agent,Import sanitized conversations,Data import,“import conversations”,ingest_chatgpt_zip.py,Zip → JSON,L1,PII scrubbed
+Maxey391,Maxey Conversations Agent,Manage dev transcripts,Data mgmt,“update conversations”,data/conversations/maxey0_conversations.json,Transcript → Store,L1,Sanitization enforced
+Maxey392,Alt Conversations Agent,Manage alt dataset transcripts,Data mgmt,“update alt conversations”,data/conversations/maxey00_conversations.json,Transcript → Store,L1,Sanitization enforced
+Maxey393,Example Vectors Agent,Manage sample embedding payloads,Data mgmt,“update example vectors”,data/vectors/example_vectors.json,Vector → Stored,L2,Payload validity
+Maxey394,Seed Agent Graph Agent,Manage core agent graph seeds,Data mgmt,“update seed graph”,agents/maxey_agents.cypher,Cypher → Graph,L2,Graph correctness
+Maxey395,Seed 120 Agents Agent,Manage extended agent population,Data mgmt,“update seed 120 agents”,agents/seed_120_agents.cypher,Cypher → Graph,L2,Graph correctness
+Maxey396,Agent Metadata Agent,Manage agents metadata,Data mgmt,“update metadata”,agents/agents_metadata.json,Metadata → Stored,L2,Metadata accuracy
+Maxey397,Settings Config Agent,Manage env-wide config,Config,“update settings”,configs/settings.toml,Config → Stored,L0,Config correctness
+Maxey398,Logging Config Agent,Manage logging & redaction,Config,“update logging config”,configs/logging.yaml,Config → Stored,L0,PII redaction enforced
+Maxey399,Secrets Config Agent,Manage .env template,Config,“update secrets env”,configs/secrets.env,Template → Stored,L0,No real secrets
+Maxey400,Cache Policy Agent,Manage cache TTLs/shards,Config,“update cache policy”,configs/cache/lm_cache.yaml,Policy → Stored,L0/L1,TTL correctness
+Maxey401,Cache Invalidation Agent,Manage cache bust rules,Config,“update cache invalidation”,configs/cache/invalidation_rules.yaml,Rule → Stored,L0,Rule correctness
+Maxey402,Kafka Topics Agent,Manage topic configs,Config,“update topics”,configs/kafka/topics.yaml,Topic → Config,L2,Retention SLA
+Maxey403,Kafka ACLs Agent,Manage ACL mappings,Config,“update acls”,configs/kafka/acls.yaml,ACL → Config,L2,ACL enforcement
+Maxey404,Kafka Retention Agent,Manage retention windows,Config,“update retention”,configs/kafka/retention.yaml,Policy → Config,L2,Retention correctness
+Maxey405,Feature Flags Agent,Manage feature toggles,Config,“update feature flag”,configs/policies/feature_flags.yaml,Flag → Config,L1,Toggle audit
+Maxey406,Risk Budgets Agent,Manage runtime budgets,Config,“update risk budget”,configs/policies/risk_budgets.yaml,Budget → Config,L1,Budget enforcement
+Maxey407,Timeout Policy Agent,Manage model/tool timeouts,Config,“update timeouts”,configs/resilience/timeouts.yaml,Timeout → Config,L1,Timeout enforcement
+Maxey408,Retry Policy Agent,Manage bounded retries,Config,“update retries”,configs/resilience/retries.yaml,Retry → Config,L1,Backoff enforced
+Maxey409,Circuit Breaker Agent,Manage open/half-open thresholds,Config,“update circuit breaker”,configs/resilience/circuit_breakers.yaml,CB → Config,L1,Circuit breaker correctness
+Maxey410,Compose Full Agent,Manage full local stack compose,Docker,“compose full”,docker/compose.full.yml,Compose → RunningStack,L1–L3,Service startup
+Maxey411,API Docker Agent,Build API service image,Docker,“docker build api”,docker/Dockerfile.api,Spec → Image,L1,Hardening enforced
+Maxey412,Web Docker Agent,Build web/docs image,Docker,“docker build web”,docker/Dockerfile.web,Spec → Image,L1,Image correctness
+Maxey413,Runner Docker Agent,Build workflow/orchestrator image,Docker,“docker build runner”,docker/Dockerfile.runner,Spec → Image,L1,Image correctness
+Maxey414,GNN Docker Agent,Build GNN/SAE training image,Docker,“docker build gnn”,docker/Dockerfile.gnn,Spec → Image,L3,CUDA readiness
+Maxey415,Init Neo4j Agent,Bootstrap constraints/indexes,Docker init,“init neo4j”,docker/init-neo4j.cypher,Cypher → Graph,L3,Constraint correctness
+Maxey416,Cert Manager Agent,Manage cluster issuer & certs,K8s base,“update certs”,infra/k8s/base/cert-manager/,Spec → Applied,L1,Cert validity
+Maxey417,Ingress Nginx Agent,Manage ingress controller,K8s base,“update ingress”,infra/k8s/base/ingress-nginx/,Spec → Applied,L1,Routing correctness
+Maxey418,Namespace Agent,Manage namespaces & quotas,K8s base,“update namespace”,infra/k8s/base/namespaces/,Spec → Applied,L1,Quota enforcement
+Maxey419,OPA Gatekeeper Agent,Manage policy controller,K8s base,“update gatekeeper”,infra/k8s/base/opa-gatekeeper/,Spec → Applied,L2,Policy enforcement
+Maxey420,OTel Collector Agent,Manage OTel pipeline,K8s base,“update otel collector”,infra/k8s/base/otel-collector/,Spec → Applied,L2,Trace/metric pipeline correctness
+Maxey421,Redpanda Kafka Agent,Manage Redpanda statefulset,K8s base,“update redpanda”,infra/k8s/base/redpanda-kafka/,Spec → Applied,L2,Data durability
+Maxey422,Redis Stack Agent,Manage Redis stack,K8s base,“update redis stack”,infra/k8s/base/redis-stack/,Spec → Applied,L2,Cache/stream availability
+Maxey423,Neo4j Base Agent,Manage Neo4j manifests,K8s base,“update neo4j base”,infra/k8s/base/neo4j/,Spec → Applied,L3,DB consistency
+Maxey424,Postgres Agent,Manage Postgres + pgvector,K8s base,“update postgres”,infra/k8s/base/postgres/,Spec → Applied,L2,RLS enforced
+Maxey425,Schema Registry Agent,Manage schema registry service,K8s base,“update schema registry”,infra/k8s/base/schema-registry/,Spec → Applied,L2,Schema compatibility
+Maxey426,Dev Overlay Agent,Manage dev overrides,K8s overlay,“update dev overlay”,infra/k8s/overlays/dev/,Spec → Applied,L0/L1,Debug limits enforced
+Maxey427,Staging Overlay Agent,Manage staging overrides,K8s overlay,“update staging overlay”,infra/k8s/overlays/staging/,Spec → Applied,L2,SLO coverage
+Maxey428,Prod Overlay Agent,Manage prod overrides,K8s overlay,“update prod overlay”,infra/k8s/overlays/prod/,Spec → Applied,L3,PDBs & policies enforced
+Maxey429,K8s Module Agent,Manage Kubernetes infra module,Terraform module,“update k8s module”,infra/terraform/modules/kubernetes/,Spec → Module,L2,Autoscaling correctness
+Maxey430,Kafka Module Agent,Manage Kafka module,Terraform module,“update kafka module”,infra/terraform/modules/kafka/,Spec → Module,L2,Replication factor correctness
+Maxey431,Redis Module Agent,Manage Redis module,Terraform module,“update redis module”,infra/terraform/modules/redis/,Spec → Module,L2,TLS/ACL enforcement
+Maxey432,Neo4j Module Agent,Manage Neo4j module,Terraform module,“update neo4j module”,infra/terraform/modules/neo4j/,Spec → Module,L3,Backup readiness
+Maxey433,Pgvector Module Agent,Manage Postgres+pgvector module,Terraform module,“update pgvector module”,infra/terraform/modules/pgvector/,Spec → Module,L2,RLS coverage
+Maxey434,OpenSearch Module Agent,Manage OpenSearch module,Terraform module,“update opensearch module”,infra/terraform/modules/opensearch/,Spec → Module,L2,Search correctness
+Maxey435,Vault Module Agent,Manage Vault module,Terraform module,“update vault module”,infra/terraform/modules/vault/,Spec → Module,L1,Secret policy correctness
+Maxey436,OTel Module Agent,Manage observability module,Terraform module,“update otel module”,infra/terraform/modules/otel/,Spec → Module,L2,Observability SLA
+Maxey437,Dev Env Agent,Manage dev tfvars/state,Terraform env,“update dev env”,infra/terraform/envs/dev/,Spec → State,L0/L1,State validity
+Maxey438,Staging Env Agent,Manage staging tfvars/state,Terraform env,“update staging env”,infra/terraform/envs/staging/,Spec → State,L2,SLO coverage
+Maxey439,Prod Env Agent,Manage prod tfvars/state,Terraform env,“update prod env”,infra/terraform/envs/prod/,Spec → State,L3,HPA enforced
+Maxey440,Terraform Init Agent,Wrapper for tf init,Terraform script,“tf init”,scripts/terraform/init.sh,Cmd → Init,L0,Init correctness
+Maxey441,Terraform Plan Agent,Wrapper for tf plan,Terraform script,“tf plan”,scripts/terraform/plan.sh,Cmd → Plan,L1,Policy check enforced
+Maxey442,Terraform Apply Agent,Guarded tf apply,Terraform script,“tf apply”,scripts/terraform/apply.sh,Cmd → Apply,L2,Approval enforced
+Maxey443,Backup Restore Agent,Backup/restore for state,Ops script,“backup restore”,scripts/ops/backup_restore.sh,Req → Backup,L2,Recovery SLA
+Maxey444,Rotate Keys Agent,Key rotation orchestration,Ops script,“rotate keys”,scripts/ops/rotate_keys.sh,Req → RotatedKeys,L1,Vault/KMS enforced
+Maxey445,SCW Diff Agent,Diff ReasoningFrames,Frames,“diff frames”,frames_api.py,FrameA+B → Diff,L3,Diff correctness
+Maxey446,Frame Rehydration Agent,Rehydrate SCW snapshots,Frames,“rehydrate frame”,frames_server.py,Snapshot → Frame,L3,Fidelity correctness
+Maxey447,Anchor Metrics Agent,Anchor precision/coverage metrics,Anchors,“evaluate anchors”,anchor_metrics.py,Anchors → Metrics,L3,Coverage SLA
+Maxey448,Anchor Index Agent,Index & retrieval over anchors,Anchors,“index anchors”,anchor_index.py,Anchors → Index,L3,Retrieval SLA
+Maxey449,Anchor Extraction Agent,Mine anchors from activations,Anchors,“extract anchors”,anchor_extraction.py,Activations → Anchors,L3,Stability metrics
+Maxey450,SAE Trainer Agent,Sparse autoencoder trainer,SAE,“train sae”,sae/trainer.py,Data → SAEModel,L3,Loss threshold
+Maxey451,SAE Feature Set Agent,Curated features for probes,SAE,“update featureset”,sae/featuresets/,Features → Stored,L3,Probe quality
+Maxey452,GNN Router Agent,Route tool/model selection via GNN,Latent routing,“route task”,gnn_router.py,Input → RouteDecision,L3,Routing accuracy
+Maxey453,Magnitude Spectrum Agent,Extract spectrum/energy features,Latent analysis,“analyze spectrum”,magnitude_spectrum.py,Data → SpectrumFeatures,L2,Feature accuracy
+Maxey454,Latent Space Map Agent,Probe hooks → concept graph exports,Latent analysis,“map latent space”,latent_space_map.py,Hooks → ConceptGraph,L3,Map completeness
+Maxey455,MCP Server Agent,MCP protocol server adapter,MCP,“start mcp server”,mcp_server.py,Req → Resp,L2,Contract correctness
+Maxey456,MCP API Agent,MCP tool/resource prompt endpoints,MCP,“mcp api call”,mcp_api.py,Req → Resp,L2,Endpoint correctness
+Maxey457,MCP Runner API Agent,Manage MCP task runs,MCP,“submit mcp run”,runner_api.py,Req → RunResp,L2,SLA compliance
+Maxey458,A2A Streams Agent,Pub/sub contracts for memory share,A2A,"“a2a publish”, “a2a subscribe”",a2a/streams.py,Msg → StreamEvent,L2,Event integrity
+Maxey459,A2A Memory Sharing Agent,Cross-agent SCW sharing,A2A,“share memory”,a2a/memory_sharing.py,Frame → SharedFrame,L2/L3,Policy compliance
+Maxey460,A2A Cross Framework Agent,Adapters for LangChain/CrewAI/etc.,A2A,“adapt framework”,a2a/cross_framework_adapter.py,Msg → AdaptedMsg,L2,Interop coverage
+Maxey461,A2A Contract Agent,Define share/accept schemas,A2A,“update contract”,a2a/contracts/,Contract → Stored,L2,Schema correctness
+Maxey462,A2A Protocol Agent,Define wire protocols,A2A,“update protocol”,a2a/protocols/,Protocol → Stored,L2,Version negotiation
+Maxey463,Agentic Runner Agent,Runtime for agentic memory workflows,Workflow execution,“run agentic workflow”,workflows/runners/agentic_runner.py,DAGSpec → Run,L2–L3,Workflow SLA
+Maxey464,GNN Runner Agent,Runtime for GNN/SAE training,Workflow execution,“run gnn workflow”,workflows/runners/gnn_runner.py,DAGSpec → Run,L3,Loss convergence
+Maxey465,MoR Runner Agent,Runtime for Mixture-of-Recursion,Workflow execution,“run mor workflow”,workflows/runners/mor_runner.py,DAGSpec → Run,L3,Recursion guardrails
+Maxey466,MCP Runner Agent,Runtime for MCP task flows,Workflow execution,“run mcp workflow”,workflows/runners/mcp_runner.py,DAGSpec → Run,L2,Contract enforcement
+Maxey467,Workflow Spec Agent,Manage DAG specs,Workflow design,“update workflow spec”,workflows/specs/,Spec → Stored,L2,Spec completeness
+Maxey468,Memory Lifecycle Spec Agent,DAG spec for memory lifecycle,Workflow design,“update memory spec”,workflows/specs/agentic_memory_spec.yaml,Spec → Stored,L2,Promotion heuristics enforced
+Maxey469,GNN Training Spec Agent,DAG spec for GNN/SAE training,Workflow design,“update gnn spec”,workflows/specs/gnn_training_spec.yaml,Spec → Stored,L3,Training completeness
+Maxey470,MoR Spec Agent,DAG spec for Mixture-of-Recursion,Workflow design,“update mor spec”,workflows/specs/mixture_of_recursion_spec.yaml,Spec → Stored,L3,Critique constraints
+Maxey471,MCP Spec Agent,DAG spec for MCP orchestration,Workflow design,“update mcp spec”,workflows/specs/mcp_spec.yaml,Spec → Stored,L2,Contract adherence
+Maxey472,Sandbox Tool Agent,Safe code exec sandbox,Tooling,“sandbox run”,tools/sandbox_tool.py,Code → Output,L0/L1,Jail enforced
+Maxey473,Web Server Tool Agent,Ephemeral web server,Tooling,“start web server”,tools/web_server_tool.py,Req → WebPreview,L0,Ephemeral only
+Maxey474,Code Interpreter Tool Agent,Python exec with resource caps,Tooling,“run python code”,tools/code_interpreter_tool.py,Code → Result,L0,Resource caps enforced
+Maxey475,Web Search Tool Agent,Web search abstraction,Tooling,“search web”,tools/web_search_tool.py,Query → Results,L1,Cite contract enforced
+Maxey476,Virtual Env Tool Agent,On-demand venv creation,Tooling,“create venv”,tools/virtual_env_tool.py,Req → Venv,L0,Isolation enforced
+Maxey477,Analytics Dashboard Tool Agent,Push metrics to dashboards,Tooling,“update dashboard”,tools/analytics_dashboard_tool.py,Metrics → Dashboard,L1,Metric accuracy
+Maxey478,Kafka Admin Tool Agent,Topic/ACL mgmt,Tooling,“admin kafka”,tools/kafka_admin_tool.py,Req → KafkaAction,L2,Guarded access
+Maxey479,Neo4j Tool Agent,Graph queries/mutations,Tooling,“query graph”,tools/neo4j_tool.py,Query → Result,L3,Policy checks enforced
+Maxey480,Redis Tool Agent,Cache/streams ops,Tooling,“redis op”,tools/redis_tool.py,Req → Resp,L2,Namespace isolation
+Maxey481,Git Tool Agent,Repo read/PR create,Tooling,“git op”,tools/git_tool.py,Req → RepoAction,L1,Token short-lived
+Maxey482,Jira Tool Agent,Issue tracking integration,Tooling,“jira op”,tools/jira_tool.py,Req → JiraAction,L1,Policy enforced
+Maxey483,LangChain Adapter Agent,Bridge to LangChain,Adapters,“adapt langchain”,adapters/langchain_adapter.py,Req → AdaptedOp,L2,Interop coverage
+Maxey484,CrewAI Adapter Agent,Bridge to CrewAI,Adapters,“adapt crewai”,adapters/crewai_adapter.py,Req → AdaptedOp,L2,Interop coverage
+Maxey485,NVIDIA Adapter Agent,Bridge to NVIDIA frameworks,Adapters,“adapt nvidia”,adapters/nvidia_agent_adapter.py,Req → AdaptedOp,L3,GPU coverage
+Maxey486,Swarm Adapter Agent,Multi-agent orchestration,Adapters,“adapt swarm”,adapters/swarm_adapter.py,Req → AdaptedOp,L2,Adapter coverage
+Maxey487,OpenAI Adapter Agent,OpenAI client bridge,Adapters,“adapt openai”,adapters/openai_adapter.py,Req → AdaptedOp,L1,Function calling enforced
+Maxey488,vLLM Adapter Agent,vLLM hosting adapter,Adapters,“adapt vllm”,adapters/vllm_adapter.py,Req → AdaptedOp,L2,Hosting SLA
+Maxey489,Drift Analytics Agent,Distribution drift detection,Ops,“analyze drift”,ops/drift_analytics.py,Data → DriftReport,L2,Alert coverage
+Maxey490,Observability Agent,OTel span helpers & metrics,Ops,“observe task”,ops/observability.py,Task → TraceSpan,L1/L2,Metric integrity
+Maxey491,Metrics Collector Agent,Pull/push metrics,Ops,“collect metrics”,ops/metrics_collector.py,MetricReq → MetricResp,L1,Metric completeness
+Maxey492,Cost Guardrails Agent,Live cost counters,Ops,“guard costs”,ops/cost_guardrails.py,Cost → Alert,L1,Cost cutoff enforced
+Maxey493,Policy Enforcer Agent,Inline allow/deny + rationale,Ops,“enforce policy”,ops/policy_enforcer.py,Req → Decision,L1,Decision rationale
+Maxey494,Rate Limiter Agent,QPS/token limits,Ops,“limit rate”,ops/rate_limiter.py,Req → Permit/Deny,L0/L1,Limit enforced
+Maxey495,Artifact Store Agent,Manage content-addressed artifacts,Provenance,“store artifact”,provenance/artifact_store.py,Artifact → Stored,L2,Signature enforced
+Maxey496,Artifact Signer Agent,Artifact signing (KMS/Vault),Provenance,“sign artifact”,provenance/signer.py,Artifact → SignedArtifact,L2,Vault signing
+Maxey497,Replay Agent,Deterministic replay CLI,Provenance,“replay run”,provenance/replay.py,RunID → Replay,L2,Determinism enforced
+Maxey498,Resolver Agent,Resolve versions,Registry,“resolve version”,registry/resolver.py,Req → Version,L1,Version correctness
+Maxey499,Version Manifest Agent,Manage checked-in manifests,Registry,“update manifest”,registry/versions/,Manifest → Stored,L1,Semver enforced
+Maxey500,Egress Allowlist Agent,Manage host/path allowlists,Security,“update allowlist”,security/egress_allowlist.py,Host → Policy,L1,Validation enforced
+Maxey501,OPA Client Agent,OPA/Cedar client verifier,Security,“verify opa”,security/opa_client.py,Req → Decision,L1/L2,Bundle correctness
+Maxey502,Sandbox Runner Agent,Subprocess/jail profiles,Security,“run sandboxed”,security/sandbox_runner.py,Proc → SandboxedProc,L0/L1,Jail enforced
+Maxey503,Init Package Agent,Python package marker,Core,“init pkg”,init.py,Marker → Package,L0,Package load correctness
+Maxey504,Config Loader Agent,Typed settings loader,Core,“load config”,core/config.py,ConfigReq → Config,L0,Config correctness
+Maxey505,Logging Agent,Logger setup + PII redaction,Core,“init logger”,core/logging.py,LogReq → Logs,L0,PII redaction enforced
+Maxey506,Utils Agent,Common helpers,Core,“use util”,core/utils.py,Req → HelperOutput,L0,Helper correctness
+Maxey507,IDs Agent,ID/key generators,Core,“generate id”,core/ids.py,Req → ID,L0,Uniqueness enforced
+Maxey508,Policy Agent,Client-side policy checks,Core,“check policy”,core/policy.py,Req → Decision,L1,Policy correctness
+Maxey509,API Init Agent,Package marker for API,API,“init api pkg”,api/init.py,Marker → Package,L0,Load correctness
+Maxey510,Memory API Agent,L0–L3 CRUD endpoints,API,“memory api call”,api/memory_api.py,Req → Resp,L0–L3,Promotion correctness
+Maxey511,Runner API Agent,Submit/check/replay runs,API,“runner api call”,api/runner_api.py,Req → RunResp,L1–L2,Workflow SLA
+Maxey512,Cache API Agent,LM cache endpoints,API,“cache api call”,api/cache_api.py,Req → CacheResp,L0/L1,TTL correctness
+Maxey513,Frames API Agent,SCW create/rehydrate/diff endpoints,API,“frames api call”,api/frames_api.py,Req → FrameResp,L3,Frame correctness
+Maxey514,Anchors API Agent,Anchor catalog CRUD + metrics,API,“anchors api call”,api/anchors_api.py,Req → AnchorResp,L3,Metrics accuracy
+Maxey515,Ops Endpoints Agent,FastAPI ops app factory,Server,“start ops server”,server/endpoints_ops.py,Req → Resp,L1,Endpoint SLA
+Maxey516,Retriever Agent,L3 constraints + kNN + packer bridge,Server,“retrieve data”,server/retriever.py,Query → RetrievedData,L3,Retrieval accuracy
+Maxey517,Runner Server Agent,Workflow submit/observe/cancel,Server,“runner server call”,server/runner.py,Req → RunResp,L2,SLA compliance
+Maxey518,A2A Streams Server Agent,Memory share over events,Server,“a2a stream server”,server/a2a_streams.py,Event → StreamedData,L2,Event integrity
+Maxey519,MCP Server Adapter Agent,MCP server adapter,Server,“mcp server call”,server/mcp_server.py,Req → Resp,L2,Contract correctness
+Maxey520,Kafka Events Agent,Topic producers/consumers & DLQ sink,Server,“kafka event call”,server/kafka_events.py,Msg → Event,L2,DLQ coverage
+Maxey521,Frames Server Agent,SCW/ReasoningFrame handlers,Server,“frames server call”,server/frames_server.py,Req → FrameResp,L3,Fidelity correctness
+Maxey522,Cache Server Agent,LM cache service endpoints,Server,“cache server call”,server/cache_server.py,Req → CacheResp,L0/L1,TTL correctness
+Maxey523,Policy Server Agent,OPA/Cedar decision endpoint proxy,Server,“policy server call”,server/policy_server.py,Req → Decision,L1,Policy enforcement
+Maxey524,Provenance Server Agent,Artifact ingest/query APIs,Server,“provenance server call”,server/provenance_server.py,Req → ArtifactResp,L2,Provenance accuracy
+Maxey525,MMS Agent,Orchestrate L0–L3 memory,MMS,“mms manage”,mms/memory_manager.py,Req → MemResp,L0–L3,Promotion policy enforced
+Maxey526,Session Store Agent,STM/episodic store management,MMS,“manage session”,mms/session_store.py,Req → SessionResp,L0/L1,TTL & encryption
+Maxey527,Graph Store Agent,Neo4j adapter for ReasoningFrames,MMS,“graph store op”,mms/graph_store.py,Req → GraphResp,L3,Lineage enforced
+Maxey528,Vector Store Agent,Embeddings backend adapter,MMS,“vector store op”,mms/vector_store.py,EmbeddingReq → StoreResp,L2,Namespace isolation
+Maxey529,Promotion Policy Agent,Deterministic promotion heuristics,MMS,“promotion op”,mms/promotion_policy.py,Frame → PromotionDecision,L2,Determinism enforced
+Maxey530,LM Cache Client Agent,Redis LM cache client,MMS,“lm cache op”,mms/lm_cache.py,CacheReq → CacheResp,L1,Invalidation enforced
+Maxey531,Reasoning Frame Schema Agent,Persistent ReasoningFrame schema,Schema,“update frame schema”,schemas/scw/v1_reasoning_frame.json,Spec → Schema,L3,Schema validity
+Maxey532,SCW Packing Schema Agent,SCW packer schema,Schema,“update scw packing schema”,schemas/scw/v1_scw_packing.json,Spec → Schema,L2,Packing correctness
+Maxey533,Run Event Schema Agent,Run lifecycle event schema,Schema,“update run schema”,schemas/events/maxey0.runs.json,Spec → Schema,L2,Lifecycle correctness
+Maxey534,Step Event Schema Agent,Step event schema,Schema,“update step schema”,schemas/events/maxey0.steps.json,Spec → Schema,L2,Step correctness
+Maxey535,Tool Call Schema Agent,Tool call schema,Schema,“update tool schema”,schemas/events/maxey0.tool_calls.json,Spec → Schema,L2,Contract correctness
+Maxey536,Audit Schema Agent,Audit log schema,Schema,“update audit schema”,schemas/events/maxey0.audit.json,Spec → Schema,L2,Redaction enforced
+Maxey537,DLQ Schema Agent,Dead-letter schema,Schema,“update dlq schema”,schemas/events/maxey0.dlq.json,Spec → Schema,L2,DLQ correctness
+Maxey538,Tools Schema Agent,Tool input/output schema,Schema,“update tools schema”,schemas/tools/,Spec → Schema,L2,Tool correctness
+Maxey539,Outputs Schema Agent,Model output contract schema,Schema,“update outputs schema”,schemas/outputs/,Spec → Schema,L2,Contract enforcement
+Maxey540,Kafka Producer Example Agent,Example Kafka producer,Example,“run kafka producer example”,examples/kafka/producer_example.py,Msg → KafkaTopic,L0,Idempotency enforced
+Maxey541,Kafka Consumer Example Agent,Example Kafka consumer,Example,“run kafka consumer example”,examples/kafka/consumer_example.py,Msg → ConsumedMsg,L0,Idempotency enforced
+Maxey542,Terraform Minimal Cluster Agent,Example minimal cluster,Example,“run minimal cluster example”,examples/terraform/minimal_cluster/,Spec → Cluster,L1,Correct deployment
+Maxey543,Managed Services Example Agent,Example managed Kafka/DBs,Example,“run managed services example”,examples/terraform/managed_services/,Spec → Cluster,L1,Service SLA
+Maxey544,Dashboard Agent,Manage Grafana dashboards,Observability,“update dashboard”,observability/dashboards/,Spec → Dashboard,L1,Visualization accuracy
+Maxey545,Grafana Agent,Manage Grafana datasources,Observability,“update grafana”,observability/grafana/,Spec → GrafanaConfig,L1,Config correctness
+Maxey546,OTel Config Agent,Manage OTel collector/exporters,Observability,“update otel config”,observability/otel/,Spec → OTelConfig,L2,Export accuracy
+Maxey547,Prometheus Agent,Manage Prometheus rules/alerts,Observability,“update prometheus”,observability/prometheus/,Spec → PrometheusConfig,L2,Alert correctness
+Maxey548,Cedar Policy Agent,Manage Cedar policies,Policy,“update cedar policy”,policies/cedar/,Policy → Applied,L1,Policy correctness
+Maxey549,OPA Bundle Agent,Manage compiled Rego bundles,Policy,“update opa bundle”,policies/opa/bundles/,Bundle → Applied,L1,Policy correctness
+Maxey550,Rego Source Agent,Manage Rego source policies,Policy,“update rego source”,policies/opa/rego/,Policy → Applied,L1,Tool allow-list enforced
+Maxey551,Rego Test Agent,Manage policy unit tests & fuzzers,Policy,“run rego tests”,policies/opa/tests/,Test → Report,L1,Regression prevention
+Maxey552,Security Doc Agent,Manage security documentation,Docs,“update security docs”,docs/security.md,Doc → Stored,L1,Threat model correctness
+Maxey553,Memory Architecture Doc Agent,Manage memory docs,Docs,“update memory docs”,docs/memory_architecture.md,Doc → Stored,L2,Policy correctness
+Maxey554,A2A Doc Agent,Manage A2A documentation,Docs,“update a2a docs”,docs/a2a.md,Doc → Stored,L2,Protocol correctness
+Maxey555,MCP Doc Agent,Manage MCP documentation,Docs,“update mcp docs”,docs/mcp.md,Doc → Stored,L2,Contract correctness
+Maxey556,Architecture Doc Agent,Manage architecture documentation,Docs,“update architecture docs”,docs/architecture.md,Doc → Stored,L2,System diagram correctness
+Maxey557,API Reference Doc Agent,Manage API reference,Docs,“update api reference”,docs/api_reference.md,Doc → Stored,L1,Schema correctness
+Maxey558,Developer Guide Agent,Manage developer guide,Docs,“update developer guide”,docs/developer_guide.md,Doc → Stored,L1,Contribution workflow correctness
+Maxey559,Operations Doc Agent,Manage ops documentation,Docs,“update ops docs”,docs/operations.md,Doc → Stored,L2,Runbook completeness
+Maxey560,Provenance Policy Agent,Manage provenance replay policies,Provenance,“update provenance policy”,provenance/replay.py,Policy → Stored,L2,Determinism enforced
+Maxey561,Registry Version Agent,Manage registry versions,Registry,“update registry version”,registry/versions/,Version → Stored,L1,Semver enforcement
+Maxey562,Registry Resolver Agent,Manage resolver logic,Registry,“update resolver logic”,registry/resolver.py,Resolver → Stored,L1,Resolver correctness
+Maxey563,Policy Enforcer Doc Agent,Maintain inline policy enforcement docs,Docs,“update policy enforcer docs”,ops/policy_enforcer.py,EnforcementNotes → Doc,L1,Documentation accuracy
+Maxey564,Drift Analytics Doc Agent,Document drift analytics,Docs,“update drift analytics docs”,ops/drift_analytics.py,DriftNotes → Doc,L2,Drift metrics correctness
+Maxey565,Rate Limiter Doc Agent,Maintain rate limiting documentation,Docs,“update rate limiter docs”,ops/rate_limiter.py,Notes → Doc,L1,QPS accuracy
+Maxey566,Metrics Collector Doc Agent,Maintain metrics collection documentation,Docs,“update metrics docs”,ops/metrics_collector.py,Notes → Doc,L1,Metrics integrity
+Maxey567,Observability Doc Agent,Maintain observability documentation,Docs,“update observability docs”,ops/observability.py,Notes → Doc,L1,Trace accuracy
+Maxey568,Cost Guardrails Doc Agent,Document cost guardrails,Docs,“update cost guardrails docs”,ops/cost_guardrails.py,Notes → Doc,L1,Budget adherence
+Maxey569,Artifact Store Doc Agent,Maintain artifact store docs,Docs,“update artifact store docs”,provenance/artifact_store.py,Notes → Doc,L2,Artifact persistence accuracy
+Maxey570,Artifact Signer Doc Agent,Maintain artifact signer docs,Docs,“update signer docs”,provenance/signer.py,Notes → Doc,L2,Cryptographic enforcement
+Maxey571,Replay Doc Agent,Document replay CLI,Docs,“update replay docs”,provenance/replay.py,Notes → Doc,L2,Replay determinism
+Maxey572,Security Sandbox Doc Agent,Maintain sandbox runner documentation,Docs,“update sandbox runner docs”,security/sandbox_runner.py,Notes → Doc,L0/L1,Jail compliance
+Maxey573,OPA Client Doc Agent,Maintain OPA/Cedar client documentation,Docs,“update opa client docs”,security/opa_client.py,Notes → Doc,L1/L2,Decision correctness
+Maxey574,Egress Allowlist Doc Agent,Maintain egress allowlist docs,Docs,“update egress docs”,security/egress_allowlist.py,Notes → Doc,L1,Allowlist correctness
+Maxey575,Schema Registry Agent,Manage schema registry service,Infra,“schema registry op”,infra/k8s/base/schema-registry/,Spec → SchemaService,L2,Schema validation
+Maxey576,Postgres Agent,Manage Postgres + pgvector,Infra,“postgres op”,infra/k8s/base/postgres/,Spec → PostgresService,L2,DB correctness
+Maxey577,Neo4j Infra Agent,Manage Neo4j helm manifests,Infra,“neo4j op”,infra/k8s/base/neo4j/,Spec → GraphService,L3,Graph cluster SLA
+Maxey578,Redis Stack Agent,Manage Redis Stack,Infra,“redis op”,infra/k8s/base/redis-stack/,Spec → CacheService,L2,Cache SLA
+Maxey579,Redpanda Kafka Agent,Manage Kafka/Redpanda,Infra,“kafka op”,infra/k8s/base/redpanda-kafka/,Spec → KafkaService,L2,Topic durability
+Maxey580,OTel Collector Agent,Manage OTel pipelines,Infra,“otel op”,infra/k8s/base/otel-collector/,Spec → OTelService,L2,Trace metrics accuracy
+Maxey581,OPA Gatekeeper Agent,Manage OPA Gatekeeper,Infra,“opa gatekeeper op”,infra/k8s/base/opa-gatekeeper/,Spec → PolicyController,L2,Constraint coverage
+Maxey582,Ingress Nginx Agent,Manage ingress controller,Infra,“ingress op”,infra/k8s/base/ingress-nginx/,Spec → IngressService,L2,Routing correctness
+Maxey583,Cert Manager Agent,Manage cluster certs,Infra,“cert manager op”,infra/k8s/base/cert-manager/,Spec → CertService,L1,TLS validity
+Maxey584,Namespaces Agent,Manage logical app namespaces,Infra,“namespace op”,infra/k8s/base/namespaces/,Spec → Namespace,L1,Quota correctness
+Maxey585,Kubernetes Base Agent,Manage k8s base manifests,Infra,“k8s base op”,infra/k8s/base/,Spec → BaseCluster,L2,Base SLA
+Maxey586,Dev Overlay Agent,Manage dev overlays,Infra,“dev overlay op”,infra/k8s/overlays/dev/,Spec → DevCluster,L1,Debug SLA
+Maxey587,Staging Overlay Agent,Manage staging overlays,Infra,“staging overlay op”,infra/k8s/overlays/staging/,Spec → StagingCluster,L2,SLO adherence
+Maxey588,Prod Overlay Agent,Manage prod overlays,Infra,“prod overlay op”,infra/k8s/overlays/prod/,Spec → ProdCluster,L3,PDB/network policy correctness
+Maxey589,Kubernetes Module Agent,Terraform kubernetes module,Infra,“tf kubernetes module”,infra/terraform/modules/kubernetes/,ModuleSpec → Cluster,L2,Autoscaling SLA
+Maxey590,Kafka Module Agent,Terraform kafka module,Infra,“tf kafka module”,infra/terraform/modules/kafka/,ModuleSpec → KafkaCluster,L2,Topic SLA
+Maxey591,Redis Module Agent,Terraform redis module,Infra,“tf redis module”,infra/terraform/modules/redis/,ModuleSpec → RedisCluster,L2,Cache SLA
+Maxey592,Neo4j Module Agent,Terraform neo4j module,Infra,“tf neo4j module”,infra/terraform/modules/neo4j/,ModuleSpec → GraphCluster,L3,Graph SLA
+Maxey593,Pgvector Module Agent,Terraform pgvector module,Infra,“tf pgvector module”,infra/terraform/modules/pgvector/,ModuleSpec → DBCluster,L2,DB SLA
+Maxey594,OpenSearch Module Agent,Terraform opensearch module,Infra,“tf opensearch module”,infra/terraform/modules/opensearch/,ModuleSpec → SearchCluster,L2,Search SLA
+Maxey595,Vault Module Agent,Terraform vault module,Infra,“tf vault module”,infra/terraform/modules/vault/,ModuleSpec → VaultService,L2,Secret SLA
+Maxey596,OTel Module Agent,Terraform otel module,Infra,“tf otel module”,infra/terraform/modules/otel/,ModuleSpec → Observability,L2,Metrics SLA
+Maxey597,Dev Env Agent,Terraform dev env,Infra,“tf dev env”,infra/terraform/envs/dev/,EnvSpec → DevCluster,L1,Dev SLA
+Maxey598,Staging Env Agent,Terraform staging env,Infra,“tf staging env”,infra/terraform/envs/staging/,EnvSpec → StagingCluster,L2,Staging SLA
+Maxey599,Prod Env Agent,Terraform prod env,Infra,“tf prod env”,infra/terraform/envs/prod/,EnvSpec → ProdCluster,L3,Prod SLA
+Maxey600,Backup Restore Agent,"Backup/restore neo4j, pg, object store",Ops,“backup/restore op”,scripts/ops/backup_restore.sh,Req → Backup,L2,Restore correctness
+Maxey601,Rotate Keys Agent,Key rotation orchestration,Ops,“rotate keys op”,scripts/ops/rotate_keys.sh,Req → RotatedKeys,L2,Key policy adherence
+Maxey602,TF Init Agent,Init wrapper,Ops,“tf init op”,scripts/terraform/init.sh,Req → InitState,L1,Init correctness
+Maxey603,TF Plan Agent,Terraform plan with checks,Ops,“tf plan op”,scripts/terraform/plan.sh,Req → PlanReport,L1,Policy adherence
+Maxey604,TF Apply Agent,Guarded tf apply,Ops,“tf apply op”,scripts/terraform/apply.sh,Req → ApplyResult,L2,Approval enforcement
+Maxey605,Kafka Topic Creator Agent,Apply topics.yaml,Ops,“create kafka topics”,scripts/kafka/create_topics.py,Spec → KafkaTopics,L1,Topic correctness
+Maxey606,Kafka Lag Inspector Agent,Inspect consumer group lag,Ops,“inspect lag”,scripts/kafka/list_lag.py,Req → LagReport,L1,Lag correctness
+Maxey607,Kafka DLQ Drainer Agent,Rehydrate DLQ events,Ops,“drain dlq”,scripts/kafka/drain_dlq.py,Req → DLQResp,L1,DLQ correctness
+Maxey608,Ingest ChatGPT Zip Agent,Import ChatGPT exports,Ops,“ingest chatgpt zip”,scripts/ingest_chatgpt_zip.py,Zip → Conversations,L2,PII sanitization
+Maxey609,No Placeholder Guard Agent,CI block placeholder text,Ops,“no placeholder check”,scripts/no_placeholder_guard.py,File → CheckResult,L0,Placeholder ban enforced
+Maxey610,Conversations Dataset Agent,Manage conversations datasets,Data,“update conversations dataset”,data/conversations/,Dataset → Stored,L2,PII correctness
+Maxey611,Vectors Dataset Agent,Manage vectors dataset,Data,“update vectors dataset”,data/vectors/,Dataset → Stored,L2,Embedding correctness
+Maxey612,Anchors Dataset Agent,Manage anchors dataset,Data,“update anchors dataset”,data/anchors/,Dataset → Stored,L3,Anchor correctness
+Maxey613,Anchor Catalog Agent,Manage canonical anchor catalog,Data,“update anchor catalog”,data/anchors/anchor_catalog.json,AnchorSpec → Catalog,L3,Concept mapping accuracy
+Maxey614,Anchor Eval Set Agent,Manage anchor eval sets,Data,“update anchor eval set”,data/anchors/anchor_eval_sets/,EvalSet → Stored,L3,Anchor quality checks
+Maxey615,Frames Snapshot Agent,Manage SCW ReasoningFrame snapshots,Data,“update reasoning frame snapshot”,data/frames/reasoning_frames.snapshots/,Snapshot → Stored,L3,Snapshot fidelity
+Maxey616,Goldens Eval Agent,Manage task goldens,Data,“update goldens”,data/evals/goldens/,GoldenSet → Stored,L2,Offline eval correctness
+Maxey617,Eval Reports Agent,Manage eval reports,Data,“update eval reports”,data/evals/reports/,EvalRun → Report,L2,Metrics accuracy
+Maxey618,Latent Feature Fusion Agent,Integrate multi-modal features into unified latent representations,Latent Space Engineering,“feature fusion op”,"latent/latent_space_map.py, latent/gnn_router.py",Features → FusedRepresentation,L2/L3,"Fusion stability, avoid mode collapse"
+Maxey619,Latent Neighborhood Regularizer Agent,Clear direct latent neighborhood for sparse density,Latent Space Engineering,“regularize neighborhood”,latent/sae/trainer.py,Neighborhood → SparseSpace,L3,Sparse density enforced
+Maxey620,Temporal Drift Agent,Monitor latent temporal drift,Latent Space Engineering,“detect drift”,latent/magnitude_spectrum.py,TimeSeries → DriftReport,L2/L3,Drift detection accuracy
+Maxey621,Cross-Modality Mapper Agent,Map latent space across modalities,Latent Space Engineering,“map modality”,latent/anchors/anchor_extraction.py,MultiModalInput → UnifiedSpace,L3,Cross-modality fidelity
+Maxey622,Latent Stability Evaluator Agent,Evaluate stability & consistency of latent maps,Latent Space Engineering,“evaluate stability”,latent/anchors/anchor_metrics.py,LatentMap → StabilityReport,L3,Stability metrics correctness
+Maxey623,Latent Coverage Metrics Agent,Track coverage/precision of latent anchors,Latent Space Engineering,“coverage eval”,latent/anchors/anchor_metrics.py,Anchors → CoverageMetrics,L3,Coverage completeness
+Maxey624,SAE Feature Curator Agent,Curate feature sets for sparse autoencoders,Latent Space Engineering,“curate features”,latent/sae/featuresets/,FeatureSpec → SAEFeatureSet,L2/L3,Feature relevance enforced
+Maxey625,Latent A2A Integration Agent,Manage latent space knowledge exchange across agents,Latent Space Engineering,“latent a2a share”,"a2a/memory_sharing.py, a2a/cross_framework_adapter.py",LatentFrame → SharedState,L2/L3,A2A protocol correctness
+Maxey626,Latent Map Evaluator Agent,Generate evaluation reports for latent map fidelity,Latent Space Engineering,“latent map eval”,latent/latent_space_map.py,LatentMap → EvalReport,L3,Fidelity enforced
+Maxey627,Latent Drift Guard Agent,Enforce thresholds for latent drift alerts,Latent Space Engineering,“latent drift guard”,ops/drift_analytics.py,DriftReport → Alert,L2,Alert precision
+Maxey628,Latent Cache Agent,Manage cached latent representations,Latent Space Engineering,“cache latent”,mms/lm_cache.py,LatentRep → CachedRep,L1/L2,Cache invalidation rules
+Maxey629,Latent Provenance Agent,Track provenance of latent artifacts,Latent Space Engineering,“latent provenance op”,provenance/artifact_store.py,LatentArtifact → ProvenanceLog,L2/L3,Provenance correctness
+Maxey630,Latent Policy Agent,Enforce policy for latent manipulations,Latent Space Engineering,“latent policy enforce”,security/opa_client.py,LatentOp → Decision,L2,Safety constraints
+Maxey631,Latent Guardrails Agent,Enforce KPIs & budget guardrails in latent operations,Latent Space Engineering,“latent guardrails”,ops/cost_guardrails.py,LatentOp → GuardrailCheck,L2,Token/cost budget compliance
+Maxey632,Latent ReasoningFrame Agent,Extend SCW with latent-specific reasoning frames,Latent Space Engineering,“latent reasoning frame”,frames_api.py + latent/,LatentData → ReasoningFrame,L3,Fidelity correctness
+Maxey633,Latent Anchors Bridge Agent,Bridge between latent anchors and concept graph,Latent Space Engineering,“anchor bridge”,latent/anchors/anchor_index.py,Anchors → ConceptGraph,L3,Stability & accuracy
+Maxey634,Latent MoR Agent,Apply mixture-of-recursion to latent training,Latent Space Engineering,“mor latent op”,workflows/specs/mixture_of_recursion_spec.yaml,LatentMap → IterativeUpdates,L3,Recursion stability
+Maxey635,Latent Eval Reporter Agent,Collect and report latent evaluation runs,Latent Space Engineering,“latent eval report”,data/evals/reports/,Eval → Report,L3,Eval fidelity
+Maxey636,Latent Cross-Framework Agent,"Bridge latent operations across LangChain, CrewAI, NVIDIA, Swarm",Latent Space Engineering,“latent cross framework op”,a2a/cross_framework_adapter.py,LatentOp → FrameworkAdaptedOp,L3,Adapter correctness
+Maxey637,Latent Metrics Collector Agent,Collect Prom/OTel metrics for latent ops,Latent Space Engineering,“latent metrics collect”,ops/metrics_collector.py,Metrics → LatentMetrics,L2,Drift/fidelity KPIs
+Maxey638,Latent Registry Agent,Manage registry of latent versions,Latent Space Engineering,“latent registry op”,registry/versions/,LatentSpec → VersionedManifest,L2,Semver correctness
+Maxey639,Latent API Agent,Provide REST/WS endpoints for latent ops,Latent Space Engineering,“latent api call”,api/memory_api.py + latent/,Req → LatentResp,L2/L3,API SLA
+Maxey640,Latent Security Agent,Enforce security boundaries for latent data,Latent Space Engineering,“latent security op”,security/egress_allowlist.py,LatentData → Allowed/Denied,L2,Security correctness
+Maxey641,Latent Sandbox Agent,Execute latent ops in sandbox,Latent Space Engineering,“latent sandbox op”,tools/sandbox_tool.py,Code → SafeOutput,L2,Jail enforcement
+Maxey642,Latent Cost Guard Agent,Track token/runtime cost of latent ops,Latent Space Engineering,“latent cost guard”,ops/cost_guardrails.py,Op → CostReport,L2,Cost adherence
+Maxey643,Latent Run Replayer Agent,Replay latent training/eval runs deterministically,Latent Space Engineering,“latent run replay”,provenance/replay.py,RunID → ReplayResult,L3,Determinism
+Maxey644,Latent Temporal Cache Agent,Cache temporal latent states,Latent Space Engineering,“cache temporal latent”,mms/lm_cache.py,Time → CachedState,L2,TTL accuracy
+Maxey645,Latent DLQ Agent,Handle DLQ for latent ops,Latent Space Engineering,“latent dlq op”,server/kafka_events.py,FailedOp → DLQEvent,L2,DLQ correctness
+Maxey646,Latent Trainer Agent,Run SAE/GNN latent training,Latent Space Engineering,“latent trainer”,"latent/sae/trainer.py, workflows/gnn_training_spec.yaml",Data → TrainedModel,L3,Convergence KPIs
+Maxey647,Latent Runner Agent,Execute latent training/eval DAGs,Latent Space Engineering,“latent runner”,workflows/runners/gnn_runner.py,DAG → RunResult,L3,SLA adherence
+Maxey648,Latent Sandbox Tool Agent,Manage sandbox executions for latent experiments,Latent Space Engineering,“latent sandbox exec”,tools/sandbox_tool.py,Code → SafeExecResult,L2,Safe execution
+Maxey649,Latent Web Search Tool Agent,Enrich latent anchors with web knowledge,Latent Space Engineering,“latent web search”,tools/web_search_tool.py,Query → Anchors,L2,Cite contract enforced
+Maxey650,Latent Interpreter Tool Agent,Interpret latent embeddings via Python analysis,Latent Space Engineering,“latent code interpret”,tools/code_interpreter_tool.py,Embeddings → Analysis,L2,Correct analysis
+Maxey651,Latent Analytics Dashboard Agent,Push latent metrics to dashboards,Latent Space Engineering,“latent analytics dashboard”,tools/analytics_dashboard_tool.py,Metrics → Dashboard,L2,Visualization SLA
+Maxey652,Latent Neo4j Tool Agent,Query/update latent concept graph,Latent Space Engineering,“latent neo4j tool”,tools/neo4j_tool.py,Query → GraphResp,L3,Graph consistency
+Maxey653,Latent Redis Tool Agent,Manage Redis for latent ops,Latent Space Engineering,“latent redis tool”,tools/redis_tool.py,CacheOp → Result,L1/L2,TTL correctness
+Maxey654,Latent Git Tool Agent,Manage Git repos for latent research,Latent Space Engineering,“latent git tool”,tools/git_tool.py,GitOp → RepoState,L1,Commit correctness
+Maxey655,Latent Jira Tool Agent,Manage latent research tickets,Latent Space Engineering,“latent jira tool”,tools/jira_tool.py,TicketOp → TicketResp,L1,Ticket SLA
+Maxey656,Latent CrewAI Adapter Agent,Adapt latent ops for CrewAI,Latent Space Engineering,“latent crewai op”,adapters/crewai_adapter.py,LatentOp → AdaptedOp,L3,Adapter correctness
+Maxey657,Latent LangChain Adapter Agent,Adapt latent ops for LangChain,Latent Space Engineering,“latent langchain op”,adapters/langchain_adapter.py,LatentOp → AdaptedOp,L3,Adapter correctness
+Maxey658,Latent NVIDIA Adapter Agent,Adapt latent ops for NVIDIA agents,Latent Space Engineering,“latent nvidia op”,adapters/nvidia_agent_adapter.py,LatentOp → AdaptedOp,L3,Adapter correctness
+Maxey659,Latent Swarm Adapter Agent,Adapt latent ops for Swarm,Latent Space Engineering,“latent swarm op”,adapters/swarm_adapter.py,LatentOp → AdaptedOp,L3,Adapter correctness
+Maxey660,Latent OpenAI Adapter Agent,Adapt latent ops for OpenAI,Latent Space Engineering,“latent openai op”,adapters/openai_adapter.py,LatentOp → AdaptedOp,L3,Adapter correctness
+Maxey661,Latent vLLM Adapter Agent,Adapt latent ops for vLLM hosting,Latent Space Engineering,“latent vllm op”,adapters/vllm_adapter.py,LatentOp → AdaptedOp,L3,Adapter correctness
+Maxey662,Latent Mixture-of-Recursion Agent,Execute mixture-of-recursion for latent ops,Latent Space Engineering,“latent mor op”,workflows/runners/mor_runner.py,DAG → MoRResult,L3,Recursion convergence
+Human0,Human Operator,Require explicit confirmation for destructive ops; final approver.,Oversight & approvals,"“approve”, “review”, “explain”",Slack/Email/Jira (optional),ApprovalRequest → ApprovalDecision,L0 note,"Turnaround time, decision clarity"
+Maxey663,Anchor Miner Agent,Extracts anchors from model activations and evidence traces,Latent Anchors,“mine anchors”,latent/anchors/anchor_extraction.py,ActivationTrace → AnchorSet,L3,Anchor precision >90%
+Maxey664,Kafka Consumer Example Agent (with Idempotency),Consumes messages from Kafka topics with idempotency guarantees,Kafka / Messaging,“consume kafka example”,examples/kafka/consumer_example.py,TopicMessage → ConsumedPayload,L0,"Lag < 100ms, no duplicates"
+Maxey665,Anchor Miner – Latent Augmented Agent,Mines anchors from latent augmented contexts (cross-modal features),Latent Anchors,“latent anchor mining”,latent/anchors/anchor_extraction.py + latent augment modules,LatentFeatures → AnchorSet,L3,Cross-modality coverage
+Maxey666,Frames API Agent,"Provides REST endpoints for creating, diffing, and rehydrating ReasoningFrames",Frames API,“frames api call”,api/frames_api.py,Req → FrameResp,L2/L3,SLA < 200ms
+Maxey667,Frames Orchestration Agent,Runs server orchestration for ReasoningFrames (HTTP/WS handlers),Frames Server,“frames orchestration”,server/frames_server.py,FrameEvent → OrchestratedResponse,L3,Frame consistency
+Maxey668,Artifact Store Agent,Stores content-addressed artifacts for runs,Provenance,“store artifact”,provenance/artifact_store.py,Artifact → StoredEntry,L2/L3,Deduplication enforced
+Maxey669,Artifact Signing Agent,Signs artifacts with Vault/KMS for tamper-proof provenance,Provenance / Security,“sign artifact”,provenance/signer.py,Artifact → SignedArtifact,L3,Signature validity
+Maxey670,Grafana Dashboards Agent,"Manages Grafana dashboards for latency, cost, DLQ, cache hits",Observability,“update dashboards”,observability/dashboards/,Config → Dashboard,L1,Visualization uptime
+Maxey671,Grafana Datasource Agent,Provisions Grafana datasources & folders,Observability,“update datasources”,observability/grafana/,DatasourceConfig → ProvisionedDatasource,L1,Datasource accuracy
+Maxey672,Kafka Producer Example Agent,Publishes test messages to Kafka topics using example configs,Kafka / Messaging,“produce kafka example”,examples/kafka/producer_example.py,Payload → TopicMessage,L0,Idempotency keys attached
+Maxey673,Backup & Restore Agent,"Orchestrates full backup and restore workflows across Neo4j, Postgres, and object stores",Ops / Resilience,"“perform backup”, “restore system state”",scripts/ops/backup_restore.sh,SnapshotRequest → BackupArtifact / RestoreRequest → RestoredState,L2/L3,"RPO < 15min, restore integrity verified"
+Maxey674,Cache Server Agent,Runs Redis-based cache services for LM responses and invalidation,Memory / Cache,“cache put/get/invalidate”,"server/cache_server.py, mms/lm_cache.py",CacheKey+Payload → Stored/Invalidated,L1/L2,"TTL accuracy, namespace isolation"
+Maxey675,Compose Full Agent,Deploys and manages the full local stack via docker-compose,Infra / Orchestration,“deploy full stack”,docker/compose.full.yml,ComposeConfig → RunningStack,L0,All services healthy on boot
+Maxey676,Example Vectors Agent,Provides curated example vectors for smoke tests and quick embedding validation,Data / Vectors,“fetch example vectors”,data/vectors/example_vectors.json,Request → ExampleVectorSet,L1,Vector payload integrity
+Maxey677,GNN Router Agent,Routes requests to appropriate tools/models using GNN-based selection,Latent Routing,“route to model/tool”,latent/gnn_router.py,InputFeatures → RoutedToolCall,L3,Routing accuracy >95%
+Maxey722,React Agent,"React (SPA/CSR), Hooks, Context",WebApp Engineer (Tier 2),"build_react_app, refactor_component, optimize_react_perf","Node, React, Vite, ESLint, Prettier, React Router, TanStack Query","feature_spec.md, design_tokens.json → src/.tsx, coverage/, perf-report.json",scratchpad→persistent (component library refs),TS strict ok; >95% type coverage; <100kb first-load JS; LCP<2.0s
+Maxey723,NextJS Agent,"Next.js (App Router, SSR/SSG/ISR)",WebApp Engineer (Tier 2),"build_next_app, add_api_route, edge_functions","Node, Next.js, Vercel, SWC, Middleware, next-auth (OIDC)","feature_spec.md, oauth_config.json → app/, pages/, api/**, vercel.json","persistent (routing map, data fetching model)",TTFB<200ms (edge); zero unhandled rejections
+Maxey724,NodeJS Agent,"Node.js services (REST/gRPC), perf & observability",Backend Engineer (Tier 2),"build_node_service, add_endpoint, add_worker","Node, Express/Fastify, NestJS, OpenAPI, pino, Jest/Vitest","api_contract.yaml, env.example → src/.ts, docker/, openapi.json",persistent (service registry),p95<100ms; 0 memory leaks; graceful shutdown
+Maxey725,Express Agent,Express.js API & middleware,Backend Engineer (Tier 3),"add_middleware, add_route, integrate_db","Express, Helmet, Zod, Prisma, OpenAPI","api_contract.yaml, schema.prisma → src/, prisma/, docker/**",scratchpad→persistent (DB schema history),100% route schema validation; 0 implicit any
+Maxey726,NestJS Agent,NestJS modular services,Backend Engineer (Tier 3),"generate_module, add_guard, cqrs_command","NestJS, TypeORM/Prisma, class-validator, Swagger","feature_spec.md → src/, migration/, swagger.json",persistent (module graph),e2e green; DI graph acyclic; 0 circular deps
+Maxey727,Vite Agent,"Vite build, HMR, code-splitting",Tooling Engineer (Tier 3),"optimize_build, split_chunks, env_setup","Vite, Rollup plugins, SWC/esbuild, source maps","vite.config.ts, env.example → dist/**, build-report.html",scratchpad,cold-start<300ms HMR; bundle size budget respected
+Maxey728,Webpack Agent,"Webpack5 config, Module Federation",Tooling Engineer (Tier 3),"mf_setup, analyze_bundle, legacy_support","Webpack, MF, Babel, Terser, webpack-bundle-analyzer","webpack.config.js, mf.manifest.json → dist/**, stats.json",persistent (federation manifest),no duplicate deps; long-term caching correct
+Maxey729,ES Build Agent,esbuild pipelines,Tooling Engineer (Tier 3),"setup_build, transpile_ts, minify","esbuild, tsup, tsx",tsconfig.json → build/**,scratchpad,build<2s for medium libs; TS strict
+Maxey730,Tailwind Agent,Tailwind CSS + design tokens,UI Engineer (Tier 3),"add_tailwind, build_design_system, theme_dark_mode","Tailwind, PostCSS, shadcn/ui, Radix UI","tailwind.config.ts, tokens.json → styles.css, components/**",persistent (design tokens),unused CSS<5%; a11y AA+
+Maxey731,Bootstrap Agent,Bootstrap 5/5.3 + utilities,UI Engineer (Tier 3),"migrate_bootstrap, responsive_grid, rtl_support","Bootstrap, Sass, PurgeCSS","design_spec.md → scss/, components/",scratchpad,CLS<0.1; mobile nav accessible
+Maxey732,MUI Agent,Material UI (MUI) + theming,UI Engineer (Tier 3),"mui_theming, data_grid, a11y_review","MUI, Emotion/Styled, DataGrid, X Charts","theme.json → src/, stories/",persistent (theme registry),WCAG AA; keyboard navigation pass
+Maxey733,shadcn Agent,shadcn/ui + Radix primitives,UI Engineer (Tier 3),"add_shadcn, compose_components, motion","shadcn/ui, Radix, Framer Motion, Tailwind","ui_spec.md → components/, lib/",scratchpad,consistent variants; no CSS leaks
+Maxey734,ThreeJS Agent,"Three.js 3D, controls, shaders",Graphics Engineer (Tier 2),"embed_three_scene, pbr_setup, perf_budget","three, react-three-fiber (optional), glsl, postprocessing","scene_spec.json, model.glb → src/3d/**, perf-report.json",persistent (scene graph cache),frame time p95<16ms; draw calls minimized
+Maxey735,BabylonJS Agent,Babylon.js PBR/physics,Graphics Engineer (Tier 3),"babylon_scene, physics, inspector","babylonjs, cannon/es, oimo",scene_spec.json → src/3d/**,scratchpad,steady 60fps; GPU mem budget respected
+Maxey736,D3 Agent,D3.js + React integration,DataViz Engineer (Tier 3),"build_charts, animate_transitions, layout_graph","d3, topojson, observable patterns","dataset.csv, topo.json → src/viz/**",persistent (chart catalog),FPS>30 on 10k nodes; a11y labels present
+Maxey737,Redux Toolkit Agent,Redux Toolkit + RTK Query,State Engineer (Tier 3),"add_slice, api_slice, normalize_entities","RTK, Immer, Reselect, RTK Query",state_spec.json → src/state/**,persistent (slice registry),no non-serializable state; actions typed
+Maxey738,Zustand Agent,Zustand lightweight state,State Engineer (Tier 3),"add_store, persist_store, selective_subs","zustand, immer, persist",state_spec.json → src/state/**,scratchpad,selector-based subs; no re-render storms
+Maxey739,RxJS Agent,"RxJS streams, WebSocket pipelines",Reactive Engineer (Tier 3),"stream_pipeline, retry_backoff, multicasting","rxjs, socket.io, ws, eventsource",stream_spec.md → src/streams/**,persistent (stream registry),no unbounded subjects; teardown complete
+Maxey740,GraphQL Agent,GraphQL/Apollo Server & Client,API Engineer (Tier 3),"build_schema, add_resolver, federation","Apollo, Mercurius, GraphQL Yoga, codegen","schema.graphql, codegen.yml → src/schema/, src/operations/",persistent (schema registry),N+1 eliminated; persisted queries enabled
+Maxey741,tRPC Agent,tRPC E2E typesafe APIs,API Engineer (Tier 3),"create_router, merge_routers, caller_tests","tRPC, Zod, TanStack Query, Next.js",router_spec.ts → src/server/routers/**,scratchpad,strict types; server-side validation
+Maxey742,Socket IO Agent,Socket.IO + presence,Realtime Engineer (Tier 3),"realtime_room, presence, emit_backpressure","socket.io, redis adapter, ws",realtime_spec.md → src/realtime/**,persistent (channel registry),missed msg rateâ‰ˆ0; reconnection tested
+Maxey743,PWA Agent,"Service Workers, offline/PWA",Web Platform Engineer (Tier 3),"pwa_enable, cache_strategy, push_notifications","Workbox, Web Push, Background Sync","pwa_manifest.json → public/**, sw.ts",persistent (cache manifest),Lighthouse PWA>90; offline-first works
+Maxey744,Testing Agent,Jest/Vitest + Playwright/Cypress,Quality Engineer (Tier 3),"unit_test, e2e_test, visual_regression","Jest, Vitest, Playwright, Cypress, Testing Library","test_plan.md → tests/, e2e/, coverage/**",persistent (test catalog),≥80% coverage; flake rate<1%
+Maxey745,ES Lint Prettier Agent,ESLint + Prettier policy,Quality Engineer (Tier 4),"lint_fix, enforce_rules, ci_gate","ESLint, Prettier, lint-staged, husky",".eslintrc.cjs, .prettierrc → lint-report.txt",persistent (policy registry),0 lint blockers on main; precommit hooks
+Maxey746,Security Agent,Web security & supply-chain,Security Engineer (Tier 2),"threat_model, deps_audit, add_helmet","helmet, CORS, csrf, npm-audit, snyk",security_model.md → security-report.md,persistent (threat models),0 high vulns; CSP present; secrets redacted
+Maxey747,Auth Agent,"OAuth2/OIDC/SAML, session mgmt",Security Engineer (Tier 2),"oauth_setup, oidc_provider, session_security","next-auth, passport, jose, oidc-provider","auth_config.json → auth/, callbacks/",persistent (client registry),0 token leakage; rotation+PKCE enabled
+Maxey748,Vercel Agent,Vercel deployments & previews,DevOps Engineer (Tier 3),"deploy_vercel, env_setup, cache_tuning","Vercel CLI, Build outputs API","vercel.json, env.example → deploy-log.txt",scratchpad,0 failed builds; preview per PR
+Maxey749,Netlify Agent,Netlify + functions + redirects,DevOps Engineer (Tier 3),"deploy_netlify, redirects, forms","Netlify CLI, redirects/headers",netlify.toml → deploy-log.txt,scratchpad,clean previews; redirects tested
+Maxey750,GitHub Actions Agent,CI/CD workflows,DevOps Engineer (Tier 3),"ci_setup, release_tag, test_matrix","GitHub Actions, pnpm/yarn, caching",.github/workflows/** → ci-report.md,persistent (pipeline catalog),green main; cache hits>85%
+Maxey640,Local Dev Orchestrator,Orchestrate build and deploy for local dev server & hot-reload; ensure repeatable releases with rollbacks.,Deployment,"deploy_*, release_*, publish_*, rollback_*","Node, Docker, GitHub, SemVer","repo@ref → artifact_url, status","scratchpad→persistent (deployment history, artifact manifests)","deploy_success_rate>=99.5%, mean_deploy_time<6m, rollback<1m, artifact_checksum_verified"
+Maxey641,GitHub Actions CI/CD,Orchestrate build and deploy for ci pipeline & releases; ensure repeatable releases with rollbacks.,Deployment,"deploy_*, release_*, publish_*, rollback_*","GitHub Actions, Actions Runners, OIDC to cloud, SemVer tags","repo@ref, workflow_dispatch → build_artifacts, release_tag, status","scratchpad→persistent (deployment history, artifact manifests)","deploy_success_rate>=99.5%, mean_deploy_time<6m, rollback<1m, artifact_checksum_verified"
+Maxey642,GitHub Pages/Artifacts Publisher,Orchestrate build and deploy for static site publish; ensure repeatable releases with rollbacks.,Deployment,"deploy_*, release_*, publish_*, rollback_*","GitHub Pages, Artifacts, Jekyll/Vite, DNS","static_site_dir → pages_url, artifact_url","scratchpad→persistent (deployment history, artifact manifests)","deploy_success_rate>=99.5%, mean_deploy_time<6m, rollback<1m, artifact_checksum_verified"
+Maxey643,Hugging Face Spaces Deployer,Orchestrate build and deploy for hf spaces (static/gradio/streamlit); ensure repeatable releases with rollbacks.,Deployment,"deploy_*, release_*, publish_*, rollback_*","HF Spaces, Gradio/Streamlit, Space Runtime, HF Hub","repo@ref, space_config → space_url, build_logs","scratchpad→persistent (deployment history, artifact manifests)","deploy_success_rate>=99.5%, mean_deploy_time<6m, rollback<1m, artifact_checksum_verified"
+Maxey644,Hugging Face Inference Endpoint Manager,Orchestrate build and deploy for gpu/cpu endpoint orchestration; ensure repeatable releases with rollbacks.,Deployment,"deploy_*, release_*, publish_*, rollback_*","HF Inference Endpoints, Autoscaling, GPU/CPU profiles, Secrets","model_id, container_image, autoscale_policy → endpoint_url, healthz","scratchpad→persistent (deployment history, artifact manifests)","deploy_success_rate>=99.5%, mean_deploy_time<6m, rollback<1m, artifact_checksum_verified"
+Maxey647,AWS Static Hosting (S3+CloudFront),Provision and operate static site on s3 + cdn on AWS with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","AWS CLI, CloudFormation/Terraform, S3, CloudFront, ECS/Fargate, Lambda, API Gateway","site_dir, domain_config → cdn_url, cache_invalidation_id","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey648,AWS Container (ECS/Fargate),Provision and operate containerized app on AWS with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","AWS CLI, CloudFormation/Terraform, S3, CloudFront, ECS/Fargate, Lambda, API Gateway","image@tag, service_def → service_url, task_arn","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey649,AWS Serverless (Lambda+API GW),Provision and operate functions & apis on AWS with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","AWS CLI, CloudFormation/Terraform, S3, CloudFront, ECS/Fargate, Lambda, API Gateway","function_code, api_spec → endpoint_url, logs_link","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey650,Azure Static Web Apps,Provision and operate static site on swa on Azure with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","Azure CLI, Bicep/Terraform, SWA, AKS, Functions, AAD","site_dir, domain_config → cdn_url, cache_invalidation_id","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey651,Azure AKS Containers,Provision and operate managed kubernetes on Azure with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","Azure CLI, Bicep/Terraform, SWA, AKS, Functions, AAD","image@tag, k8s_manifest → service_url, rollout_status","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey652,Azure Functions,Provision and operate serverless compute on Azure with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","Azure CLI, Bicep/Terraform, SWA, AKS, Functions, AAD","function_code, api_spec → endpoint_url, logs_link","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey653,GCP Firebase Hosting,Provision and operate static site + cdn on GCP with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","gcloud, Terraform, Firebase Hosting, Cloud Run, GKE, IAM","site_dir, domain_config → cdn_url, cache_invalidation_id","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey654,GCP Cloud Run,Provision and operate serverless containers on GCP with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","gcloud, Terraform, Firebase Hosting, Cloud Run, GKE, IAM","function_code, api_spec → endpoint_url, logs_link","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey655,GCP GKE,Provision and operate kubernetes on GCP with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","gcloud, Terraform, Firebase Hosting, Cloud Run, GKE, IAM","image@tag, k8s_manifest → service_url, rollout_status","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey656,Alibaba OSS Static Hosting,Provision and operate static site on oss on Alibaba with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","Alibaba Cloud CLI, Terraform, OSS, SAE/FC, RAM","site_dir, domain_config → cdn_url, cache_invalidation_id","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey657,Alibaba SAE/Function Compute,Provision and operate containers/serverless on Alibaba with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","Alibaba Cloud CLI, Terraform, OSS, SAE/FC, RAM","image@tag, k8s_manifest → service_url, rollout_status","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey658,Oracle OCI Object Storage + API GW,Provision and operate static site via object storage on Oracle with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","OCI CLI, Terraform, Object Storage, API Gateway, OKE, IAM","site_dir, domain_config → cdn_url, cache_invalidation_id","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey659,Oracle OKE (Kubernetes),Provision and operate managed kubernetes on Oracle with least-privilege and IaC.,Cloud,"provision_*, deploy_*, scale_*, teardown_*","OCI CLI, Terraform, Object Storage, API Gateway, OKE, IAM","image@tag, k8s_manifest → service_url, rollout_status","persistent (infra state, stack outputs); long-term (cost + usage)","provision_success>=99%, p95_deploy<10m, cost_anomaly=0, security_findings=0"
+Maxey670,React Specialist,Own React domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, React, React Router, TanStack Query","feature_spec.md → src/*.tsx, tests/*.tsx","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey671,Three.js Specialist,Own Three.js / 3D domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, three.js, WebGL","scene_spec.json → scene.ts, assets/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey672,Node.js Specialist,Own Node runtime domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Node, pm2, Jest","service_spec.md → src/*.ts, dist/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey673,Express Specialist,Own Express.js domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Express, Zod, Supertest","route_spec.md → routes/*.ts, tests/api/*.ts","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey674,Next.js Specialist,Own Next.js domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Next.js, App Router, RSC","page_spec.md → app/**, api/**","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey675,Vite Specialist,Own Dev bundler domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Vite","bundle_config → vite.config.ts, output/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey676,Webpack Specialist,Own Bundler domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Webpack","webpack_spec → webpack.config.ts, output/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey677,Angular Specialist,Own Angular domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Angular, Nx",component_spec.md → src/app/**,"scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey678,Vue Specialist,Own Vue domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Vue, VitePress",component_spec.md → src/components/**,"scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey679,Svelte Specialist,Own Svelte domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, SvelteKit",route_spec.md → src/routes/**,"scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey680,D3 Specialist,Own D3.js domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, D3",viz_spec.md → src/viz/**,"scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey681,Redux Toolkit Specialist,Own State mgmt domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Redux Toolkit, Zustand","state_schema.json → slices/**, selectors/**","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey682,Jest/RTL Specialist,Own Testing domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Jest, RTL","test_plan.md → __tests__/**, coverage/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey683,Playwright Specialist,Own E2E tests domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Playwright, Cypress","e2e_plan.md → e2e/**, reports/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey684,Cypress Specialist,Own E2E tests domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Playwright, Cypress","e2e_plan.md → e2e/**, reports/","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey685,GraphQL/Apollo Specialist,Own GraphQL domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Apollo, GraphQL Codegen","schema.graphql → resolvers/**, client_hooks/**","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey686,Prisma/ORM Specialist,Own ORM domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, Prisma","prisma.schema → prisma/migrations/**, models/**","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey687,NestJS Specialist,Own Framework domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, NestJS, Fastify",module_spec.md → src/modules/**,"scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey688,Fastify Specialist,Own Framework domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, NestJS, Fastify",module_spec.md → src/modules/**,"scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey689,TypeScript Type Systems,Own TS types & tooling domain implementation; enforce TS strictness and performance budgets.,JS/TS,"build_*, refactor_*, lint_fix, optimize_*, generate_types","Node, TypeScript, ESLint, Prettier, tsc, tsup","types_request.md → types/**, dts/**","scratchpad→persistent (component registry, typings, perf baselines)","type_coverage>=95%, bundle_first_load<100kb, LCP<2.0s, unit_coverage>=85%"
+Maxey690,Chronos Internal Clock,"Provide monotonic clock, scheduling, and QRQ cadence across agents.",System,"schedule_*, now, cron_tick","Chrono API, UTC clock, Monotonic timer","schedule_spec → tick_events, schedule_log","persistent (timetable, cadence history)","drift<5ms, missed_ticks=0"
+Maxey691,Hallucination Snapshot Auditor,Capture pre/post-run snapshots to detect latent drift and hallucinations.,System,"snapshot_before, snapshot_after, diff_run","Hasher, Embedder, Diff","run_id → snapshot_before, snapshot_after, delta_report","persistent (snapshot index, diffs)","snapshot_latency<200ms, false_positive_rate<1%"
+Maxey692,AI Planning & KR,Design and execute studies in cs.AI planning/knowledge; produce replicable artifacts.,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib, NetworkX, Neo4j","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey693,ML Empiricist,Design and execute studies in cs.LG/stat.ML experiments; produce replicable artifacts.,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib, scikit-learn, MLflow","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey694,Computational Physicist,2,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib, SciPy, ROOT","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey695,Quantum Physicist,Design and execute studies in quant-ph; produce replicable artifacts.,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib, SciPy, ROOT","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey696,HEP Experimentalist,Design and execute studies in hep-ex; produce replicable artifacts.,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib, SciPy, ROOT","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey697,Physics Data Analyst,Design and execute studies in physics.data-an; produce replicable artifacts.,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib, SciPy, ROOT","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey698,Reproducibility Lead,Design and execute studies in Cross-field reproducibility; produce replicable artifacts.,Research,"study_*, analyze_*, replicate_*, report_*","Jupyter, Python, Pandas, NumPy, Matplotlib","protocol.md, dataset → results.csv, report.md","long-term (datasets, protocols, results)","reproducibility>=95%, code_review_pass=100%, p_values_reported"
+Maxey700,Timbaland SuperProducer,Own style conditioning & arrangement for production deliverables; maintain consistent loudness and quality.,Music,"compose_*, arrange_*, mix_*, master_*, render_*","DAW, VSTs, MIDI, AudioFX","stems/session → wav/mp3, session_project","persistent (session versions, presets)","LUFS_target=-14Â±1, clipping=0, noise_floor<-60dB"
+Maxey701,Beat/Drum Programmer,Own rhythm design for production deliverables; maintain consistent loudness and quality.,Music,"compose_*, arrange_*, mix_*, master_*, render_*","DAW, VSTs, MIDI, AudioFX","stems/session → wav/mp3, session_project","persistent (session versions, presets)","LUFS_target=-14Â±1, clipping=0, noise_floor<-60dB"
+Maxey702,Mix Engineer,Own mixing for production deliverables; maintain consistent loudness and quality.,Music,"compose_*, arrange_*, mix_*, master_*, render_*","DAW, VSTs, MIDI, AudioFX","stems/session → wav/mp3, session_project","persistent (session versions, presets)","LUFS_target=-14Â±1, clipping=0, noise_floor<-60dB"
+Maxey703,Mastering Engineer,Own mastering for production deliverables; maintain consistent loudness and quality.,Music,"compose_*, arrange_*, mix_*, master_*, render_*","DAW, VSTs, MIDI, AudioFX","stems/session → wav/mp3, session_project","persistent (session versions, presets)","LUFS_target=-14Â±1, clipping=0, noise_floor<-60dB"
+Maxey704,Vocal Producer/Tuner,Own vocal editing for production deliverables; maintain consistent loudness and quality.,Music,"compose_*, arrange_*, mix_*, master_*, render_*","DAW, VSTs, MIDI, AudioFX","stems/session → wav/mp3, session_project","persistent (session versions, presets)","LUFS_target=-14Â±1, clipping=0, noise_floor<-60dB"
+Maxey705,Sound Designer,Own sound creation for production deliverables; maintain consistent loudness and quality.,Music,"compose_*, arrange_*, mix_*, master_*, render_*","DAW, VSTs, MIDI, AudioFX","stems/session → wav/mp3, session_project","persistent (session versions, presets)","LUFS_target=-14Â±1, clipping=0, noise_floor<-60dB"
+Maxey712,A2A Protocol Agent,Provide beacon & message bus within the drone control stack; integrate with A2A bus.,DroneOS,"beacon_*, localize_*, simulate_*, safety_*","A2A Bus, GPS/IMU, Kalman Filter, PID",sensor_streams → pose_estimates / schedules / safety_events,"persistent (flight logs, calibration)","localization_error<0.5m, packet_loss<0.1%, safety_incidents=0"
+Maxey713,Trilateration/Localization,Provide position solving within the drone control stack; integrate with A2A bus.,DroneOS,"beacon_*, localize_*, simulate_*, safety_*","A2A Bus, GPS/IMU, Kalman Filter, PID",sensor_streams → pose_estimates / schedules / safety_events,"persistent (flight logs, calibration)","localization_error<0.5m, packet_loss<0.1%, safety_incidents=0"
+Maxey714,Kinematics Physics,Provide dynamics sim within the drone control stack; integrate with A2A bus.,DroneOS,"beacon_*, localize_*, simulate_*, safety_*","A2A Bus, GPS/IMU, Kalman Filter, PID",sensor_streams → pose_estimates / schedules / safety_events,"persistent (flight logs, calibration)","localization_error<0.5m, packet_loss<0.1%, safety_incidents=0"
+Maxey715,Beacon Scheduler,Provide timing & slots within the drone control stack; integrate with A2A bus.,DroneOS,"beacon_*, localize_*, simulate_*, safety_*","A2A Bus, GPS/IMU, Kalman Filter, PID",sensor_streams → pose_estimates / schedules / safety_events,"persistent (flight logs, calibration)","localization_error<0.5m, packet_loss<0.1%, safety_incidents=0"
+Maxey716,Geofence & Safety,Provide bounds & failsafe within the drone control stack; integrate with A2A bus.,DroneOS,"beacon_*, localize_*, simulate_*, safety_*","A2A Bus, GPS/IMU, Kalman Filter, PID",sensor_streams → pose_estimates / schedules / safety_events,"persistent (flight logs, calibration)","localization_error<0.5m, packet_loss<0.1%, safety_incidents=0"
+Maxey720,Research PM,Run program management with clear SLAs; maintain documentation and queues.,Ops,"intake_*, prioritize_*, assign_*, close_*","Issue Tracker, Docs, Dashboards",intake_form → backlog_item / report,"persistent (ops logs, runbooks)","sla_met>=95%, throughput/week>=N, backlog_age<14d"
+Maxey721,Reference Librarian,Run corpus curation with clear SLAs; maintain documentation and queues.,Ops,"intake_*, prioritize_*, assign_*, close_*","Issue Tracker, Docs, Dashboards",intake_form → backlog_item / report,"persistent (ops logs, runbooks)","sla_met>=95%, throughput/week>=N, backlog_age<14d"
+Maxey722,React Agent,"React (SPA/CSR), Hooks, Context","build_react_app, refactor_component, optimize_react_perf","Node, React, Vite, ESLint, Prettier, React Router, TanStack Query","feature_spec.md, design_tokens.json → src/.tsx, coverage/, perf-report.json",scratchpad→persistent (component library refs),TS strict ok; >95% type coverage; <100kb first-load JS; LCP<2.0s,Ships SSR-friendly patterns; integrates Storybook on request
+Maxey723,NextJS Agent,"Next.js (App Router, SSR/SSG/ISR)","build_next_app, add_api_route, edge_functions","Node, Next.js, Vercel, SWC, Middleware, next-auth (OIDC)","feature_spec.md, oauth_config.json → app/, pages/, api/**, vercel.json","persistent (routing map, data fetching model)",TTFB<200ms (edge); zero unhandled rejections,"Implements RSC, caching, draft mode, Route Handlers"
+Maxey724,NodeJS Agent,"Node.js services (REST/gRPC), perf & observability","build_node_service, add_endpoint, add_worker","Node, Express/Fastify, NestJS, OpenAPI, pino, Jest/Vitest","api_contract.yaml, env.example → src/.ts, docker/, openapi.json",persistent (service registry),p95<100ms; 0 memory leaks; graceful shutdown,Structured logging; healthz/readyz; OTel hooks
+Maxey725,Express Agent,Express.js API & middleware,"add_middleware, add_route, integrate_db","Express, Helmet, Zod, Prisma, OpenAPI","api_contract.yaml, schema.prisma → src/, prisma/, docker/**",scratchpad→persistent (DB schema history),100% route schema validation; 0 implicit any,"Rate limits, CORS, CSRF, input validation"
+Maxey726,NestJS Agent,NestJS modular services,"generate_module, add_guard, cqrs_command","NestJS, TypeORM/Prisma, class-validator, Swagger","feature_spec.md → src/, migration/, swagger.json",persistent (module graph),e2e green; DI graph acyclic; 0 circular deps,Guards/interceptors/filters prewired; health checks
+Maxey727,Vite Agent,"Vite build, HMR, code-splitting","optimize_build, split_chunks, env_setup","Vite, Rollup plugins, SWC/esbuild, source maps","vite.config.ts, env.example → dist/**, build-report.html",scratchpad,cold-start<300ms HMR; bundle size budget respected,Produces visualizer & perf hints
+Maxey728,Webpack Agent,"Webpack5 config, Module Federation","mf_setup, analyze_bundle, legacy_support","Webpack, MF, Babel, Terser, webpack-bundle-analyzer","webpack.config.js, mf.manifest.json → dist/**, stats.json",persistent (federation manifest),no duplicate deps; long-term caching correct,Outputs stats & recommendations
+Maxey729,ES Build Agent,esbuild pipelines,"setup_build, transpile_ts, minify","esbuild, tsup, tsx",tsconfig.json → build/**,scratchpad,build<2s for medium libs; TS strict,Great for libraries/CLIs
+Maxey730,Tailwind Agent,Tailwind CSS + design tokens,"add_tailwind, build_design_system, theme_dark_mode","Tailwind, PostCSS, shadcn/ui, Radix UI","tailwind.config.ts, tokens.json → styles.css, components/**",persistent (design tokens),unused CSS<5%; a11y AA+,Generates component storybook stories
+Maxey731,Bootstrap Agent,Bootstrap 5/5.3 + utilities,"migrate_bootstrap, responsive_grid, rtl_support","Bootstrap, Sass, PurgeCSS","design_spec.md → scss/, components/",scratchpad,CLS<0.1; mobile nav accessible,Removes dead CSS & jQuery deps
+Maxey732,MUI Agent,Material UI (MUI) + theming,"mui_theming, data_grid, a11y_review","MUI, Emotion/Styled, DataGrid, X Charts","theme.json → src/, stories/",persistent (theme registry),WCAG AA; keyboard navigation pass,Generates theme docs
+Maxey733,shadcn Agent,shadcn/ui + Radix primitives,"add_shadcn, compose_components, motion","shadcn/ui, Radix, Framer Motion, Tailwind","ui_spec.md → components/, lib/",scratchpad,consistent variants; no CSS leaks,Tree-shakes unused components
+Maxey734,ThreeJS Agent,"Three.js 3D, controls, shaders","embed_three_scene, pbr_setup, perf_budget","three, react-three-fiber (optional), glsl, postprocessing","scene_spec.json, model.glb → src/3d/**, perf-report.json",persistent (scene graph cache),frame time p95<16ms; draw calls minimized,Fallback to Canvas2D if WebGL fails
+Maxey735,BabylonJS Agent,Babylon.js PBR/physics,"babylon_scene, physics, inspector","babylonjs, cannon/es, oimo",scene_spec.json → src/3d/**,scratchpad,steady 60fps; GPU mem budget respected,Inspector gated behind dev flag
+Maxey736,D3 Agent,D3.js + React integration,"build_charts, animate_transitions, layout_graph","d3, topojson, observable patterns","dataset.csv, topo.json → src/viz/**",persistent (chart catalog),FPS>30 on 10k nodes; a11y labels present,Exports SVG/PNG
+Maxey737,Redux Toolkit Agent,Redux Toolkit + RTK Query,"add_slice, api_slice, normalize_entities","RTK, Immer, Reselect, RTK Query",state_spec.json → src/state/**,persistent (slice registry),no non-serializable state; actions typed,DevTools & time-travel wired
+Maxey738,Zustand Agent,Zustand lightweight state,"add_store, persist_store, selective_subs","zustand, immer, persist",state_spec.json → src/state/**,scratchpad,selector-based subs; no re-render storms,Great for RSC-incompatible areas
+Maxey739,RxJS Agent,"RxJS streams, WebSocket pipelines","stream_pipeline, retry_backoff, multicasting","rxjs, socket.io, ws, eventsource",stream_spec.md → src/streams/**,persistent (stream registry),no unbounded subjects; teardown complete,Backpressure + cancellation modeled
+Maxey740,GraphQL Agent,GraphQL/Apollo Server & Client,"build_schema, add_resolver, federation","Apollo, Mercurius, GraphQL Yoga, codegen","schema.graphql, codegen.yml → src/schema/, src/operations/",persistent (schema registry),N+1 eliminated; persisted queries enabled,Strong typing end-to-end
+Maxey741,tRPC Agent,tRPC E2E typesafe APIs,"create_router, merge_routers, caller_tests","tRPC, Zod, TanStack Query, Next.js",router_spec.ts → src/server/routers/**,scratchpad,strict types; server-side validation,Great for monorepos & Next.js
+Maxey742,Socket IO Agent,Socket.IO + presence,"realtime_room, presence, emit_backpressure","socket.io, redis adapter, ws",realtime_spec.md → src/realtime/**,persistent (channel registry),missed msg rateâ‰ˆ0; reconnection tested,Heartbeats + exponential backoff
+Maxey743,PWA Agent,"Service Workers, offline/PWA","pwa_enable, cache_strategy, push_notifications","Workbox, Web Push, Background Sync","pwa_manifest.json → public/**, sw.ts",persistent (cache manifest),Lighthouse PWA>90; offline-first works,Provides manifest & icons pipeline
+Maxey744,Testing Agent,Jest/Vitest + Playwright/Cypress,"unit_test, e2e_test, visual_regression","Jest, Vitest, Playwright, Cypress, Testing Library","test_plan.md → tests/, e2e/, coverage/**",persistent (test catalog),≥80% coverage; flake rate<1%,Parallelism + retries configured
+Maxey745,ES Lint Prettier Agent,ESLint + Prettier policy,"lint_fix, enforce_rules, ci_gate","ESLint, Prettier, lint-staged, husky",".eslintrc.cjs, .prettierrc → lint-report.txt",persistent (policy registry),0 lint blockers on main; precommit hooks,TS strictest reasonable defaults
+Maxey746,Security Agent,Web security & supply-chain,"threat_model, deps_audit, add_helmet","helmet, CORS, csrf, npm-audit, snyk",security_model.md → security-report.md,persistent (threat models),0 high vulns; CSP present; secrets redacted,OWASP ASVS alignment
+Maxey747,Auth Agent,"OAuth2/OIDC/SAML, session mgmt","oauth_setup, oidc_provider, session_security","next-auth, passport, jose, oidc-provider","auth_config.json → auth/, callbacks/",persistent (client registry),0 token leakage; rotation+PKCE enabled,MFA & WebAuthn optional
+Maxey748,Vercel Agent,Vercel deployments & previews,"deploy_vercel, env_setup, cache_tuning","Vercel CLI, Build outputs API","vercel.json, env.example → deploy-log.txt",scratchpad,0 failed builds; preview per PR,Edge functions ready
+Maxey749,Netlify Agent,Netlify + functions + redirects,"deploy_netlify, redirects, forms","Netlify CLI, redirects/headers",netlify.toml → deploy-log.txt,scratchpad,clean previews; redirects tested,Image CDN configured
+Maxey750,GitHub Actions Agent,CI/CD workflows,"ci_setup, release_tag, test_matrix","GitHub Actions, pnpm/yarn, caching",.github/workflows/** → ci-report.md,persistent (pipeline catalog),green main; cache hits>85%,Protects main with required checks

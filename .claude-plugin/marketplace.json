@@ -1,0 +1,85 @@
+{
+  "name": "maxey0",
+  "owner": {
+    "name": "mmc7676",
+    "url": "https://github.com/mmc7676"
+  },
+  "metadata": {
+    "description": "Maxey0 full stack: harness-neutral Context Graph + Execution Graph + SCW Runtime + Semantic/Drift Runtime + A2A Directory + MCP Directory + MCP Delivery + A2A integration + Engineering/Observability. Claude Code is one distribution surface; the core also ships adapters for Claude Agent SDK, OpenAI Agents SDK, LangChain/LangGraph, and Google ADK, plus MCP/A2A integration bundles for Codex, Claude, and ChatGPT.",
+    "version": "0.3.0"
+  },
+  "plugins": [
+    {
+      "name": "maxey0",
+      "source": "./plugins/maxey0",
+      "description": "Most agent infrastructure primarily adds capability to the execution plane. Maxey0 makes the contextual environment surrounding agentic execution an independently structured, routable, partitionable, and observable plane, while providing an engineering plane that can observe and tune both. The full stack: all three planes, ten slash commands, the role-agent slate, the Gate, and the Studio. Start here unless you know you want one plane.",
+      "category": "agents",
+      "keywords": [
+        "scw",
+        "context-engineering",
+        "agentic-loops",
+        "isolation",
+        "observability",
+        "interpretability",
+        "explainability",
+        "gate",
+        "maxey0"
+      ]
+    },
+    {
+      "name": "maxey0-context",
+      "source": "./plugins/maxey0-context",
+      "description": "The Context plane, alone. Partition the context window into typed, policy-enforced regions and bind each role to one \u2014 the runtime decides what it can read, not the prompt. 32 tools, a hash-chained ledger that replays to an identical window, and four assertions that test containment by attempting a real read. No library, no Gate, no agents.",
+      "category": "agents",
+      "keywords": [
+        "scw",
+        "structured-context-window",
+        "context-engineering",
+        "isolation",
+        "partition",
+        "maxey0"
+      ]
+    },
+    {
+      "name": "maxey0-loops",
+      "source": "./plugins/maxey0-loops",
+      "description": "The Loop plane, alone. Route a task against 16 concepts, 83 skills, 67 agents and 84 hardened loops, and get the formation already built for it instead of an improvised maker/checker pair. Holds no window state at all, so it runs against a fixed context scheme with nothing else installed. 10 tools.",
+      "category": "agents",
+      "keywords": [
+        "routing",
+        "agentic-loops",
+        "formations",
+        "multi-agent",
+        "orchestration",
+        "maxey0"
+      ]
+    },
+    {
+      "name": "maxey0-observe",
+      "source": "./plugins/maxey0-observe",
+      "description": "The Observatory plane, alone. The Gate stands at every tool call, attributes it to the role that made it, and refuses the ones reaching outside that role's declared scope \u2014 global workspace semantics for any session, with no window and no library required. 8 tools, a separately chained journal, and the Studio.",
+      "category": "agents",
+      "keywords": [
+        "observability",
+        "interpretability",
+        "explainability",
+        "gate",
+        "hooks",
+        "audit",
+        "maxey0"
+      ]
+    },
+    {
+      "name": "maxey0-lab",
+      "source": "./plugins/maxey0-lab",
+      "description": "Research tooling, not part of the product. The spec-driven experiment harness: workload specs, conditions, leak probes, and reports. Install this only if you are running a study \u2014 nothing in the three planes depends on it.",
+      "category": "agents",
+      "keywords": [
+        "experiment",
+        "measurement",
+        "research",
+        "maxey0"
+      ]
+    }
+  ]
+}

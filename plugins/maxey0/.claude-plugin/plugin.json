@@ -1,0 +1,58 @@
+{
+  "name": "maxey0",
+  "version": "0.3.0",
+  "description": "Most agent infrastructure primarily adds capability to the execution plane. Maxey0 makes the contextual environment surrounding agentic execution an independently structured, routable, partitionable, and observable plane, while providing an engineering plane that can observe and tune both.\n\nThe full stack: all three planes, ten slash commands, the role-agent slate, the Gate, and the Studio. 50 tools. Start here unless you know you want one plane.",
+  "author": {
+    "name": "mmc7676",
+    "url": "https://github.com/mmc7676"
+  },
+  "homepage": "https://maxey0.com",
+  "repository": "https://github.com/mmc7676/Maxey0",
+  "license": "Apache-2.0",
+  "keywords": [
+    "scw",
+    "context-engineering",
+    "agentic-loops",
+    "isolation",
+    "observability",
+    "interpretability",
+    "explainability",
+    "gate",
+    "maxey0"
+  ],
+  "mcpServers": {
+    "maxey0-context": {
+      "command": "python",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/context_server.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "MAXEY0_ROOT": "${CLAUDE_PLUGIN_ROOT}/server/vendor/maxey0",
+        "MAXEY0_LOOPS": "${CLAUDE_PLUGIN_ROOT}/server/vendor/data/loops.json"
+      }
+    },
+    "maxey0-loops": {
+      "command": "python",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/loops_server.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "MAXEY0_ROOT": "${CLAUDE_PLUGIN_ROOT}/server/vendor/maxey0",
+        "MAXEY0_LOOPS": "${CLAUDE_PLUGIN_ROOT}/server/vendor/data/loops.json"
+      }
+    },
+    "maxey0-observe": {
+      "command": "python",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/server/observe_server.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "MAXEY0_ROOT": "${CLAUDE_PLUGIN_ROOT}/server/vendor/maxey0",
+        "MAXEY0_LOOPS": "${CLAUDE_PLUGIN_ROOT}/server/vendor/data/loops.json"
+      }
+    }
+  }
+}

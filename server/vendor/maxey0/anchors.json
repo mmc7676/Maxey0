@@ -1,0 +1,68 @@
+{
+ "anchors": [
+  {
+   "id": "orchestration",
+   "x": 0,
+   "y": 100,
+   "c": "#6366f1",
+   "tags": [
+    "orchestrate",
+    "route",
+    "delegate",
+    "swarm",
+    "hierarchy",
+    "coordinate",
+    "latent",
+    "map"
+   ]
+  },
+  {
+   "id": "memory",
+   "x": -100,
+   "y": 0,
+   "c": "#8b5cf6",
+   "tags": [
+    "memory",
+    "state",
+    "persist",
+    "recall",
+    "tier",
+    "episodic",
+    "anchor",
+    "consolidate"
+   ]
+  },
+  {
+   "id": "observation",
+   "x": 100,
+   "y": 0,
+   "c": "#f59e0b",
+   "tags": [
+    "trace",
+    "monitor",
+    "telemetry",
+    "span",
+    "claim",
+    "hallucination",
+    "lineage",
+    "evaluate"
+   ]
+  },
+  {
+   "id": "infrastructure",
+   "x": 0,
+   "y": -100,
+   "c": "#64748b",
+   "tags": [
+    "infra",
+    "platform",
+    "deploy",
+    "protocol",
+    "mcp",
+    "tool",
+    "token",
+    "schema"
+   ]
+  }
+ ]
+}

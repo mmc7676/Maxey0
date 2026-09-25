@@ -1,0 +1,10 @@
+{
+  "name": "@maxey0/mcp-client-reference",
+  "version": "0.3.0",
+  "type": "module",
+  "private": false,
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@modelcontextprotocol/client": "^2.0.0"
+  }
+}

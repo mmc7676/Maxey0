@@ -1,0 +1,54 @@
+# Build context for the origin image (Dockerfile, deployed by fly.toml).
+#
+# The Dockerfile copies named paths only, never `COPY . .`, so this file is the
+# second line of defense rather than the only one. It still matters: anything
+# left in the context is one careless `COPY` away from an image layer, and an
+# image layer outlives the file it came from. `maxey0_ss/settings.py` loads
+# `<repo>/.env` automatically at start-up, so a `.env` that reached the image
+# would be both baked into a pushed layer and silently used as configuration.
+
+# --- Secrets. Never in the context, at any depth. --------------------------
+.env
+.env.*
+**/.env
+**/.env.*
+# The one dotenv file that is documentation, not configuration. It carries no
+# values (tests/test_configuration.py enforces that) and stays available.
+!.env.example
+config/credentials.json
+**/credentials.json
+# cloudflared's locally-managed tunnel credentials and origin certificate. The
+# Fly Machine uses a remotely-managed tunnel token supplied by `fly secrets`.
+**/.cloudflared/
+**/cert.pem
+*.pem
+*.key
+fly.secrets*
+
+# --- Version control, local environments, caches. --------------------------
+.git/
+.venv/
+venv/
+**/__pycache__/
+**/*.pyc
+.pytest_cache/
+**/.pytest_cache/
+*.egg-info/
+.claude/
+**/.wrangler/
+**/node_modules/
+
+# --- Build output and run output the origin does not serve. ----------------
+# The App bundle under mcp_apps/super_space_react/dist/ is gitignored and may
+# be stale or absent on the building machine; the image takes the tracked,
+# byte-identical edge copy instead (see the Dockerfile).
+dist/
+mcp_apps/super_space_react/dist/
+server/maxey0_studio/static/app/
+experiments/
+
+# --- Trees the origin never reads. Kept out to keep the context small. -----
+plugins/
+ui/
+site/
+sdks/

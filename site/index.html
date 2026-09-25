@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maxey0-SuperSpace</title>
+<meta name="description" content="Governed context and execution for agents: an explicit window address space, a gate at every tool call and every model egress, and a hash-chained record of both.">
+<link rel="manifest" href="/manifest.json">
+<style>
+  /* One token set with the MCP App and the Studio, so the three surfaces read
+     as one product. Every colour is declared once and redefined for dark. */
+  :root {
+    --bg: #f7f7f8; --surface: #ffffff; --sunken: #eeeeef;
+    --text: #141413; --muted: #5c5b57;      /* 6.7:1 on white */
+    --line: #8a8a85; --line-soft: #d6d5d0;  /* interactive holds 3:1 */
+    --accent: #3d3929;
+    --ok-bg: #e9f8ee; --ok-text: #14532d;
+    --warn-bg: #fdf4e3; --warn-text: #7a4a08;
+    --radius: 10px; --gap: 16px;
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141413; --surface: #1d1d1b; --sunken: #262624;
+      --text: #f5f4ef; --muted: #b0aea4;
+      --line: #6b6a64; --line-soft: #3a3a37;
+      --accent: #e8e5d8;
+      --ok-bg: #13301e; --ok-text: #a7e2bd;
+      --warn-bg: #33270f; --warn-text: #f0cd8a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141413; --surface: #1d1d1b; --sunken: #262624;
+    --text: #f5f4ef; --muted: #b0aea4;
+    --line: #6b6a64; --line-soft: #3a3a37;
+    --accent: #e8e5d8;
+    --ok-bg: #13301e; --ok-text: #a7e2bd;
+    --warn-bg: #33270f; --warn-text: #f0cd8a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 56px 16px 72px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 12px; }
+  h2 { font-size: 20px; margin: 40px 0 12px; }
+  .lede { font-size: 18px; color: var(--muted); margin: 0 0 8px; }
+  p { margin: 0 0 14px; }
+  code, pre { font-family: var(--mono); font-size: 14px; }
+  pre {
+    background: var(--sunken); border: 1px solid var(--line-soft);
+    border-radius: var(--radius); padding: 14px; overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; margin: 0 0 16px; }
+  th, td {
+    text-align: left; padding: 8px 10px; font-size: 15px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  th { color: var(--muted); font-weight: 600; font-size: 13px; }
+  td.num { font-family: var(--mono); white-space: nowrap; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line-soft);
+    border-radius: var(--radius); padding: 18px; margin: 0 0 var(--gap);
+  }
+  .callout {
+    background: var(--ok-bg); color: var(--ok-text);
+    border: 1px solid var(--line-soft); border-radius: var(--radius);
+    padding: 14px 16px; margin: 0 0 var(--gap);
+  }
+  .caution {
+    background: var(--warn-bg); color: var(--warn-text);
+    border: 1px solid var(--line-soft); border-radius: var(--radius);
+    padding: 14px 16px; margin: 0 0 var(--gap);
+  }
+  .muted { color: var(--muted); }
+  a { color: inherit; text-decoration-color: var(--line); }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  footer {
+    margin-top: 48px; padding-top: 18px;
+    border-top: 1px solid var(--line-soft);
+    color: var(--muted); font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Maxey0-SuperSpace</div>
+  <h1>Governed context and execution for agents</h1>
+  <p class="lede">
+    An explicit window address space, a gate at every tool call and every model
+    egress, and a hash-chained record of both that a third party can verify
+    without trusting the system that produced it.
+  </p>
+  <p class="muted">
+    Observability-first in a structural sense: there is no code path that
+    reaches outside a window without being admitted and recorded, because the
+    recording happens <em>before</em> the reach and a refusal is written as
+    evidence rather than as silence.
+  </p>
+
+  <h2>What it does</h2>
+  <p>
+    <strong>One window address space.</strong> An SCW is an explicit,
+    enforceable application-level address — not a session, not a process. It
+    is carried between stateless requests as a handle, which is the mechanism
+    MCP 2026-07-28 provides for exactly this.
+  </p>
+  <p>
+    <strong>A gate at every boundary.</strong> Tool calls and model egress are
+    admitted by the same provider. A deployment that names a semantic provider
+    this build does not implement fails closed: a request for stricter gating
+    is never answered with less.
+  </p>
+  <p>
+    <strong>A record that is evidence.</strong> Every decision is appended to
+    a hash-chained log whose digest covers the entry before it, so a removed
+    record is detectable rather than invisible. The verifier is published and
+    needs no knowledge of how decisions are made —
+    <code>maxey0-ss.evidence.verify</code> checks records you hold against a
+    chain you did not have to trust.
+  </p>
+  <p class="muted">
+    <strong>Egress is observed.</strong> A prompt leaving for
+    <code>api.anthropic.com</code> is a larger event than a read between two
+    windows, and it is recorded as one — with the prompt digested, never
+    stored, because the containment record is published and a published
+    record carrying prompts would be a published record of user data.
+  </p>
+
+  <h2>Install</h2>
+  <pre>/plugin marketplace add mmc7676/Maxey0
+/plugin install maxey0@maxey0</pre>
+  <p class="muted">
+    Eighteen installable targets across nine platforms — Claude Code, Claude
+    Desktop, Claude connectors, ChatGPT, Codex, MCP over stdio and Streamable
+    HTTP, and A2A. Every manifest is generated from one declaration, so the
+    plugin id, the package name and the MCP server name cannot disagree.
+  </p>
+
+  <h2>What it is</h2>
+  <table>
+    <tbody>
+      <tr><td>Window address space</td><td class="muted">explicit and enforceable, carried between stateless requests as a handle</td></tr>
+      <tr><td>Gate</td><td class="muted">tool calls and model egress, same provider; a configured-but-unimplemented provider fails closed</td></tr>
+      <tr><td>Record</td><td class="muted">hash-chained, with a published verifier that needs no knowledge of how decisions are made</td></tr>
+      <tr><td>Egress</td><td class="muted">prompts digested, never stored — the record is published, and a published record carrying prompts would be a published record of user data</td></tr>
+      <tr><td>Protocol</td><td class="muted">MCP 2026-07-28, 29 tools, stdio and Streamable HTTP</td></tr>
+    </tbody>
+  </table>
+
+  <div class="caution">
+    <strong>Before you expose it.</strong> Set <code>MAXEY0_PUBLIC=1</code> on
+    anything internet-reachable. Without it, and with authorization disabled,
+    every caller resolves to admin.
+    <code>maxey0-ss.auth.manifest</code> reports
+    <code>admin_open: true</code> when you are in that state, with a warning
+    naming the fix.
+  </div>
+
+  <footer>
+    Maxey0 owns the application-level window, routing, gating and observability
+    boundary. The model and the agent harness remain external, and no provider
+    SDK is a hard dependency. · Apache-2.0
+  </footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Normalize line endings for source.
+* text=auto
+
+# Artifacts whose bytes are their identity.
+#
+# `maxey0-ss.app.artifact` and `/health` publish a sha256 of the MCP App, and
+# the edge copy is asserted byte-identical to the origin copy by
+# `test_edge_app_artifact_is_byte_identical_to_the_origin`. Under `text=auto`
+# git would check these out with CRLF on Windows, changing the digest and
+# failing that assertion on a fresh clone. Treat them as binary.
+workers/mcp-edge/src/generated/super-space.html -text
+mcp_apps/super_space_react/dist/mcp-app.html    -text
+mcp_apps/super_space.html                       -text
+
+# Files executed inside the Linux image. A Windows checkout under `text=auto`
+# would give deploy/entrypoint.sh CRLF endings, and `#!/bin/sh\r` fails at
+# container start with a bare "not found" -- after the deploy has already
+# replaced the running Machine. The Dockerfile also refuses a CRLF entrypoint.
+*.sh        text eol=lf
+Dockerfile  text eol=lf

@@ -1,0 +1,8 @@
+{
+  "type": "mcp",
+  "server_label": "maxey0-ss",
+  "server_url": "https://mcp.maxey0.com/mcp",
+  "server_description": "Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.",
+  "require_approval": "always",
+  "_note": "require_approval is 'always' on purpose. This surface creates and closes windows and sends model egress; a connector that does those silently defeats the point of the record."
+}

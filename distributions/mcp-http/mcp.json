@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "maxey0-ss": {
+      "type": "http",
+      "url": "https://mcp.maxey0.com/mcp"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Maxey0 for ChatGPT",
+  "name_for_model": "maxey0_ss",
+  "description_for_human": "Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.",
+  "description_for_model": "Governed context and execution. Create and describe SCW windows, inspect the gate on an explicit SCW address, observe host-supplied context partitions, send gated model egress, and read the hash-chained containment record. Every tool call and every model egress is attributed to a window and attested.",
+  "version": "0.3.0",
+  "mcp": {
+    "url": "https://mcp.maxey0.com/mcp",
+    "protocol_version": "2026-07-28",
+    "tools": 29,
+    "resources": 3
+  },
+  "ui": {
+    "resource_uri": "ui://maxey0-ss/super-space.html",
+    "supports_inline_app": true
+  },
+  "auth": {
+    "type": "bearer",
+    "note": "The live origin rejects unauthenticated tools/call with a role-'public' permission error; bearer is required for tool execution, not merely supported."
+  },
+  "contact_email": "support@maxey0.com",
+  "legal_info_url": "https://maxey0.com/legal",
+  "logo_url": "https://maxey0.com/logo.png"
+}

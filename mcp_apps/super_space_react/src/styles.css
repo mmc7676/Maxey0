@@ -1,0 +1,482 @@
+/* ---------------------------------------------------------------------------
+ * Maxey0-SuperSpace — MCP App stylesheet.
+ *
+ * Every value the host can own is bound to an MCP Apps style variable with a
+ * local fallback:  var(--color-text-primary, #141413).
+ *
+ * The host sets these on <html> via applyHostStyleVariables(), and sets
+ * data-theme via applyDocumentTheme(). Hosts may send ANY SUBSET, so each
+ * property carries its own fallback rather than relying on a whole palette
+ * arriving. The [data-theme="dark"] block supplies dark fallbacks for hosts
+ * that report a theme but send no variables.
+ *
+ * Nothing below is a bare literal outside the :root / [data-theme] token
+ * blocks. Add a color here, not at a call site.
+ * ------------------------------------------------------------------------ */
+
+:root {
+  /* Type ------------------------------------------------------------------ */
+  --ss-font-sans: var(--font-sans, ui-sans-serif, system-ui, -apple-system, sans-serif);
+  --ss-font-mono: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+
+  /* A real scale. Previously 25/16/13/12/11 put four sizes in a 5px band and
+     made <h2> identical to body text. */
+  --ss-size-h1:   var(--font-heading-lg-size, 25px);
+  --ss-size-h2:   var(--font-heading-xs-size, 19px);
+  --ss-size-body: var(--font-text-md-size, 15px);
+  --ss-size-sm:   var(--font-text-sm-size, 13px);
+  --ss-size-xs:   var(--font-text-xs-size, 12px);   /* floor: never below 12px */
+
+  --ss-line-tight: 1.2;
+  --ss-line-body: 1.5;
+
+  --ss-weight-normal:   var(--font-weight-normal, 400);
+  --ss-weight-medium:   var(--font-weight-medium, 500);
+  --ss-weight-semibold: var(--font-weight-semibold, 600);
+  --ss-weight-bold:     var(--font-weight-bold, 700);
+
+  /* Surfaces -------------------------------------------------------------- */
+  --ss-bg:      var(--color-background-secondary, #f7f7f8);
+  --ss-surface: var(--color-background-primary, #ffffff);
+  --ss-sunken:  var(--color-background-tertiary, #eeeeef);
+
+  /* Text ------------------------------------------------------------------ */
+  --ss-text:         var(--color-text-primary, #141413);
+  --ss-text-muted:   var(--color-text-secondary, #5c5b57);   /* 6.7:1 on white */
+  --ss-text-inverse: var(--color-text-inverse, #ffffff);
+
+  /* Borders. --ss-border is used for every INTERACTIVE boundary and must hold
+     3:1 against --ss-surface (WCAG 2.1 SC 1.4.11). #8a8a85 = 3.45:1 on white.
+     --ss-border-soft is decorative only (card edges, dividers). */
+  --ss-border:      var(--color-border-primary, #8a8a85);
+  --ss-border-soft: var(--color-border-secondary, #d6d5d0);
+
+  /* State ----------------------------------------------------------------- */
+  --ss-success-bg:   var(--color-background-success, #e9f8ee);
+  --ss-success-text: var(--color-text-success, #14532d);
+  --ss-success-line: var(--color-border-success, #5a9c74);
+
+  --ss-danger-bg:    var(--color-background-danger, #fdeaea);
+  --ss-danger-text:  var(--color-text-danger, #8a1c1c);
+  --ss-danger-line:  var(--color-border-danger, #c47c7c);
+
+  --ss-warning-bg:   var(--color-background-warning, #fdf4e3);
+  --ss-warning-text: var(--color-text-warning, #7a4a08);
+  --ss-warning-line: var(--color-border-warning, #c9a05a);
+
+  --ss-neutral-bg:   var(--color-background-tertiary, #eeeeef);
+
+  --ss-ring: var(--color-ring-primary, #2f6feb);
+
+  /* Radius ---------------------------------------------------------------- */
+  --ss-radius-control: var(--border-radius-md, 9px);
+  --ss-radius-surface: var(--border-radius-lg, 14px);
+  --ss-radius-pill:    var(--border-radius-full, 999px);
+
+  /* Spacing — 4px grid, no stray 18/20 values ----------------------------- */
+  --ss-1: 4px;
+  --ss-2: 8px;
+  --ss-3: 12px;
+  --ss-4: 16px;
+  --ss-5: 20px;
+  --ss-6: 24px;
+
+  /* Minimum hit target. Raised to 44px on coarse pointers / narrow widths. */
+  --ss-target: 36px;
+
+  color: var(--ss-text);
+  background: var(--ss-bg);
+  font-family: var(--ss-font-sans);
+  font-size: var(--ss-size-body);
+}
+
+/* Dark fallbacks for hosts that report a theme but send no style variables.
+   When the host DOES send variables they win, because each var() above
+   resolves the host value before reaching these fallbacks. */
+[data-theme="dark"] {
+  --ss-bg:      var(--color-background-secondary, #262625);
+  --ss-surface: var(--color-background-primary, #1f1e1d);
+  --ss-sunken:  var(--color-background-tertiary, #30302e);
+
+  --ss-text:         var(--color-text-primary, #f5f4ef);
+  --ss-text-muted:   var(--color-text-secondary, #b8b6ad);
+  --ss-text-inverse: var(--color-text-inverse, #1f1e1d);
+
+  --ss-border:      var(--color-border-primary, #6c6b66);
+  --ss-border-soft: var(--color-border-secondary, #3e3e3b);
+
+  --ss-success-bg:   var(--color-background-success, #16301f);
+  --ss-success-text: var(--color-text-success, #9be8b8);
+  --ss-success-line: var(--color-border-success, #3f7a58);
+
+  --ss-danger-bg:    var(--color-background-danger, #3a1f1f);
+  --ss-danger-text:  var(--color-text-danger, #f7b4b4);
+  --ss-danger-line:  var(--color-border-danger, #7a4444);
+
+  --ss-warning-bg:   var(--color-background-warning, #3a2f18);
+  --ss-warning-text: var(--color-text-warning, #f0cd8d);
+  --ss-warning-line: var(--color-border-warning, #7a6234);
+
+  --ss-neutral-bg:   var(--color-background-tertiary, #30302e);
+  --ss-ring: var(--color-ring-primary, #7aa2f7);
+}
+
+/* --------------------------------------------------------------------------
+ * Base
+ * ----------------------------------------------------------------------- */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ss-bg);
+  color: var(--ss-text);
+}
+
+.space {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: var(--ss-6);
+}
+
+/* One visible focus treatment everywhere. The previous sheet overrode button
+   borders and left focus to the UA, so it differed per browser. */
+:focus-visible {
+  outline: 2px solid var(--ss-ring);
+  outline-offset: 2px;
+  border-radius: var(--ss-radius-control);
+}
+
+/* --------------------------------------------------------------------------
+ * Header
+ * ----------------------------------------------------------------------- */
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--ss-5);
+  margin-bottom: var(--ss-4);
+}
+
+.eyebrow {
+  font-size: var(--ss-size-xs);
+  letter-spacing: 0.14em;
+  font-weight: var(--ss-weight-bold);
+  text-transform: uppercase;
+  color: var(--ss-text-muted);
+}
+
+h1 {
+  margin: var(--ss-1) 0 0;
+  font-size: var(--ss-size-h1);
+  line-height: var(--ss-line-tight);
+  font-weight: var(--ss-weight-bold);
+}
+
+h2 {
+  font-size: var(--ss-size-h2);
+  line-height: var(--ss-line-tight);
+  font-weight: var(--ss-weight-semibold);
+  margin: 0 0 var(--ss-3);
+}
+
+.muted {
+  color: var(--ss-text-muted);
+  font-size: var(--ss-size-sm);
+  line-height: var(--ss-line-body);
+}
+
+/* --------------------------------------------------------------------------
+ * Layout
+ * ----------------------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ss-4);
+  margin-bottom: var(--ss-4);
+}
+
+/* One panel component. Previously `.card, article { … }` defined the same
+   thing twice under two names and the markup used them interchangeably. */
+.card {
+  background: var(--ss-surface);
+  border: 1px solid var(--ss-border-soft);
+  border-radius: var(--ss-radius-surface);
+  padding: var(--ss-4);
+}
+
+/* --------------------------------------------------------------------------
+ * Controls
+ * ----------------------------------------------------------------------- */
+
+label {
+  display: block;
+  font-size: var(--ss-size-xs);
+  font-weight: var(--ss-weight-semibold);
+  margin: var(--ss-3) 0 0;
+  color: var(--ss-text);
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  min-height: var(--ss-target);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius-control);
+  padding: var(--ss-2) var(--ss-3);
+  margin-top: var(--ss-1);
+  font: inherit;
+  color: var(--ss-text);
+  background: var(--ss-surface);
+}
+
+textarea {
+  min-height: 132px;
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-size-xs);
+  line-height: var(--ss-line-body);
+  resize: vertical;
+}
+
+textarea[aria-invalid="true"] {
+  border-color: var(--ss-danger-line);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ss-text-muted);
+  opacity: 1;
+}
+
+button {
+  min-height: var(--ss-target);
+  border: 1px solid var(--ss-border);
+  background: var(--ss-surface);
+  color: var(--ss-text);
+  border-radius: var(--ss-radius-control);
+  padding: var(--ss-2) var(--ss-3);
+  font: inherit;
+  font-weight: var(--ss-weight-medium);
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) { background: var(--ss-sunken); }
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.active,
+button[aria-selected="true"] {
+  background: var(--ss-text);
+  color: var(--ss-text-inverse);
+  border-color: var(--ss-text);
+}
+
+button.danger {
+  border-color: var(--ss-danger-line);
+  color: var(--ss-danger-text);
+}
+button.danger:hover:not(:disabled) { background: var(--ss-danger-bg); }
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ss-2);
+  margin-top: var(--ss-3);
+}
+
+/* --------------------------------------------------------------------------
+ * Tabs
+ * ----------------------------------------------------------------------- */
+
+.tabs {
+  display: flex;
+  gap: var(--ss-2);
+  margin-bottom: var(--ss-4);
+}
+
+/* --------------------------------------------------------------------------
+ * State pill
+ * ----------------------------------------------------------------------- */
+
+.pill {
+  display: inline-block;
+  padding: var(--ss-1) var(--ss-3);
+  min-height: var(--ss-target);
+  line-height: calc(var(--ss-target) - 10px);
+  border-radius: var(--ss-radius-pill);
+  border: 1px solid var(--ss-border-soft);
+  background: var(--ss-neutral-bg);
+  color: var(--ss-text);
+  font-size: var(--ss-size-xs);
+  font-weight: var(--ss-weight-semibold);
+  white-space: nowrap;
+}
+
+/* State is carried by the text label as well as the color, so this never
+   relies on color alone (SC 1.4.1). The border reinforces it further. */
+.pill.allowed     { background: var(--ss-success-bg); color: var(--ss-success-text); border-color: var(--ss-success-line); }
+.pill.denied      { background: var(--ss-danger-bg);  color: var(--ss-danger-text);  border-color: var(--ss-danger-line); }
+.pill.invalid     { background: var(--ss-warning-bg); color: var(--ss-warning-text); border-color: var(--ss-warning-line); }
+.pill.not_checked { background: var(--ss-neutral-bg); color: var(--ss-text-muted);   border-color: var(--ss-border-soft); }
+
+/* --------------------------------------------------------------------------
+ * Definition list
+ * ----------------------------------------------------------------------- */
+
+dl { margin: 0; }
+
+dt {
+  font-size: var(--ss-size-xs);
+  font-weight: var(--ss-weight-semibold);
+  color: var(--ss-text-muted);
+  margin-top: var(--ss-2);
+}
+
+dd {
+  margin: var(--ss-1) 0 0;
+  font-size: var(--ss-size-sm);
+  word-break: break-word;
+}
+
+/* --------------------------------------------------------------------------
+ * Output regions
+ * ----------------------------------------------------------------------- */
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow: auto;
+  min-height: 120px;
+  max-height: 360px;
+  padding: var(--ss-3);
+  background: var(--ss-sunken);
+  border: 1px solid var(--ss-border-soft);
+  border-radius: var(--ss-radius-control);
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-size-xs);
+  line-height: var(--ss-line-body);
+}
+
+.status-line {
+  font-size: var(--ss-size-sm);
+  color: var(--ss-text-muted);
+  margin: 0 0 var(--ss-2);
+}
+
+/* Errors get their own treatment. Previously an error and a success rendered
+   identically into the same monospace block. */
+.error {
+  padding: var(--ss-3);
+  border: 1px solid var(--ss-danger-line);
+  background: var(--ss-danger-bg);
+  color: var(--ss-danger-text);
+  border-radius: var(--ss-radius-control);
+  font-size: var(--ss-size-sm);
+  line-height: var(--ss-line-body);
+  margin-bottom: var(--ss-3);
+}
+
+.notice {
+  padding: var(--ss-3);
+  border: 1px solid var(--ss-warning-line);
+  background: var(--ss-warning-bg);
+  color: var(--ss-warning-text);
+  border-radius: var(--ss-radius-control);
+  font-size: var(--ss-size-sm);
+  line-height: var(--ss-line-body);
+  margin-top: var(--ss-2);
+}
+
+/* --------------------------------------------------------------------------
+ * SCW directory — a selectable list, not a JSON dump
+ * ----------------------------------------------------------------------- */
+
+.scw-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ss-2);
+  max-height: 300px;
+  overflow: auto;
+}
+
+.scw-item {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ss-1);
+  text-align: left;
+  padding: var(--ss-3);
+  border: 1px solid var(--ss-border-soft);
+  border-radius: var(--ss-radius-control);
+  background: var(--ss-surface);
+  cursor: pointer;
+}
+
+.scw-item:hover { background: var(--ss-sunken); }
+
+.scw-item[aria-pressed="true"] {
+  border-color: var(--ss-border);
+  background: var(--ss-sunken);
+  box-shadow: inset 3px 0 0 0 var(--ss-text);
+}
+
+.scw-id {
+  font-family: var(--ss-font-mono);
+  font-size: var(--ss-size-sm);
+  font-weight: var(--ss-weight-semibold);
+}
+
+.scw-meta {
+  font-size: var(--ss-size-xs);
+  color: var(--ss-text-muted);
+}
+
+.empty {
+  font-size: var(--ss-size-sm);
+  color: var(--ss-text-muted);
+  padding: var(--ss-4);
+  text-align: center;
+  border: 1px dashed var(--ss-border-soft);
+  border-radius: var(--ss-radius-control);
+}
+
+/* --------------------------------------------------------------------------
+ * Footer
+ * ----------------------------------------------------------------------- */
+
+footer {
+  color: var(--ss-text-muted);
+  font-size: var(--ss-size-xs);
+  margin-top: var(--ss-6);
+  line-height: var(--ss-line-body);
+}
+
+/* --------------------------------------------------------------------------
+ * Responsive / input modality
+ * ----------------------------------------------------------------------- */
+
+@media (max-width: 800px) {
+  :root { --ss-target: 44px; }            /* SC 2.5.5 on the narrow layout */
+  .grid { grid-template-columns: 1fr; }
+  .space { padding: var(--ss-4); }
+  header { flex-direction: column; }
+}
+
+/* Coarse pointers get the larger target at any width. */
+@media (pointer: coarse) {
+  :root { --ss-target: 44px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

@@ -1,0 +1,44 @@
+{
+  "loops": [
+    {
+      "id": "custom:3man",
+      "title": "3man",
+      "provenance": "custom",
+      "source_files": [
+        "designed in Maxey0 Studio"
+      ],
+      "status": "validated",
+      "execution_mode": "in-window",
+      "topic": "custom",
+      "concept_tags": [],
+      "skill_tags": [],
+      "topology": "chain",
+      "agent_stages": [
+        {
+          "agent_id": "Maxey0",
+          "agent_name": "SuperAgent Orchestrator"
+        },
+        {
+          "agent_id": "Maxey10",
+          "agent_name": "Context Window Architect"
+        },
+        {
+          "agent_id": "Maxey28",
+          "agent_name": "Neighborhood Graph Builder"
+        }
+      ],
+      "hardening": {
+        "checked": true,
+        "method": "Maxey0 Studio designer preview (real ContextWindow)",
+        "passed": true,
+        "bound_holds": true,
+        "breaches": [],
+        "widest_read_closure": 2,
+        "verdict": "3/6 regions refuse all grants; the widest scope reads 2/6; 0 containment breaches",
+        "reduction_ratio": 3.64,
+        "negative_controls_refused": "6/6"
+      },
+      "notes": "Designed in Maxey0 Studio."
+    }
+  ]
+}

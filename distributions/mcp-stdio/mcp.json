@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "maxey0-ss": {
+      "command": "python",
+      "args": [
+        "-m",
+        "maxey0_ss.mcp_stdio_server"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}

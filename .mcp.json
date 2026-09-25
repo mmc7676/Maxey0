@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "maxey0-ss": {
+      "command": ".venv/Scripts/maxey0-ss-mcp.exe",
+      "args": []
+    }
+  }
+}

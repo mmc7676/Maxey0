@@ -1,0 +1,96 @@
+{
+  "manifest_version": "0.4",
+  "name": "maxey0_superspace_mcp_2026",
+  "display_name": "Maxey0-SuperSpace",
+  "version": "0.3.0",
+  "description": "Maxey0-SuperSpace public full stack aligned to MCP 2026-07-28: enforceable SCW address space, stateless MCP transport, cache-aware routing, authorization boundaries, A2A, harness adapters, observability, and MCP Apps.",
+  "long_description": "Maxey0 makes the context window addressable: typed regions, per-role scopes, and isolation enforced at the tool layer rather than by prompt wording. A region declares what it is (reference, durable, episodic, working, scratchpad) and the runtime holds every call against it \u2014 a bound role reads its own region and is refused elsewhere, a read-only reference region refuses the role that consumes it, and a verdict is refused unless the judge's read closure provably excludes the maker's write closure. Every decision lands in a hash-chained ledger that replays to an identical window. `context_admit` gates what a role's own output is allowed to become once it exists \u2014 approve, summarize, redact, or reject a declared handoff \u2014 and `context_assert_admitted` finds any handoff a scope permits that no such decision has ever governed.\n\nContainment is tested rather than declared. Two of the five assertions perform a real read through the real authorization path, so a refusal is produced by the enforcement layer and recorded as an event replay reproduces; the other three compute over the region graph or the ledger's recorded decisions and say so. This bundle installs 47 tools: the Context plane's 32, the Loop plane's 10 over a library of 16 concepts, 83 skills, 67 agents and 84 hardened loops, and 5 of the Observatory's 8. It also ships a local browser app for designing, inspecting and visualizing partitions.\n\nWhat this bundle does NOT include: the Gate. The Gate attributes a delegated agent's own tool calls to the role that made them and can refuse the ones reaching outside its scope \u2014 and it needs a host that runs hooks and dispatches subagents. A Claude Desktop extension declares an MCP server and nothing else, and Desktop does not dispatch subagents, so there are no delegated actors to attribute. Nothing is missing here that this host could use; the Gate ships in the Claude Code plugin, where both conditions hold.\n\nRuns on the UV runtime: Claude Desktop installs Python and every dependency, including pydantic, automatically. Nothing to pip install by hand, on any platform.",
+  "author": {
+    "name": "mmc7676",
+    "url": "https://github.com/mmc7676"
+  },
+  "homepage": "https://maxey0.com",
+  "documentation": "https://github.com/mmc7676/Maxey0/blob/main/README.md",
+  "support": "https://github.com/mmc7676/Maxey0/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mmc7676/Maxey0"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "scw",
+    "structured-context-window",
+    "maxey0",
+    "context-engineering",
+    "loop-engineering",
+    "agentic-loops",
+    "isolation",
+    "observability",
+    "gate",
+    "interpretability",
+    "explainability"
+  ],
+  "server": {
+    "type": "uv",
+    "entry_point": "server/mcpb_entry.py",
+    "mcp_config": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "${__dirname}",
+        "server/mcpb_entry.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1",
+        "MAXEY0_ROOT": "${__dirname}/server/vendor/maxey0",
+        "MAXEY0_LOOPS": "${__dirname}/server/vendor/data/loops.json"
+      }
+    }
+  },
+  "compatibility": {
+    "runtimes": {
+      "python": ">=3.10"
+    }
+  },
+  "user_config": {
+    "event_log": {
+      "type": "string",
+      "title": "Event log path",
+      "description": "Where the hash-chained SCW event log is appended. Leave blank to use ~/.scw/events.jsonl. Point several installs at separate files if you do not want their runs interleaved in one chain.",
+      "required": false,
+      "default": ""
+    },
+    "observe_gate_mode": {
+      "type": "string",
+      "title": "Gate mode",
+      "description": "enforce refuses out-of-scope agent tool calls; observe records them without blocking (the default, and the only way to measure what agents attempt); off makes the gate inert.",
+      "required": false,
+      "default": "observe"
+    },
+    "gate_log": {
+      "type": "string",
+      "title": "Gate journal path",
+      "description": "Where the gate's own hash-chained journal is appended. Blank uses ~/.scw/gate.jsonl. Kept separate from the SCW event log on purpose: two processes appending to one chained file destroy it.",
+      "required": false,
+      "default": ""
+    }
+  },
+  "distribution": {
+    "harness_adapters": [
+      "claude-agent-sdk",
+      "openai-agents",
+      "langchain",
+      "google-adk"
+    ],
+    "client_surfaces": [
+      "claude-code",
+      "codex",
+      "claude",
+      "chatgpt"
+    ],
+    "mcp_delivery": true,
+    "a2a_directory": true,
+    "website": "https://maxey0.com"
+  }
+}

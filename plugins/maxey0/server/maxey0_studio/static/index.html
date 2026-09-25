@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maxey0</title>
+<link rel="stylesheet" href="/studio.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>◱</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="glyph">◱</span>
+    <div>
+      <strong>Maxey0</strong>
+      <small id="brand-sub">loading…</small>
+    </div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-view="overview" class="active">Overview</button>
+    <button data-view="mission">Mission Control</button>
+    <button data-view="concepts">Concepts</button>
+    <button data-view="loops">Loops</button>
+    <button data-view="designer">Designer</button>
+    <button data-view="window">Window</button>
+    <button data-view="semantic">Semantic</button>
+    <button data-view="evidence">Evidence</button>
+    <button data-view="gate">Gate</button>
+  </nav>
+  <div class="topactions">
+    <span id="run-badge" class="badge" title="Live window run id">—</span>
+    <button id="btn-verify" class="ghost" title="Verify the hash chain and replay">Verify chain</button>
+    <button id="btn-reset" class="ghost danger" title="Tear down the window and start a fresh run">Reset window</button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ───────────────────────────── overview ───────────────────────────── -->
+  <section class="view" data-view="overview">
+    <div class="grid-2">
+      <div class="card">
+        <h2>Route a task</h2>
+        <p class="muted">The decision this system exists to make: does a hardened
+        loop already cover this work — with its partition already configured — or
+        must one be assembled from skills, then agents?</p>
+        <div class="row">
+          <input id="route-input" type="text" placeholder="e.g. promote a memory record through the working and episodic tiers">
+          <button id="route-go" class="primary">Route</button>
+        </div>
+        <div id="route-result" class="result"></div>
+      </div>
+      <div class="card">
+        <h2>What is loaded</h2>
+        <div id="counts" class="statgrid"></div>
+        <h3>Sources</h3>
+        <div id="sources" class="kv small"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>How this works</h2>
+      <div class="grid-3">
+        <div class="explain">
+          <span class="step">1</span>
+          <h4>Concepts route</h4>
+          <p>A task is scored against Maxey0's 16 concept tag vocabularies. The
+          winning concepts decide which loops are even candidates.</p>
+        </div>
+        <div class="explain">
+          <span class="step">2</span>
+          <h4>Loops carry their partition</h4>
+          <p>Each loop in the library was hardened by being built against a real
+          <code>ContextWindow</code>: regions created, roles bound, every negative
+          control actually attempted and actually refused.</p>
+        </div>
+        <div class="explain">
+          <span class="step">3</span>
+          <h4>SCWs enforce it</h4>
+          <p>A bound role reads its own region and whatever it holds an explicit,
+          expiring grant for. Anything else raises a refusal — that is the wall,
+          and it is in the runtime, not in a prompt.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────── mission control ──────────────────────── -->
+  <section class="view hidden" data-view="mission">
+    <canvas id="mc-fabric" class="mc-fabric"></canvas>
+    <div class="mc-wrap">
+      <div class="card mc-console">
+        <h2>Concept → Skill → Agent → Dispatch</h2>
+        <p class="muted small">Creating an SCW here goes through the same
+        hierarchy as everything else in Maxey0 — pick what's doing the work
+        before there's anywhere for it to write. Every region created is real;
+        every dispatch is a real <code>write()</code> against a real,
+        enforced token budget.</p>
+
+        <div class="mc-field">
+          <label>concept</label>
+          <select id="mc-concept"><option value="">— any —</option></select>
+        </div>
+        <div class="mc-field">
+          <label>skill</label>
+          <select id="mc-skill" disabled><option value="">— any —</option></select>
+          <div id="mc-skill-desc" class="muted small"></div>
+        </div>
+        <div class="mc-field">
+          <label>agent</label>
+          <select id="mc-agent" disabled><option value="">— unbound —</option></select>
+        </div>
+
+        <div class="mc-field">
+          <label>target scw</label>
+          <select id="mc-target"><option value="__new__">+ new scw</option></select>
+        </div>
+        <div id="mc-new-fields">
+          <div class="mc-row">
+            <div class="mc-field" style="flex:2">
+              <label>label</label>
+              <input id="mc-label" type="text" placeholder="auto">
+            </div>
+            <div class="mc-field">
+              <label>count</label>
+              <input id="mc-count" type="text" value="1">
+            </div>
+          </div>
+          <div class="mc-row">
+            <div class="mc-field" style="flex:1">
+              <label>region type</label>
+              <select id="mc-region-type">
+                <option value="working">working</option>
+                <option value="durable">durable</option>
+                <option value="episodic">episodic</option>
+                <option value="scratchpad">scratchpad</option>
+              </select>
+            </div>
+            <div class="mc-field" style="flex:1">
+              <label>token ceiling</label>
+              <input id="mc-ceiling" type="text" value="8000">
+            </div>
+          </div>
+        </div>
+
+        <div class="mc-field">
+          <label>prompt</label>
+          <textarea id="mc-prompt" rows="3" placeholder="what should this scw's agent do…"></textarea>
+        </div>
+        <div class="row spread">
+          <button id="mc-dispatch" class="primary">Dispatch</button>
+          <span id="mc-mode-badge" class="badge">—</span>
+        </div>
+
+        <div id="mc-drop" class="mc-drop">drag a file here to write it into the target scw</div>
+        <div id="mc-status" class="muted small"></div>
+
+        <div class="mc-field" style="margin-top:14px">
+          <label>anthropic api key</label>
+          <div id="mc-key-status" class="muted small">checking…</div>
+        </div>
+      </div>
+
+      <div class="card mc-grid-card">
+        <div class="row spread">
+          <h2>Observation grid <small id="mc-source-label" class="muted"></small></h2>
+          <div class="row">
+            <select id="mc-source">
+              <option value="studio">Studio standalone</option>
+              <option value="live">This coding session</option>
+            </select>
+            <button id="mc-refresh" class="ghost">Refresh</button>
+          </div>
+        </div>
+        <div id="mc-live-note" class="muted small hidden"></div>
+        <div class="row spread mc-pagerow">
+          <span id="mc-pageinfo" class="muted small"></span>
+          <div class="row">
+            <button id="mc-prev" class="ghost">‹ prev</button>
+            <button id="mc-next" class="ghost">next ›</button>
+          </div>
+        </div>
+        <div id="mc-grid" class="mc-grid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── concepts ───────────────────────────── -->
+  <section class="view hidden" data-view="concepts">
+    <div class="card">
+      <h2>Concepts <small class="muted">— click one to see the loops that touch it</small></h2>
+      <div id="concept-grid" class="conceptgrid"></div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── loops ─────────────────────────────── -->
+  <section class="view hidden" data-view="loops">
+    <div class="card">
+      <div class="row spread">
+        <h2>Agentic loop library</h2>
+        <div class="filters">
+          <select id="filter-concept"><option value="">all concepts</option></select>
+          <select id="filter-status">
+            <option value="">all statuses</option>
+            <option value="validated">validated</option>
+            <option value="partial">partial</option>
+            <option value="draft-unexecuted">draft-unexecuted</option>
+          </select>
+          <input id="filter-text" type="text" placeholder="filter by name…">
+        </div>
+      </div>
+      <p class="muted small">Status is evidence, not decoration.
+        <b class="s-validated">validated</b> built clean against a live window;
+        <b class="s-partial">partial</b> has a real, named problem;
+        <b class="s-draft">draft-unexecuted</b> has never been run — its own README says so.</p>
+      <div id="loop-list" class="looplist"></div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── designer ───────────────────────────── -->
+  <section class="view hidden" data-view="designer">
+    <div class="designer">
+      <div class="card palette">
+        <h2>Agents</h2>
+        <input id="agent-search" type="text" placeholder="search 67 deployed agents…">
+        <div id="agent-palette" class="palettelist"></div>
+      </div>
+      <div class="card canvasarea">
+        <div class="row spread">
+          <h2>New loop</h2>
+          <div class="row">
+            <input id="design-title" type="text" placeholder="Loop name" style="width:220px">
+            <button id="design-preview" class="ghost">Harden</button>
+            <button id="design-save" class="primary" disabled>Save</button>
+          </div>
+        </div>
+        <p class="muted small">Drag agents in from the left, or click them. Drag a
+        stage to reorder. Each stage becomes one role bound to its own private
+        scratchpad, publishing to one declared handoff region — so stage N reads
+        stage N−1's <em>output</em>, never its reasoning.</p>
+        <div id="stage-strip" class="stagestrip" aria-label="loop stages">
+          <div class="stage-empty">Drop agents here to build the pipeline</div>
+        </div>
+        <div id="design-result" class="result"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── window ────────────────────────────── -->
+  <section class="view hidden" data-view="window">
+    <div class="windowgrid">
+      <div class="card">
+        <div class="row spread">
+          <h2>Regions</h2>
+          <label class="viewas">view as
+            <select id="view-as"><option value="">host (unbound)</option></select>
+          </label>
+        </div>
+        <p class="muted small">Pick a role to read the window <em>through its
+        scope</em>. Regions outside that role's closure come back refused, with
+        the runtime's own reason — not hidden by the UI.</p>
+        <div id="region-tree" class="regiontree"></div>
+      </div>
+      <div class="card">
+        <h2>Contents <small id="region-title" class="muted"></small></h2>
+        <div id="region-detail" class="detail">
+          <p class="muted">Select a region.</p>
+        </div>
+      </div>
+      <div class="card span2">
+        <div class="row spread">
+          <h2>Trace</h2>
+          <div class="row">
+            <label class="check"><input type="checkbox" id="trace-auto"> live</label>
+            <button id="trace-refresh" class="ghost">Refresh</button>
+          </div>
+        </div>
+        <div id="trace-list" class="tracelist"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────────────────────────── semantic ───────────────────────────── -->
+  <section class="view hidden" data-view="semantic">
+    <div class="card semanticcard">
+      <div class="row spread">
+        <h2>Semantic plane <small class="muted">— three hierarchy levels, one anchor field</small></h2>
+        <div class="row">
+          <label class="check"><input type="checkbox" id="lv-concept" checked> concepts</label>
+          <label class="check"><input type="checkbox" id="lv-skill" checked> skills</label>
+          <label class="check"><input type="checkbox" id="lv-agent" checked> agents</label>
+          <label class="check"><input type="checkbox" id="lv-edges" checked> edges</label>
+          <button id="cam-reset" class="ghost">Reset view</button>
+        </div>
+      </div>
+      <p class="muted small" id="semantic-method"></p>
+      <div class="canvaswrap">
+        <canvas id="field3d"></canvas>
+        <div id="field-tip" class="tip hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── evidence: containment, tested rather than declared ───────────── -->
+  <section class="view hidden" data-view="evidence">
+    <div class="card">
+      <div class="row spread">
+        <h2>Containment</h2>
+        <button id="ev-refresh" class="ghost">Refresh</button>
+      </div>
+      <p class="muted small">Two of the four assertions attempt a <strong>real
+      read</strong> through the real authorization path, so a refusal is an
+      event the ledger records and replay reproduces. The other two compute over
+      the region graph. Every row says which you are looking at, because a set
+      computation is a weaker claim than an attempt the runtime actually
+      refused.</p>
+      <div id="ev-containment" class="detail"><p class="muted">Nothing loaded.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="row spread">
+        <h2>Isolation level</h2>
+        <select id="ev-declared" title="What you declared this run would achieve">
+          <option value="">— declared —</option>
+          <option value="L0_none">L0_none</option>
+          <option value="L1_logical">L1_logical</option>
+          <option value="L2_execution">L2_execution</option>
+          <option value="L3_observed">L3_observed</option>
+        </select>
+      </div>
+      <p class="muted small">A level is earned from evidence, never asserted.
+      Declare L3 and get L1 and nothing else in the stack would notice.</p>
+      <div id="ev-level" class="detail"><p class="muted">Nothing loaded.</p></div>
+    </div>
+
+    <div class="card">
+      <div class="row spread">
+        <h2>Event stream</h2>
+        <div class="row">
+          <select id="ev-kind">
+            <option value="">all kinds</option>
+            <option value="access">access</option>
+            <option value="refusal">refusal</option>
+            <option value="scope">scope</option>
+            <option value="bridge">bridge</option>
+            <option value="utilization">utilization</option>
+            <option value="audit">audit</option>
+            <option value="routing">routing</option>
+          </select>
+          <input id="ev-role" type="text" placeholder="role" size="14">
+          <input id="ev-region" type="text" placeholder="region" size="14">
+        </div>
+      </div>
+      <p class="muted small"><code>contained</code> is three-valued.
+      <strong>Null means nothing was attempted</strong>, which establishes
+      nothing either way — it is not a clean result.</p>
+      <div id="ev-stream" class="detail"><p class="muted">Nothing loaded.</p></div>
+    </div>
+  </section>
+
+  <!-- ── gate: what the delegated agents themselves did ────────────────── -->
+  <section class="view hidden" data-view="gate">
+    <div class="card">
+      <h2>Gate</h2>
+      <p class="muted">
+        Every tool call a delegated agent made, attributed to the SCW role it was
+        bound to. This is the stream the runtime's own log cannot contain: it
+        records what the <em>host</em> did to the window, while an agent dispatched
+        as a subagent works in a context the window has no address for. The gate
+        stands at the tool call, which is the one place that context has to ask
+        for something.
+      </p>
+      <div class="row">
+        <button id="gate-refresh" class="ghost">Refresh</button>
+        <label class="check"><input type="checkbox" id="gate-auto"> auto (2s)</label>
+        <select id="gate-role"><option value="">all roles</option></select>
+        <select id="gate-kind">
+          <option value="">all events</option>
+          <option value="refusal">refusals only</option>
+          <option value="allowed">allowed only</option>
+          <option value="residue">residue only</option>
+        </select>
+        <span id="gate-chain" class="badge" title="Gate journal chain state">—</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Isolation level</h2>
+      <p class="muted">
+        A level is earned from evidence, never asserted. Declare L3 and run L1 —
+        three roles dispatched into one shared context, the partition existing only
+        in the prompt — and nothing else in the stack would notice.
+      </p>
+      <div class="row">
+        <label class="check">declared
+          <select id="gate-declared">
+            <option value="">(none)</option>
+            <option value="L0_none">L0 — none</option>
+            <option value="L1_logical">L1 — logical</option>
+            <option value="L2_execution">L2 — execution</option>
+            <option value="L3_observed">L3 — observed</option>
+          </select>
+        </label>
+      </div>
+      <div id="gate-isolation" class="detail"></div>
+    </div>
+
+    <div class="card">
+      <h2>Containment</h2>
+      <div id="gate-containment" class="detail">
+        <p class="muted">No gate activity recorded yet.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Per role — context in, execution out</h2>
+      <p class="muted">
+        What each role was handed, what it then did, and a finding where those two
+        disagree. A role given context that made no observed call, and one that
+        acted with no recorded transfer, are both worth knowing.
+      </p>
+      <div id="gate-roles" class="detail"></div>
+    </div>
+
+    <div class="card">
+      <h2>Activity</h2>
+      <div id="gate-list" class="tracelist"></div>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/graph3d.js"></script>
+<script src="/studio.js"></script>
+</body>
+</html>

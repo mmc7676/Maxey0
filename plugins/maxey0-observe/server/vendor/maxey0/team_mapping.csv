@@ -1,0 +1,305 @@
+concept,concept_type,skill,agent_registry_index,agent_name,agent_file,role,skill_memory_tier,io_consumes,io_produces
+memory,architecture,multi-tier-memory-management,Maxey11,Memory Manager,memory-manager.md,primary,semantic,MemoryEvent,MemoryRecord/PromotionLog
+memory,architecture,multi-tier-memory-management,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,semantic,MemoryEvent,MemoryRecord/PromotionLog
+memory,architecture,multi-tier-memory-management,Maxey128,Working Memory Manager,working-memory-manager.md,support,semantic,MemoryEvent,MemoryRecord/PromotionLog
+memory,architecture,multi-tier-memory-management,Maxey30,Memory API Keeper,memory-api-keeper.md,support,semantic,MemoryEvent,MemoryRecord/PromotionLog
+memory,architecture,episodic-memory-engineering,Maxey244,Conversation Importer Agent,conversation-importer-agent.md,primary,episodic,Zip,JSON
+memory,architecture,episodic-memory-engineering,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,episodic,Zip,JSON
+memory,architecture,episodic-memory-engineering,Maxey245,Conversation Store Agent,conversation-store-agent.md,support,episodic,Zip,JSON
+memory,architecture,episodic-memory-engineering,Maxey304,Session Store Manager,session-store-manager.md,support,episodic,Zip,JSON
+memory,architecture,working-memory-management,Maxey128,Working Memory Manager,working-memory-manager.md,primary,working,Event,SessionRecord
+memory,architecture,working-memory-management,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,working,Event,SessionRecord
+memory,architecture,working-memory-management,Maxey304,Session Store Manager,session-store-manager.md,support,working,Event,SessionRecord
+memory,architecture,working-memory-management,Maxey30,Memory API Keeper,memory-api-keeper.md,support,working,Event,SessionRecord
+memory,architecture,semantic-memory-engineering,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,primary,semantic,Cypher,Graph
+memory,architecture,semantic-memory-engineering,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,semantic,Cypher,Graph
+memory,architecture,semantic-memory-engineering,Maxey71,QA Agent,qa-agent.md,support,semantic,Cypher,Graph
+memory,architecture,semantic-memory-engineering,Maxey27,Graph GNN Router,graph-gnn-router.md,support,semantic,Cypher,Graph
+memory,architecture,persistent-memory-management,Maxey65,Database Architect,database-architect.md,primary,persistent,SchemaSpec,Migration Script
+memory,architecture,persistent-memory-management,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,persistent,SchemaSpec,Migration Script
+memory,architecture,persistent-memory-management,Maxey126,Graph Store Agent,graph-store-agent.md,support,persistent,SchemaSpec,Migration Script
+memory,architecture,persistent-memory-management,Maxey127,Vector Store Agent,vector-store-agent.md,support,persistent,SchemaSpec,Migration Script
+memory,architecture,memory-promotion-policy-engineering,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,primary,episodic,Event,Promotion
+memory,architecture,memory-promotion-policy-engineering,Maxey88,Compliance Auditor,compliance-auditor.md,checker,episodic,Event,Promotion
+memory,architecture,memory-promotion-policy-engineering,Maxey50,Provenance Signer,provenance-signer.md,support,episodic,Event,Promotion
+memory,architecture,memory-promotion-policy-engineering,Maxey109,Provenance Logger,provenance-logger.md,support,episodic,Event,Promotion
+orchestration,architecture,hierarchical-agent-orchestration,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,primary,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,hierarchical-agent-orchestration,Maxey52,Cost Guard,cost-guard.md,checker,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,hierarchical-agent-orchestration,Maxey14,Retrieval Orchestrator,retrieval-orchestrator.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,hierarchical-agent-orchestration,Maxey79,DR Coordinator,dr-coordinator.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,agent-registry-management,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,primary,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,agent-registry-management,Maxey8,API Gateway Engineer,api-gateway-engineer.md,checker,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,agent-registry-management,Maxey14,Retrieval Orchestrator,retrieval-orchestrator.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,agent-registry-management,Maxey52,Cost Guard,cost-guard.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,swarm-intelligence,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,primary,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,swarm-intelligence,Maxey00,Superposition Agent,superposition-agent.md,checker,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,swarm-intelligence,Maxey79,DR Coordinator,dr-coordinator.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+orchestration,architecture,swarm-intelligence,Maxey52,Cost Guard,cost-guard.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+protocol,protocol,agent-to-agent-protocol-engineering,Maxey32,MCP Bridge,mcp-bridge.md,primary,episodic,MCPReq,MCPResp
+protocol,protocol,agent-to-agent-protocol-engineering,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,checker,episodic,MCPReq,MCPResp
+protocol,protocol,agent-to-agent-protocol-engineering,Maxey193,LangChain Adapter Agent,langchain-adapter-agent.md,support,episodic,MCPReq,MCPResp
+protocol,protocol,agent-to-agent-protocol-engineering,Maxey14,Retrieval Orchestrator,retrieval-orchestrator.md,support,episodic,MCPReq,MCPResp
+protocol,protocol,model-context-protocol-engineering,Maxey32,MCP Bridge,mcp-bridge.md,primary,episodic,MCPReq,MCPResp
+protocol,protocol,model-context-protocol-engineering,Maxey71,QA Agent,qa-agent.md,checker,episodic,MCPReq,MCPResp
+protocol,protocol,model-context-protocol-engineering,Maxey30,Memory API Keeper,memory-api-keeper.md,support,episodic,MCPReq,MCPResp
+protocol,protocol,model-context-protocol-engineering,Maxey31,Runner API Keeper,runner-api-keeper.md,support,episodic,MCPReq,MCPResp
+protocol,protocol,multi-mcp-federation,Maxey32,MCP Bridge,mcp-bridge.md,primary,episodic,MCPReq,MCPResp
+protocol,protocol,multi-mcp-federation,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,checker,episodic,MCPReq,MCPResp
+protocol,protocol,multi-mcp-federation,Maxey31,Runner API Keeper,runner-api-keeper.md,support,episodic,MCPReq,MCPResp
+protocol,protocol,multi-mcp-federation,Maxey14,Retrieval Orchestrator,retrieval-orchestrator.md,support,episodic,MCPReq,MCPResp
+protocol,protocol,protocol-translation,Maxey193,LangChain Adapter Agent,langchain-adapter-agent.md,primary,episodic,Spec,Result
+protocol,protocol,protocol-translation,Maxey32,MCP Bridge,mcp-bridge.md,checker,episodic,Spec,Result
+protocol,protocol,protocol-translation,Maxey31,Runner API Keeper,runner-api-keeper.md,support,episodic,Spec,Result
+protocol,protocol,protocol-translation,Maxey30,Memory API Keeper,memory-api-keeper.md,support,episodic,Spec,Result
+observability,observability,ai-observability,Maxey145,OTel Collector Agent,otel-collector-agent.md,primary,episodic,PipelineSpec,CollectorConfig
+observability,observability,ai-observability,Maxey74,Debugger Agent,debugger-agent.md,checker,episodic,PipelineSpec,CollectorConfig
+observability,observability,ai-observability,Maxey160,OTel Module Agent,otel-module-agent.md,support,episodic,PipelineSpec,CollectorConfig
+observability,observability,ai-observability,Maxey164,Grafana Agent,grafana-agent.md,support,episodic,PipelineSpec,CollectorConfig
+observability,observability,agent-trace-analysis,Maxey74,Debugger Agent,debugger-agent.md,primary,episodic,Crash,Trace/Diagnosis
+observability,observability,agent-trace-analysis,Maxey145,OTel Collector Agent,otel-collector-agent.md,checker,episodic,Crash,Trace/Diagnosis
+observability,observability,agent-trace-analysis,Maxey160,OTel Module Agent,otel-module-agent.md,support,episodic,Crash,Trace/Diagnosis
+observability,observability,agent-trace-analysis,Maxey164,Grafana Agent,grafana-agent.md,support,episodic,Crash,Trace/Diagnosis
+observability,observability,memory-access-telemetry,Maxey145,OTel Collector Agent,otel-collector-agent.md,primary,episodic,PipelineSpec,CollectorConfig
+observability,observability,memory-access-telemetry,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,episodic,PipelineSpec,CollectorConfig
+observability,observability,memory-access-telemetry,Maxey74,Debugger Agent,debugger-agent.md,support,episodic,PipelineSpec,CollectorConfig
+observability,observability,memory-access-telemetry,Maxey109,Provenance Logger,provenance-logger.md,support,episodic,PipelineSpec,CollectorConfig
+observability,observability,context-utilization-analytics,Maxey74,Debugger Agent,debugger-agent.md,primary,episodic,Crash,Trace/Diagnosis
+observability,observability,context-utilization-analytics,Maxey145,OTel Collector Agent,otel-collector-agent.md,checker,episodic,Crash,Trace/Diagnosis
+observability,observability,context-utilization-analytics,Maxey10,Context Window Architect,context-window-architect.md,support,episodic,Crash,Trace/Diagnosis
+observability,observability,context-utilization-analytics,Maxey180,SCW Packing Schema Agent,scw-packing-schema-agent.md,support,episodic,Crash,Trace/Diagnosis
+evaluation,observability,agent-evaluation,Maxey00,Superposition Agent,superposition-agent.md,primary,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,agent-evaluation,Maxey17,Anchor Metrics,anchor-metrics.md,checker,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,agent-evaluation,Maxey98,Drift Detector,drift-detector.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,agent-evaluation,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,swarm-evaluation,Maxey00,Superposition Agent,superposition-agent.md,primary,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,swarm-evaluation,Maxey17,Anchor Metrics,anchor-metrics.md,checker,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,swarm-evaluation,Maxey52,Cost Guard,cost-guard.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,swarm-evaluation,Maxey79,DR Coordinator,dr-coordinator.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,enterprise-constitution-evaluation,Maxey00,Superposition Agent,superposition-agent.md,primary,persistent,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,enterprise-constitution-evaluation,Maxey88,Compliance Auditor,compliance-auditor.md,checker,persistent,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,enterprise-constitution-evaluation,Maxey54,Security Sentinel,security-sentinel.md,support,persistent,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,enterprise-constitution-evaluation,Maxey17,Anchor Metrics,anchor-metrics.md,support,persistent,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,retrieval-attribution-evaluation,Maxey00,Superposition Agent,superposition-agent.md,primary,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,retrieval-attribution-evaluation,Maxey109,Provenance Logger,provenance-logger.md,checker,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,retrieval-attribution-evaluation,Maxey110,Provenance Querier,provenance-querier.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+evaluation,observability,retrieval-attribution-evaluation,Maxey17,Anchor Metrics,anchor-metrics.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+governance,governance,constitutional-constraint-enforcement,Maxey54,Security Sentinel,security-sentinel.md,primary,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,constitutional-constraint-enforcement,Maxey88,Compliance Auditor,compliance-auditor.md,checker,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,constitutional-constraint-enforcement,Maxey33,Policy Proxy,policy-proxy.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,constitutional-constraint-enforcement,Maxey52,Cost Guard,cost-guard.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-agent-governance,Maxey54,Security Sentinel,security-sentinel.md,primary,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-agent-governance,Maxey88,Compliance Auditor,compliance-auditor.md,checker,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-agent-governance,Maxey33,Policy Proxy,policy-proxy.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-agent-governance,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-constitution-modeling,Maxey88,Compliance Auditor,compliance-auditor.md,primary,persistent,Controls,AuditReport
+governance,governance,enterprise-constitution-modeling,Maxey54,Security Sentinel,security-sentinel.md,checker,persistent,Controls,AuditReport
+governance,governance,enterprise-constitution-modeling,Maxey33,Policy Proxy,policy-proxy.md,support,persistent,Controls,AuditReport
+governance,governance,enterprise-constitution-modeling,Maxey50,Provenance Signer,provenance-signer.md,support,persistent,Controls,AuditReport
+governance,governance,cross-organization-policy-negotiation,Maxey54,Security Sentinel,security-sentinel.md,primary,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,cross-organization-policy-negotiation,Maxey88,Compliance Auditor,compliance-auditor.md,checker,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,cross-organization-policy-negotiation,Maxey33,Policy Proxy,policy-proxy.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,cross-organization-policy-negotiation,Maxey193,LangChain Adapter Agent,langchain-adapter-agent.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-memory-isolation,Maxey54,Security Sentinel,security-sentinel.md,primary,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-memory-isolation,Maxey88,Compliance Auditor,compliance-auditor.md,checker,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-memory-isolation,Maxey128,Working Memory Manager,working-memory-manager.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+governance,governance,enterprise-memory-isolation,Maxey65,Database Architect,database-architect.md,support,persistent,EgressReq,"Allow/Deny, Reason"
+latent,research,latent-triangulation,Maxey16,Anchor Miner,anchor-miner.md,primary,semantic,Evidence,"AnchorDefs, Metrics"
+latent,research,latent-triangulation,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,Evidence,"AnchorDefs, Metrics"
+latent,research,latent-triangulation,Maxey20,Magnitude Spectrum Mapper,magnitude-spectrum-mapper.md,support,semantic,Evidence,"AnchorDefs, Metrics"
+latent,research,latent-triangulation,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,semantic,Evidence,"AnchorDefs, Metrics"
+latent,research,latent-space-engineering,Maxey127,Vector Store Agent,vector-store-agent.md,primary,semantic,Embedding,Result
+latent,research,latent-space-engineering,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,Embedding,Result
+latent,research,latent-space-engineering,Maxey121,Cross-Modality Mapper,cross-modality-mapper.md,support,semantic,Embedding,Result
+latent,research,latent-space-engineering,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,semantic,Embedding,Result
+latent,research,latent-space-mapping,Maxey120,Latent Mapper,latent-mapper.md,primary,semantic,"SAE, GNN",ConceptGraph
+latent,research,latent-space-mapping,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,"SAE, GNN",ConceptGraph
+latent,research,latent-space-mapping,Maxey21,PCA Cartographer,pca-cartographer.md,support,semantic,"SAE, GNN",ConceptGraph
+latent,research,latent-space-mapping,Maxey22,UMAP Navigator,umap-navigator.md,support,semantic,"SAE, GNN",ConceptGraph
+latent,research,latent-topology-analysis,Maxey28,Neighborhood Graph Builder,neighborhood-graph-builder.md,primary,semantic,Embeds,"GraphIndex, PruneReport"
+latent,research,latent-topology-analysis,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,Embeds,"GraphIndex, PruneReport"
+latent,research,latent-topology-analysis,Maxey24,Isomap Surveyor,isomap-surveyor.md,support,semantic,Embeds,"GraphIndex, PruneReport"
+latent,research,latent-topology-analysis,Maxey22,UMAP Navigator,umap-navigator.md,support,semantic,Embeds,"GraphIndex, PruneReport"
+latent,research,magnitude-spectrum-analysis,Maxey20,Magnitude Spectrum Mapper,magnitude-spectrum-mapper.md,primary,semantic,"Text, Embeds","SpectrumFeatures, Edges"
+latent,research,magnitude-spectrum-analysis,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,"Text, Embeds","SpectrumFeatures, Edges"
+latent,research,magnitude-spectrum-analysis,Maxey21,PCA Cartographer,pca-cartographer.md,support,semantic,"Text, Embeds","SpectrumFeatures, Edges"
+latent,research,magnitude-spectrum-analysis,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,semantic,"Text, Embeds","SpectrumFeatures, Edges"
+latent,research,sparse-autoencoder-interpretability,Maxey26,SAE Engineer,sae-engineer.md,primary,semantic,Embeds,"SAEFeatures, ReconLoss"
+latent,research,sparse-autoencoder-interpretability,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,Embeds,"SAEFeatures, ReconLoss"
+latent,research,sparse-autoencoder-interpretability,Maxey117,SAE Trainer,sae-trainer.md,support,semantic,Embeds,"SAEFeatures, ReconLoss"
+latent,research,sparse-autoencoder-interpretability,Maxey118,Feature Set Curator,feature-set-curator.md,support,semantic,Embeds,"SAEFeatures, ReconLoss"
+latent,research,latent-feature-attribution,Maxey795,Feature Attribution Analyst,feature-attribution-analyst.md,primary,semantic,"BehaviorSpec, FeatureSet",AttributionReport (graded)
+latent,research,latent-feature-attribution,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,"BehaviorSpec, FeatureSet",AttributionReport (graded)
+latent,research,latent-feature-attribution,Maxey118,Feature Set Curator,feature-set-curator.md,support,semantic,"BehaviorSpec, FeatureSet",AttributionReport (graded)
+latent,research,latent-feature-attribution,Maxey26,SAE Engineer,sae-engineer.md,support,semantic,"BehaviorSpec, FeatureSet",AttributionReport (graded)
+latent,research,latent-world-construction,Maxey796,Latent World Constructor,latent-world-constructor.md,primary,semantic,WorldSpec,"WorldHandle, DivergenceLedger"
+latent,research,latent-world-construction,Maxey71,QA Agent,qa-agent.md,checker,semantic,WorldSpec,"WorldHandle, DivergenceLedger"
+latent,research,latent-world-construction,Maxey121,Cross-Modality Mapper,cross-modality-mapper.md,support,semantic,WorldSpec,"WorldHandle, DivergenceLedger"
+latent,research,latent-world-construction,Maxey15,Frames Steward,frames-steward.md,support,semantic,WorldSpec,"WorldHandle, DivergenceLedger"
+knowledge-graph,knowledge,knowledge-graph-engineering,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,primary,semantic,Cypher,Graph
+knowledge-graph,knowledge,knowledge-graph-engineering,Maxey71,QA Agent,qa-agent.md,checker,semantic,Cypher,Graph
+knowledge-graph,knowledge,knowledge-graph-engineering,Maxey27,Graph GNN Router,graph-gnn-router.md,support,semantic,Cypher,Graph
+knowledge-graph,knowledge,knowledge-graph-engineering,Maxey28,Neighborhood Graph Builder,neighborhood-graph-builder.md,support,semantic,Cypher,Graph
+knowledge-graph,knowledge,property-graph-memory-engineering,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,primary,semantic,Cypher,Graph
+knowledge-graph,knowledge,property-graph-memory-engineering,Maxey71,QA Agent,qa-agent.md,checker,semantic,Cypher,Graph
+knowledge-graph,knowledge,property-graph-memory-engineering,Maxey126,Graph Store Agent,graph-store-agent.md,support,semantic,Cypher,Graph
+knowledge-graph,knowledge,property-graph-memory-engineering,Maxey27,Graph GNN Router,graph-gnn-router.md,support,semantic,Cypher,Graph
+knowledge-graph,knowledge,graph-memory-construction,Maxey27,Graph GNN Router,graph-gnn-router.md,primary,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,graph-memory-construction,Maxey71,QA Agent,qa-agent.md,checker,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,graph-memory-construction,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,support,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,graph-memory-construction,Maxey109,Provenance Logger,provenance-logger.md,support,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,graph-neural-network-routing,Maxey116,Latent GNN Router,latent-gnn-router.md,primary,semantic,RunContext,RoutingDecision
+knowledge-graph,knowledge,graph-neural-network-routing,Maxey71,QA Agent,qa-agent.md,checker,semantic,RunContext,RoutingDecision
+knowledge-graph,knowledge,graph-neural-network-routing,Maxey27,Graph GNN Router,graph-gnn-router.md,support,semantic,RunContext,RoutingDecision
+knowledge-graph,knowledge,graph-neural-network-routing,Maxey28,Neighborhood Graph Builder,neighborhood-graph-builder.md,support,semantic,RunContext,RoutingDecision
+knowledge-graph,knowledge,temporal-knowledge-graph-management,Maxey27,Graph GNN Router,graph-gnn-router.md,primary,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,temporal-knowledge-graph-management,Maxey71,QA Agent,qa-agent.md,checker,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,temporal-knowledge-graph-management,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,temporal-knowledge-graph-management,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,support,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,memory-graph-evolution,Maxey27,Graph GNN Router,graph-gnn-router.md,primary,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,memory-graph-evolution,Maxey307,Promotion Policy Agent,promotion-policy-agent.md,checker,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,memory-graph-evolution,Maxey71,QA Agent,qa-agent.md,support,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,memory-graph-evolution,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,support,semantic,"Graph, Embeds",RouteScores
+knowledge-graph,knowledge,hybrid-vector-graph-memory,Maxey127,Vector Store Agent,vector-store-agent.md,primary,semantic,Embedding,Result
+knowledge-graph,knowledge,hybrid-vector-graph-memory,Maxey71,QA Agent,qa-agent.md,checker,semantic,Embedding,Result
+knowledge-graph,knowledge,hybrid-vector-graph-memory,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,support,semantic,Embedding,Result
+knowledge-graph,knowledge,hybrid-vector-graph-memory,Maxey28,Neighborhood Graph Builder,neighborhood-graph-builder.md,support,semantic,Embedding,Result
+knowledge-graph,knowledge,research-paper-integration,Maxey394,Seed Agent Graph Agent,seed-agent-graph-agent.md,primary,semantic,Cypher,Graph
+knowledge-graph,knowledge,research-paper-integration,Maxey71,QA Agent,qa-agent.md,checker,semantic,Cypher,Graph
+knowledge-graph,knowledge,research-paper-integration,Maxey00,Superposition Agent,superposition-agent.md,support,semantic,Cypher,Graph
+knowledge-graph,knowledge,research-paper-integration,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,semantic,Cypher,Graph
+reasoning,reasoning,reasoning-frame-engineering,Maxey15,Frames Steward,frames-steward.md,primary,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,reasoning-frame-engineering,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,reasoning-frame-engineering,Maxey16,Anchor Miner,anchor-miner.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,reasoning-frame-engineering,Maxey10,Context Window Architect,context-window-architect.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,cognitive-architecture-engineering,Maxey15,Frames Steward,frames-steward.md,primary,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,cognitive-architecture-engineering,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,cognitive-architecture-engineering,Maxey10,Context Window Architect,context-window-architect.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,cognitive-architecture-engineering,Maxey16,Anchor Miner,anchor-miner.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,cognitive-anchor-extraction,Maxey16,Anchor Miner,anchor-miner.md,primary,working,Evidence,"AnchorDefs, Metrics"
+reasoning,reasoning,cognitive-anchor-extraction,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,Evidence,"AnchorDefs, Metrics"
+reasoning,reasoning,cognitive-anchor-extraction,Maxey15,Frames Steward,frames-steward.md,support,working,Evidence,"AnchorDefs, Metrics"
+reasoning,reasoning,cognitive-anchor-extraction,Maxey20,Magnitude Spectrum Mapper,magnitude-spectrum-mapper.md,support,working,Evidence,"AnchorDefs, Metrics"
+reasoning,reasoning,anchor-based-reasoning,Maxey15,Frames Steward,frames-steward.md,primary,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,anchor-based-reasoning,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,anchor-based-reasoning,Maxey16,Anchor Miner,anchor-miner.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,anchor-based-reasoning,Maxey20,Magnitude Spectrum Mapper,magnitude-spectrum-mapper.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,recursive-self-reflection,Maxey15,Frames Steward,frames-steward.md,primary,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,recursive-self-reflection,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,recursive-self-reflection,Maxey10,Context Window Architect,context-window-architect.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,recursive-self-reflection,Maxey16,Anchor Miner,anchor-miner.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,world-based-reasoning,Maxey15,Frames Steward,frames-steward.md,primary,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,world-based-reasoning,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,world-based-reasoning,Maxey796,Latent World Constructor,latent-world-constructor.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,world-based-reasoning,Maxey16,Anchor Miner,anchor-miner.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,multi-world-reasoning,Maxey796,Latent World Constructor,latent-world-constructor.md,primary,working,WorldSpec,"WorldHandle, DivergenceLedger"
+reasoning,reasoning,multi-world-reasoning,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,WorldSpec,"WorldHandle, DivergenceLedger"
+reasoning,reasoning,multi-world-reasoning,Maxey15,Frames Steward,frames-steward.md,support,working,WorldSpec,"WorldHandle, DivergenceLedger"
+reasoning,reasoning,multi-world-reasoning,Maxey16,Anchor Miner,anchor-miner.md,support,working,WorldSpec,"WorldHandle, DivergenceLedger"
+reasoning,reasoning,meta-reasoning,Maxey15,Frames Steward,frames-steward.md,primary,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,meta-reasoning,Maxey17,Anchor Metrics,anchor-metrics.md,checker,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,meta-reasoning,Maxey10,Context Window Architect,context-window-architect.md,support,working,FrameSpec,FrameHandle/Diff
+reasoning,reasoning,meta-reasoning,Maxey16,Anchor Miner,anchor-miner.md,support,working,FrameSpec,FrameHandle/Diff
+claim-verification,reasoning,claim-lineage-analysis,Maxey109,Provenance Logger,provenance-logger.md,primary,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,claim-lineage-analysis,Maxey88,Compliance Auditor,compliance-auditor.md,checker,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,claim-lineage-analysis,Maxey50,Provenance Signer,provenance-signer.md,support,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,claim-lineage-analysis,Maxey13,Conversation Ingestor,conversation-ingestor.md,support,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-localization,Maxey109,Provenance Logger,provenance-logger.md,primary,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-localization,Maxey88,Compliance Auditor,compliance-auditor.md,checker,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-localization,Maxey110,Provenance Querier,provenance-querier.md,support,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-localization,Maxey50,Provenance Signer,provenance-signer.md,support,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-attribution,Maxey109,Provenance Logger,provenance-logger.md,primary,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-attribution,Maxey88,Compliance Auditor,compliance-auditor.md,checker,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-attribution,Maxey110,Provenance Querier,provenance-querier.md,support,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,hallucination-attribution,Maxey13,Conversation Ingestor,conversation-ingestor.md,support,episodic,Run,ProvenanceRecord
+claim-verification,reasoning,reasoning-path-instrumentation,Maxey74,Debugger Agent,debugger-agent.md,primary,episodic,Crash,Trace/Diagnosis
+claim-verification,reasoning,reasoning-path-instrumentation,Maxey109,Provenance Logger,provenance-logger.md,checker,episodic,Crash,Trace/Diagnosis
+claim-verification,reasoning,reasoning-path-instrumentation,Maxey145,OTel Collector Agent,otel-collector-agent.md,support,episodic,Crash,Trace/Diagnosis
+claim-verification,reasoning,reasoning-path-instrumentation,Maxey50,Provenance Signer,provenance-signer.md,support,episodic,Crash,Trace/Diagnosis
+infrastructure,architecture,agent-runtime-engineering,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,primary,working,Code,Result
+infrastructure,architecture,agent-runtime-engineering,Maxey85,Security Scanner,security-scanner.md,checker,working,Code,Result
+infrastructure,architecture,agent-runtime-engineering,Maxey35,Sandbox Runner,sandbox-runner.md,support,working,Code,Result
+infrastructure,architecture,agent-runtime-engineering,Maxey55,Backup & Restore,backup-restore.md,support,working,Code,Result
+infrastructure,architecture,agent-infrastructure-engineering,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,primary,working,Code,Result
+infrastructure,architecture,agent-infrastructure-engineering,Maxey85,Security Scanner,security-scanner.md,checker,working,Code,Result
+infrastructure,architecture,agent-infrastructure-engineering,Maxey70,Integration Engineer,integration-engineer.md,support,working,Code,Result
+infrastructure,architecture,agent-infrastructure-engineering,Maxey66,API Gateway Agent,api-gateway-agent.md,support,working,Code,Result
+infrastructure,architecture,agent-platform-engineering,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,primary,working,Code,Result
+infrastructure,architecture,agent-platform-engineering,Maxey85,Security Scanner,security-scanner.md,checker,working,Code,Result
+infrastructure,architecture,agent-platform-engineering,Maxey66,API Gateway Agent,api-gateway-agent.md,support,working,Code,Result
+infrastructure,architecture,agent-platform-engineering,Maxey80,Incident Commander,incident-commander.md,support,working,Code,Result
+infrastructure,architecture,multi-tenant-agent-infrastructure,Maxey797,Context Boundary Warden,context-boundary-warden.md,primary,working,BoundarySpec,"EnforcedScope, CrossingLog"
+infrastructure,architecture,multi-tenant-agent-infrastructure,Maxey85,Security Scanner,security-scanner.md,checker,working,BoundarySpec,"EnforcedScope, CrossingLog"
+infrastructure,architecture,multi-tenant-agent-infrastructure,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,support,working,BoundarySpec,"EnforcedScope, CrossingLog"
+infrastructure,architecture,multi-tenant-agent-infrastructure,Maxey54,Security Sentinel,security-sentinel.md,support,working,BoundarySpec,"EnforcedScope, CrossingLog"
+infrastructure,architecture,distributed-agent-runtime-engineering,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,primary,working,Code,Result
+infrastructure,architecture,distributed-agent-runtime-engineering,Maxey85,Security Scanner,security-scanner.md,checker,working,Code,Result
+infrastructure,architecture,distributed-agent-runtime-engineering,Maxey55,Backup & Restore,backup-restore.md,support,working,Code,Result
+infrastructure,architecture,distributed-agent-runtime-engineering,Maxey80,Incident Commander,incident-commander.md,support,working,Code,Result
+io-contract,protocol,tool-schema-negotiation,Maxey30,Memory API Keeper,memory-api-keeper.md,primary,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-schema-negotiation,Maxey71,QA Agent,qa-agent.md,checker,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-schema-negotiation,Maxey31,Runner API Keeper,runner-api-keeper.md,support,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-schema-negotiation,Maxey32,MCP Bridge,mcp-bridge.md,support,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-capability-discovery,Maxey30,Memory API Keeper,memory-api-keeper.md,primary,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-capability-discovery,Maxey71,QA Agent,qa-agent.md,checker,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-capability-discovery,Maxey32,MCP Bridge,mcp-bridge.md,support,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,tool-capability-discovery,Maxey31,Runner API Keeper,runner-api-keeper.md,support,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,context-infrastructure-engineering,Maxey10,Context Window Architect,context-window-architect.md,primary,episodic,"Query, Evidence","SCWPackage, Rationale"
+io-contract,protocol,context-infrastructure-engineering,Maxey71,QA Agent,qa-agent.md,checker,episodic,"Query, Evidence","SCWPackage, Rationale"
+io-contract,protocol,context-infrastructure-engineering,Maxey14,Retrieval Orchestrator,retrieval-orchestrator.md,support,episodic,"Query, Evidence","SCWPackage, Rationale"
+io-contract,protocol,context-infrastructure-engineering,Maxey30,Memory API Keeper,memory-api-keeper.md,support,episodic,"Query, Evidence","SCWPackage, Rationale"
+io-contract,protocol,inference-pipeline-engineering,Maxey30,Memory API Keeper,memory-api-keeper.md,primary,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,inference-pipeline-engineering,Maxey71,QA Agent,qa-agent.md,checker,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,inference-pipeline-engineering,Maxey66,API Gateway Agent,api-gateway-agent.md,support,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,inference-pipeline-engineering,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,support,episodic,HTTP Req,"HTTP Resp, Graph/Vector writes"
+io-contract,protocol,ai-platform-engineering,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,primary,episodic,Code,Result
+io-contract,protocol,ai-platform-engineering,Maxey71,QA Agent,qa-agent.md,checker,episodic,Code,Result
+io-contract,protocol,ai-platform-engineering,Maxey30,Memory API Keeper,memory-api-keeper.md,support,episodic,Code,Result
+io-contract,protocol,ai-platform-engineering,Maxey66,API Gateway Agent,api-gateway-agent.md,support,episodic,Code,Result
+context-management,architecture,structured-context-world-engineering,Maxey10,Context Window Architect,context-window-architect.md,primary,working,"Query, Evidence","SCWPackage, Rationale"
+context-management,architecture,structured-context-world-engineering,Maxey71,QA Agent,qa-agent.md,checker,working,"Query, Evidence","SCWPackage, Rationale"
+context-management,architecture,structured-context-world-engineering,Maxey364,SCW ReasoningFrame Schema Agent,scw-reasoningframe-schema-agent.md,support,working,"Query, Evidence","SCWPackage, Rationale"
+context-management,architecture,structured-context-world-engineering,Maxey180,SCW Packing Schema Agent,scw-packing-schema-agent.md,support,working,"Query, Evidence","SCWPackage, Rationale"
+context-management,architecture,context-packing-optimization,Maxey180,SCW Packing Schema Agent,scw-packing-schema-agent.md,primary,working,Spec,Schema
+context-management,architecture,context-packing-optimization,Maxey52,Cost Guard,cost-guard.md,checker,working,Spec,Schema
+context-management,architecture,context-packing-optimization,Maxey10,Context Window Architect,context-window-architect.md,support,working,Spec,Schema
+context-management,architecture,context-packing-optimization,Maxey364,SCW ReasoningFrame Schema Agent,scw-reasoningframe-schema-agent.md,support,working,Spec,Schema
+context-management,architecture,context-lineage-tracking,Maxey109,Provenance Logger,provenance-logger.md,primary,episodic,Run,ProvenanceRecord
+context-management,architecture,context-lineage-tracking,Maxey88,Compliance Auditor,compliance-auditor.md,checker,episodic,Run,ProvenanceRecord
+context-management,architecture,context-lineage-tracking,Maxey110,Provenance Querier,provenance-querier.md,support,episodic,Run,ProvenanceRecord
+context-management,architecture,context-lineage-tracking,Maxey50,Provenance Signer,provenance-signer.md,support,episodic,Run,ProvenanceRecord
+context-management,architecture,context-persistence-engineering,Maxey128,Working Memory Manager,working-memory-manager.md,primary,episodic,Event,SessionRecord
+context-management,architecture,context-persistence-engineering,Maxey71,QA Agent,qa-agent.md,checker,episodic,Event,SessionRecord
+context-management,architecture,context-persistence-engineering,Maxey127,Vector Store Agent,vector-store-agent.md,support,episodic,Event,SessionRecord
+context-management,architecture,context-persistence-engineering,Maxey96,Artifact Store,artifact-store.md,support,episodic,Event,SessionRecord
+context-management,architecture,context-boundary-engineering,Maxey797,Context Boundary Warden,context-boundary-warden.md,primary,working,BoundarySpec,"EnforcedScope, CrossingLog"
+context-management,architecture,context-boundary-engineering,Maxey54,Security Sentinel,security-sentinel.md,checker,working,BoundarySpec,"EnforcedScope, CrossingLog"
+context-management,architecture,context-boundary-engineering,Maxey33,Policy Proxy,policy-proxy.md,support,working,BoundarySpec,"EnforcedScope, CrossingLog"
+context-management,architecture,context-boundary-engineering,Maxey128,Working Memory Manager,working-memory-manager.md,support,working,BoundarySpec,"EnforcedScope, CrossingLog"
+superposition,architecture,superposition-observation,Maxey00,Superposition Agent,superposition-agent.md,primary,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,superposition-observation,Maxey17,Anchor Metrics,anchor-metrics.md,checker,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,superposition-observation,Maxey98,Drift Detector,drift-detector.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,superposition-observation,Maxey122,Temporal Drift Agent,temporal-drift-agent.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,same-tick-arbitration,Maxey00,Superposition Agent,superposition-agent.md,primary,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,same-tick-arbitration,Maxey71,QA Agent,qa-agent.md,checker,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,same-tick-arbitration,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,same-tick-arbitration,Maxey52,Cost Guard,cost-guard.md,support,episodic,RunArtifacts,"EvalReport, DriftSignals"
+superposition,architecture,actor-critic-parallelism,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,primary,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+superposition,architecture,actor-critic-parallelism,Maxey00,Superposition Agent,superposition-agent.md,checker,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+superposition,architecture,actor-critic-parallelism,Maxey463,Agentic Runner Agent,agentic-runner-agent.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+superposition,architecture,actor-critic-parallelism,Maxey71,QA Agent,qa-agent.md,support,episodic,"RunSpec, Task","OrchestrationPlan, RoutedSteps, AuditTrail"
+superposition,architecture,shared-state-synchronization,Maxey800,Superposition Runtime Engineer,superposition-runtime-engineer.md,primary,working,TickPlan,SynchronizedStateWindow
+superposition,architecture,shared-state-synchronization,Maxey00,Superposition Agent,superposition-agent.md,checker,working,TickPlan,SynchronizedStateWindow
+superposition,architecture,shared-state-synchronization,Maxey466,MCP Runner Agent,mcp-runner-agent.md,support,working,TickPlan,SynchronizedStateWindow
+superposition,architecture,shared-state-synchronization,Maxey187,Code Interpreter Agent,code-interpreter-agent.md,support,working,TickPlan,SynchronizedStateWindow
+superposition,architecture,superposition-coordinate-mapping,Maxey801,State Vector Cartographer,state-vector-cartographer.md,primary,semantic,StateTransitionLog,"CoordinateMap, TransitionModel"
+superposition,architecture,superposition-coordinate-mapping,Maxey17,Anchor Metrics,anchor-metrics.md,checker,semantic,StateTransitionLog,"CoordinateMap, TransitionModel"
+superposition,architecture,superposition-coordinate-mapping,Maxey20,Magnitude Spectrum Mapper,magnitude-spectrum-mapper.md,support,semantic,StateTransitionLog,"CoordinateMap, TransitionModel"
+superposition,architecture,superposition-coordinate-mapping,Maxey16,Anchor Miner,anchor-miner.md,support,semantic,StateTransitionLog,"CoordinateMap, TransitionModel"
+agentic-loops,architecture,scw-partition-isolation,Maxey10,Context Window Architect,context-window-architect.md,primary,working,LoopTemplate,HardeningReport
+agentic-loops,architecture,scw-partition-isolation,Maxey364,SCW ReasoningFrame Schema Agent,scw-reasoningframe-schema-agent.md,checker,working,LoopTemplate,HardeningReport
+agentic-loops,architecture,scw-partition-isolation,Maxey180,SCW Packing Schema Agent,scw-packing-schema-agent.md,support,working,LoopTemplate,HardeningReport
+agentic-loops,architecture,scw-partition-isolation,Maxey797,Context Boundary Warden,context-boundary-warden.md,support,working,LoopTemplate,HardeningReport
+agentic-loops,architecture,loop-composition-battery,Maxey0,SuperAgent Orchestrator,superagent-orchestrator.md,primary,working,LoopLibraryRow,LoopsDataset
+agentic-loops,architecture,loop-composition-battery,Maxey00,Superposition Agent,superposition-agent.md,checker,working,LoopLibraryRow,LoopsDataset
+agentic-loops,architecture,loop-composition-battery,Maxey52,Cost Guard,cost-guard.md,support,working,LoopLibraryRow,LoopsDataset
+agentic-loops,architecture,loop-composition-battery,Maxey88,Compliance Auditor,compliance-auditor.md,support,working,LoopLibraryRow,LoopsDataset

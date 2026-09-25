@@ -1,0 +1,57 @@
+{
+  "description": "Two sensors. SessionStart announces what the SCW layer has loaded. The gate hooks intercept every tool call, attribute it to the bound SCW role that made it, and record it -- refusing out-of-scope calls when the gate is in enforce mode. The gate is what makes a delegated agent's own actions observable at all: the runtime records what the host does to the window, and an agent dispatched as a subagent works in a context the window has no address for. Default mode is observe, so installing the plugin records but blocks nothing until a policy is declared and enforce is set.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/hooks/session_notice.py\""
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/server/gate/adapters/claude_code.py\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/server/gate/adapters/claude_code.py\""
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/server/gate/adapters/claude_code.py\""
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"${CLAUDE_PLUGIN_ROOT}/server/gate/adapters/claude_code.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

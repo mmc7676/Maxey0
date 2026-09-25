@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Maxey0 MCP Directory",
+  "type": "object",
+  "properties": {
+    "servers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "endpoint", "name"],
+        "properties": {
+          "id": {"type": "string"},
+          "endpoint": {"type": "string"},
+          "name": {"type": "string"},
+          "capabilities": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}

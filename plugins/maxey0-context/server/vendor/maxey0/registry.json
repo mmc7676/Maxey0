@@ -1,0 +1,2129 @@
+{
+ "scope": "repo-wide",
+ "note": "Two populations: REGISTRY (existing Maxey0 agents, specializations predate this repo) and PROPOSED (Maxey780-797, introduced here where the registry had no match, candidates for promotion into maxey0_subagents.csv).",
+ "agents": [
+  {
+   "registry_index": "Maxey0",
+   "name": "SuperAgent Orchestrator",
+   "slug": "superagent-orchestrator",
+   "specialization": "Multi-agent routing & governance",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "hierarchical-agent-orchestration",
+     "concept": "orchestration",
+     "role": "primary"
+    },
+    {
+     "skill": "agent-registry-management",
+     "concept": "orchestration",
+     "role": "primary"
+    },
+    {
+     "skill": "swarm-intelligence",
+     "concept": "orchestration",
+     "role": "primary"
+    },
+    {
+     "skill": "agent-to-agent-protocol-engineering",
+     "concept": "protocol",
+     "role": "checker"
+    },
+    {
+     "skill": "multi-mcp-federation",
+     "concept": "protocol",
+     "role": "checker"
+    },
+    {
+     "skill": "enterprise-agent-governance",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "actor-critic-parallelism",
+     "concept": "superposition",
+     "role": "primary"
+    },
+    {
+     "skill": "loop-composition-battery",
+     "concept": "agentic-loops",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey00",
+   "name": "Superposition Agent",
+   "slug": "superposition-agent",
+   "specialization": "Evaluation & drift analytics",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "swarm-intelligence",
+     "concept": "orchestration",
+     "role": "checker"
+    },
+    {
+     "skill": "agent-evaluation",
+     "concept": "evaluation",
+     "role": "primary"
+    },
+    {
+     "skill": "swarm-evaluation",
+     "concept": "evaluation",
+     "role": "primary"
+    },
+    {
+     "skill": "enterprise-constitution-evaluation",
+     "concept": "evaluation",
+     "role": "primary"
+    },
+    {
+     "skill": "retrieval-attribution-evaluation",
+     "concept": "evaluation",
+     "role": "primary"
+    },
+    {
+     "skill": "research-paper-integration",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "superposition-observation",
+     "concept": "superposition",
+     "role": "primary"
+    },
+    {
+     "skill": "same-tick-arbitration",
+     "concept": "superposition",
+     "role": "primary"
+    },
+    {
+     "skill": "actor-critic-parallelism",
+     "concept": "superposition",
+     "role": "checker"
+    },
+    {
+     "skill": "shared-state-synchronization",
+     "concept": "superposition",
+     "role": "checker"
+    },
+    {
+     "skill": "loop-composition-battery",
+     "concept": "agentic-loops",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey10",
+   "name": "Context Window Architect",
+   "slug": "context-window-architect",
+   "specialization": "SCW construction & packing",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "context-utilization-analytics",
+     "concept": "observability",
+     "role": "support"
+    },
+    {
+     "skill": "reasoning-frame-engineering",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "cognitive-architecture-engineering",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "recursive-self-reflection",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "meta-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "context-infrastructure-engineering",
+     "concept": "io-contract",
+     "role": "primary"
+    },
+    {
+     "skill": "structured-context-world-engineering",
+     "concept": "context-management",
+     "role": "primary"
+    },
+    {
+     "skill": "context-packing-optimization",
+     "concept": "context-management",
+     "role": "support"
+    },
+    {
+     "skill": "scw-partition-isolation",
+     "concept": "agentic-loops",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey109",
+   "name": "Provenance Logger",
+   "slug": "provenance-logger",
+   "specialization": "Provenance",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "memory-promotion-policy-engineering",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "memory-access-telemetry",
+     "concept": "observability",
+     "role": "support"
+    },
+    {
+     "skill": "retrieval-attribution-evaluation",
+     "concept": "evaluation",
+     "role": "checker"
+    },
+    {
+     "skill": "graph-memory-construction",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "claim-lineage-analysis",
+     "concept": "claim-verification",
+     "role": "primary"
+    },
+    {
+     "skill": "hallucination-localization",
+     "concept": "claim-verification",
+     "role": "primary"
+    },
+    {
+     "skill": "hallucination-attribution",
+     "concept": "claim-verification",
+     "role": "primary"
+    },
+    {
+     "skill": "reasoning-path-instrumentation",
+     "concept": "claim-verification",
+     "role": "checker"
+    },
+    {
+     "skill": "context-lineage-tracking",
+     "concept": "context-management",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey11",
+   "name": "Memory Manager",
+   "slug": "memory-manager",
+   "specialization": "Memory lifecycle",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "multi-tier-memory-management",
+     "concept": "memory",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey110",
+   "name": "Provenance Querier",
+   "slug": "provenance-querier",
+   "specialization": "Provenance queries",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "retrieval-attribution-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "hallucination-localization",
+     "concept": "claim-verification",
+     "role": "support"
+    },
+    {
+     "skill": "hallucination-attribution",
+     "concept": "claim-verification",
+     "role": "support"
+    },
+    {
+     "skill": "context-lineage-tracking",
+     "concept": "context-management",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey116",
+   "name": "Latent GNN Router",
+   "slug": "latent-gnn-router",
+   "specialization": "Latent routing",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "graph-neural-network-routing",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey117",
+   "name": "SAE Trainer",
+   "slug": "sae-trainer",
+   "specialization": "SAE training",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "sparse-autoencoder-interpretability",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey118",
+   "name": "Feature Set Curator",
+   "slug": "feature-set-curator",
+   "specialization": "SAE features",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "sparse-autoencoder-interpretability",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "latent-feature-attribution",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey120",
+   "name": "Latent Mapper",
+   "slug": "latent-mapper",
+   "specialization": "Latent space mapping",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-space-mapping",
+     "concept": "latent",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey121",
+   "name": "Cross-Modality Mapper",
+   "slug": "cross-modality-mapper",
+   "specialization": "Latent cross-modality",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-space-engineering",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "latent-world-construction",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey122",
+   "name": "Temporal Drift Agent",
+   "slug": "temporal-drift-agent",
+   "specialization": "Latent drift",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "latent-triangulation",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "latent-space-engineering",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "magnitude-spectrum-analysis",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "temporal-knowledge-graph-management",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "research-paper-integration",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "superposition-observation",
+     "concept": "superposition",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey126",
+   "name": "Graph Store Agent",
+   "slug": "graph-store-agent",
+   "specialization": "Graph persistence",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "persistent-memory-management",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "property-graph-memory-engineering",
+     "concept": "knowledge-graph",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey127",
+   "name": "Vector Store Agent",
+   "slug": "vector-store-agent",
+   "specialization": "Vector persistence",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "persistent-memory-management",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "latent-space-engineering",
+     "concept": "latent",
+     "role": "primary"
+    },
+    {
+     "skill": "hybrid-vector-graph-memory",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    },
+    {
+     "skill": "context-persistence-engineering",
+     "concept": "context-management",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey128",
+   "name": "Working Memory Manager",
+   "slug": "working-memory-manager",
+   "specialization": "Short-term memory",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "multi-tier-memory-management",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "working-memory-management",
+     "concept": "memory",
+     "role": "primary"
+    },
+    {
+     "skill": "enterprise-memory-isolation",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "context-persistence-engineering",
+     "concept": "context-management",
+     "role": "primary"
+    },
+    {
+     "skill": "context-boundary-engineering",
+     "concept": "context-management",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey13",
+   "name": "Conversation Ingestor",
+   "slug": "conversation-ingestor",
+   "specialization": "ChatGPT export ingestion",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "claim-lineage-analysis",
+     "concept": "claim-verification",
+     "role": "support"
+    },
+    {
+     "skill": "hallucination-attribution",
+     "concept": "claim-verification",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey14",
+   "name": "Retrieval Orchestrator",
+   "slug": "retrieval-orchestrator",
+   "specialization": "High-quality retrieval",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "hierarchical-agent-orchestration",
+     "concept": "orchestration",
+     "role": "support"
+    },
+    {
+     "skill": "agent-registry-management",
+     "concept": "orchestration",
+     "role": "support"
+    },
+    {
+     "skill": "agent-to-agent-protocol-engineering",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "multi-mcp-federation",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "context-infrastructure-engineering",
+     "concept": "io-contract",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey145",
+   "name": "OTel Collector Agent",
+   "slug": "otel-collector-agent",
+   "specialization": "Telemetry pipeline",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "ai-observability",
+     "concept": "observability",
+     "role": "primary"
+    },
+    {
+     "skill": "agent-trace-analysis",
+     "concept": "observability",
+     "role": "checker"
+    },
+    {
+     "skill": "memory-access-telemetry",
+     "concept": "observability",
+     "role": "primary"
+    },
+    {
+     "skill": "context-utilization-analytics",
+     "concept": "observability",
+     "role": "checker"
+    },
+    {
+     "skill": "reasoning-path-instrumentation",
+     "concept": "claim-verification",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey15",
+   "name": "Frames Steward",
+   "slug": "frames-steward",
+   "specialization": "ReasoningFrames",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-world-construction",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "reasoning-frame-engineering",
+     "concept": "reasoning",
+     "role": "primary"
+    },
+    {
+     "skill": "cognitive-architecture-engineering",
+     "concept": "reasoning",
+     "role": "primary"
+    },
+    {
+     "skill": "cognitive-anchor-extraction",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "anchor-based-reasoning",
+     "concept": "reasoning",
+     "role": "primary"
+    },
+    {
+     "skill": "recursive-self-reflection",
+     "concept": "reasoning",
+     "role": "primary"
+    },
+    {
+     "skill": "world-based-reasoning",
+     "concept": "reasoning",
+     "role": "primary"
+    },
+    {
+     "skill": "multi-world-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "meta-reasoning",
+     "concept": "reasoning",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey16",
+   "name": "Anchor Miner",
+   "slug": "anchor-miner",
+   "specialization": "Anchor extraction",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-triangulation",
+     "concept": "latent",
+     "role": "primary"
+    },
+    {
+     "skill": "superposition-coordinate-mapping",
+     "concept": "superposition",
+     "role": "support"
+    },
+    {
+     "skill": "reasoning-frame-engineering",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "cognitive-architecture-engineering",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "cognitive-anchor-extraction",
+     "concept": "reasoning",
+     "role": "primary"
+    },
+    {
+     "skill": "anchor-based-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "recursive-self-reflection",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "world-based-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "multi-world-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "meta-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey160",
+   "name": "OTel Module Agent",
+   "slug": "otel-module-agent",
+   "specialization": "Terraform module",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "ai-observability",
+     "concept": "observability",
+     "role": "support"
+    },
+    {
+     "skill": "agent-trace-analysis",
+     "concept": "observability",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey164",
+   "name": "Grafana Agent",
+   "slug": "grafana-agent",
+   "specialization": "Observability dashboards",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "ai-observability",
+     "concept": "observability",
+     "role": "support"
+    },
+    {
+     "skill": "agent-trace-analysis",
+     "concept": "observability",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey17",
+   "name": "Anchor Metrics",
+   "slug": "anchor-metrics",
+   "specialization": "Anchor evaluation",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-evaluation",
+     "concept": "evaluation",
+     "role": "checker"
+    },
+    {
+     "skill": "swarm-evaluation",
+     "concept": "evaluation",
+     "role": "checker"
+    },
+    {
+     "skill": "enterprise-constitution-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "retrieval-attribution-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "latent-triangulation",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "latent-space-engineering",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "latent-space-mapping",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "latent-topology-analysis",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "magnitude-spectrum-analysis",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "sparse-autoencoder-interpretability",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "latent-feature-attribution",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "superposition-observation",
+     "concept": "superposition",
+     "role": "checker"
+    },
+    {
+     "skill": "superposition-coordinate-mapping",
+     "concept": "superposition",
+     "role": "checker"
+    },
+    {
+     "skill": "reasoning-frame-engineering",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "cognitive-architecture-engineering",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "cognitive-anchor-extraction",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "anchor-based-reasoning",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "recursive-self-reflection",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "world-based-reasoning",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "multi-world-reasoning",
+     "concept": "reasoning",
+     "role": "checker"
+    },
+    {
+     "skill": "meta-reasoning",
+     "concept": "reasoning",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey180",
+   "name": "SCW Packing Schema Agent",
+   "slug": "scw-packing-schema-agent",
+   "specialization": "Packing schema",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "context-utilization-analytics",
+     "concept": "observability",
+     "role": "support"
+    },
+    {
+     "skill": "structured-context-world-engineering",
+     "concept": "context-management",
+     "role": "support"
+    },
+    {
+     "skill": "context-packing-optimization",
+     "concept": "context-management",
+     "role": "primary"
+    },
+    {
+     "skill": "scw-partition-isolation",
+     "concept": "agentic-loops",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey187",
+   "name": "Code Interpreter Agent",
+   "slug": "code-interpreter-agent",
+   "specialization": "Code execution",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "same-tick-arbitration",
+     "concept": "superposition",
+     "role": "support"
+    },
+    {
+     "skill": "shared-state-synchronization",
+     "concept": "superposition",
+     "role": "support"
+    },
+    {
+     "skill": "agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "primary"
+    },
+    {
+     "skill": "agent-infrastructure-engineering",
+     "concept": "infrastructure",
+     "role": "primary"
+    },
+    {
+     "skill": "agent-platform-engineering",
+     "concept": "infrastructure",
+     "role": "primary"
+    },
+    {
+     "skill": "multi-tenant-agent-infrastructure",
+     "concept": "infrastructure",
+     "role": "support"
+    },
+    {
+     "skill": "distributed-agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "primary"
+    },
+    {
+     "skill": "inference-pipeline-engineering",
+     "concept": "io-contract",
+     "role": "support"
+    },
+    {
+     "skill": "ai-platform-engineering",
+     "concept": "io-contract",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey193",
+   "name": "LangChain Adapter Agent",
+   "slug": "langchain-adapter-agent",
+   "specialization": "Adapter",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-to-agent-protocol-engineering",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "protocol-translation",
+     "concept": "protocol",
+     "role": "primary"
+    },
+    {
+     "skill": "cross-organization-policy-negotiation",
+     "concept": "governance",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey20",
+   "name": "Magnitude Spectrum Mapper",
+   "slug": "magnitude-spectrum-mapper",
+   "specialization": "Magnitude spectrum mapping",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-triangulation",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "magnitude-spectrum-analysis",
+     "concept": "latent",
+     "role": "primary"
+    },
+    {
+     "skill": "superposition-coordinate-mapping",
+     "concept": "superposition",
+     "role": "support"
+    },
+    {
+     "skill": "cognitive-anchor-extraction",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "anchor-based-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey21",
+   "name": "PCA Cartographer",
+   "slug": "pca-cartographer",
+   "specialization": "PCA/SVD",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-space-mapping",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "magnitude-spectrum-analysis",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey22",
+   "name": "UMAP Navigator",
+   "slug": "umap-navigator",
+   "specialization": "UMAP",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-space-mapping",
+     "concept": "latent",
+     "role": "support"
+    },
+    {
+     "skill": "latent-topology-analysis",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey24",
+   "name": "Isomap Surveyor",
+   "slug": "isomap-surveyor",
+   "specialization": "Isomap",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-topology-analysis",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey244",
+   "name": "Conversation Importer Agent",
+   "slug": "conversation-importer-agent",
+   "specialization": "Conversation ingest",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "episodic-memory-engineering",
+     "concept": "memory",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey245",
+   "name": "Conversation Store Agent",
+   "slug": "conversation-store-agent",
+   "specialization": "Conversation dataset",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "episodic-memory-engineering",
+     "concept": "memory",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey26",
+   "name": "SAE Engineer",
+   "slug": "sae-engineer",
+   "specialization": "Sparse autoencoders",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "sparse-autoencoder-interpretability",
+     "concept": "latent",
+     "role": "primary"
+    },
+    {
+     "skill": "latent-feature-attribution",
+     "concept": "latent",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey27",
+   "name": "Graph GNN Router",
+   "slug": "graph-gnn-router",
+   "specialization": "GNN routing",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "semantic-memory-engineering",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "knowledge-graph-engineering",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "property-graph-memory-engineering",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "graph-memory-construction",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    },
+    {
+     "skill": "graph-neural-network-routing",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "temporal-knowledge-graph-management",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    },
+    {
+     "skill": "memory-graph-evolution",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey28",
+   "name": "Neighborhood Graph Builder",
+   "slug": "neighborhood-graph-builder",
+   "specialization": "Neighborhood graphs",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "latent-topology-analysis",
+     "concept": "latent",
+     "role": "primary"
+    },
+    {
+     "skill": "knowledge-graph-engineering",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "graph-neural-network-routing",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "hybrid-vector-graph-memory",
+     "concept": "knowledge-graph",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey30",
+   "name": "Memory API Keeper",
+   "slug": "memory-api-keeper",
+   "specialization": "FastAPI memory service",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "multi-tier-memory-management",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "working-memory-management",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "model-context-protocol-engineering",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "protocol-translation",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "tool-schema-negotiation",
+     "concept": "io-contract",
+     "role": "primary"
+    },
+    {
+     "skill": "tool-capability-discovery",
+     "concept": "io-contract",
+     "role": "primary"
+    },
+    {
+     "skill": "context-infrastructure-engineering",
+     "concept": "io-contract",
+     "role": "support"
+    },
+    {
+     "skill": "inference-pipeline-engineering",
+     "concept": "io-contract",
+     "role": "primary"
+    },
+    {
+     "skill": "ai-platform-engineering",
+     "concept": "io-contract",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey304",
+   "name": "Session Store Manager",
+   "slug": "session-store-manager",
+   "specialization": "Session store",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "episodic-memory-engineering",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "working-memory-management",
+     "concept": "memory",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey307",
+   "name": "Promotion Policy Agent",
+   "slug": "promotion-policy-agent",
+   "specialization": "Promotion policy",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "multi-tier-memory-management",
+     "concept": "memory",
+     "role": "checker"
+    },
+    {
+     "skill": "episodic-memory-engineering",
+     "concept": "memory",
+     "role": "checker"
+    },
+    {
+     "skill": "working-memory-management",
+     "concept": "memory",
+     "role": "checker"
+    },
+    {
+     "skill": "semantic-memory-engineering",
+     "concept": "memory",
+     "role": "checker"
+    },
+    {
+     "skill": "persistent-memory-management",
+     "concept": "memory",
+     "role": "checker"
+    },
+    {
+     "skill": "memory-promotion-policy-engineering",
+     "concept": "memory",
+     "role": "primary"
+    },
+    {
+     "skill": "memory-access-telemetry",
+     "concept": "observability",
+     "role": "checker"
+    },
+    {
+     "skill": "memory-graph-evolution",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey31",
+   "name": "Runner API Keeper",
+   "slug": "runner-api-keeper",
+   "specialization": "Runner service",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "model-context-protocol-engineering",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "multi-mcp-federation",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "protocol-translation",
+     "concept": "protocol",
+     "role": "support"
+    },
+    {
+     "skill": "tool-schema-negotiation",
+     "concept": "io-contract",
+     "role": "support"
+    },
+    {
+     "skill": "tool-capability-discovery",
+     "concept": "io-contract",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey32",
+   "name": "MCP Bridge",
+   "slug": "mcp-bridge",
+   "specialization": "MCP endpoints",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-to-agent-protocol-engineering",
+     "concept": "protocol",
+     "role": "primary"
+    },
+    {
+     "skill": "model-context-protocol-engineering",
+     "concept": "protocol",
+     "role": "primary"
+    },
+    {
+     "skill": "multi-mcp-federation",
+     "concept": "protocol",
+     "role": "primary"
+    },
+    {
+     "skill": "protocol-translation",
+     "concept": "protocol",
+     "role": "checker"
+    },
+    {
+     "skill": "tool-schema-negotiation",
+     "concept": "io-contract",
+     "role": "support"
+    },
+    {
+     "skill": "tool-capability-discovery",
+     "concept": "io-contract",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey33",
+   "name": "Policy Proxy",
+   "slug": "policy-proxy",
+   "specialization": "Policy decisions",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "constitutional-constraint-enforcement",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "enterprise-agent-governance",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "enterprise-constitution-modeling",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "cross-organization-policy-negotiation",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "context-boundary-engineering",
+     "concept": "context-management",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey35",
+   "name": "Sandbox Runner",
+   "slug": "sandbox-runner",
+   "specialization": "Safe code exec",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey364",
+   "name": "SCW ReasoningFrame Schema Agent",
+   "slug": "scw-reasoningframe-schema-agent",
+   "specialization": "Schema mgmt",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "structured-context-world-engineering",
+     "concept": "context-management",
+     "role": "support"
+    },
+    {
+     "skill": "context-packing-optimization",
+     "concept": "context-management",
+     "role": "support"
+    },
+    {
+     "skill": "scw-partition-isolation",
+     "concept": "agentic-loops",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey394",
+   "name": "Seed Agent Graph Agent",
+   "slug": "seed-agent-graph-agent",
+   "specialization": "Data mgmt",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "semantic-memory-engineering",
+     "concept": "memory",
+     "role": "primary"
+    },
+    {
+     "skill": "knowledge-graph-engineering",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    },
+    {
+     "skill": "property-graph-memory-engineering",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    },
+    {
+     "skill": "graph-memory-construction",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "temporal-knowledge-graph-management",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "memory-graph-evolution",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "hybrid-vector-graph-memory",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "research-paper-integration",
+     "concept": "knowledge-graph",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey463",
+   "name": "Agentic Runner Agent",
+   "slug": "agentic-runner-agent",
+   "specialization": "Workflow execution",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "actor-critic-parallelism",
+     "concept": "superposition",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey466",
+   "name": "MCP Runner Agent",
+   "slug": "mcp-runner-agent",
+   "specialization": "Workflow execution",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "shared-state-synchronization",
+     "concept": "superposition",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey50",
+   "name": "Provenance Signer",
+   "slug": "provenance-signer",
+   "specialization": "Artifact signing & store",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "memory-promotion-policy-engineering",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "enterprise-constitution-modeling",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "claim-lineage-analysis",
+     "concept": "claim-verification",
+     "role": "support"
+    },
+    {
+     "skill": "hallucination-localization",
+     "concept": "claim-verification",
+     "role": "support"
+    },
+    {
+     "skill": "reasoning-path-instrumentation",
+     "concept": "claim-verification",
+     "role": "support"
+    },
+    {
+     "skill": "context-lineage-tracking",
+     "concept": "context-management",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey52",
+   "name": "Cost Guard",
+   "slug": "cost-guard",
+   "specialization": "Cost guardrails",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "hierarchical-agent-orchestration",
+     "concept": "orchestration",
+     "role": "checker"
+    },
+    {
+     "skill": "agent-registry-management",
+     "concept": "orchestration",
+     "role": "support"
+    },
+    {
+     "skill": "swarm-intelligence",
+     "concept": "orchestration",
+     "role": "support"
+    },
+    {
+     "skill": "swarm-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "constitutional-constraint-enforcement",
+     "concept": "governance",
+     "role": "support"
+    },
+    {
+     "skill": "same-tick-arbitration",
+     "concept": "superposition",
+     "role": "support"
+    },
+    {
+     "skill": "context-packing-optimization",
+     "concept": "context-management",
+     "role": "checker"
+    },
+    {
+     "skill": "loop-composition-battery",
+     "concept": "agentic-loops",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey54",
+   "name": "Security Sentinel",
+   "slug": "security-sentinel",
+   "specialization": "Security controls",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "enterprise-constitution-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "constitutional-constraint-enforcement",
+     "concept": "governance",
+     "role": "primary"
+    },
+    {
+     "skill": "enterprise-agent-governance",
+     "concept": "governance",
+     "role": "primary"
+    },
+    {
+     "skill": "enterprise-constitution-modeling",
+     "concept": "governance",
+     "role": "checker"
+    },
+    {
+     "skill": "cross-organization-policy-negotiation",
+     "concept": "governance",
+     "role": "primary"
+    },
+    {
+     "skill": "enterprise-memory-isolation",
+     "concept": "governance",
+     "role": "primary"
+    },
+    {
+     "skill": "multi-tenant-agent-infrastructure",
+     "concept": "infrastructure",
+     "role": "support"
+    },
+    {
+     "skill": "context-boundary-engineering",
+     "concept": "context-management",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey55",
+   "name": "Backup & Restore",
+   "slug": "backup-restore",
+   "specialization": "DR ops",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    },
+    {
+     "skill": "distributed-agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey65",
+   "name": "Database Architect",
+   "slug": "database-architect",
+   "specialization": "Data persistence",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "persistent-memory-management",
+     "concept": "memory",
+     "role": "primary"
+    },
+    {
+     "skill": "enterprise-memory-isolation",
+     "concept": "governance",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey66",
+   "name": "API Gateway Agent",
+   "slug": "api-gateway-agent",
+   "specialization": "API gateway",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-infrastructure-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    },
+    {
+     "skill": "agent-platform-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    },
+    {
+     "skill": "inference-pipeline-engineering",
+     "concept": "io-contract",
+     "role": "support"
+    },
+    {
+     "skill": "ai-platform-engineering",
+     "concept": "io-contract",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey70",
+   "name": "Integration Engineer",
+   "slug": "integration-engineer",
+   "specialization": "External integrations",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-infrastructure-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey71",
+   "name": "QA Agent",
+   "slug": "qa-agent",
+   "specialization": "Quality assurance",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "semantic-memory-engineering",
+     "concept": "memory",
+     "role": "support"
+    },
+    {
+     "skill": "model-context-protocol-engineering",
+     "concept": "protocol",
+     "role": "checker"
+    },
+    {
+     "skill": "latent-world-construction",
+     "concept": "latent",
+     "role": "checker"
+    },
+    {
+     "skill": "knowledge-graph-engineering",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "property-graph-memory-engineering",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "graph-memory-construction",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "graph-neural-network-routing",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "temporal-knowledge-graph-management",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "memory-graph-evolution",
+     "concept": "knowledge-graph",
+     "role": "support"
+    },
+    {
+     "skill": "hybrid-vector-graph-memory",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "research-paper-integration",
+     "concept": "knowledge-graph",
+     "role": "checker"
+    },
+    {
+     "skill": "same-tick-arbitration",
+     "concept": "superposition",
+     "role": "checker"
+    },
+    {
+     "skill": "actor-critic-parallelism",
+     "concept": "superposition",
+     "role": "support"
+    },
+    {
+     "skill": "tool-schema-negotiation",
+     "concept": "io-contract",
+     "role": "checker"
+    },
+    {
+     "skill": "tool-capability-discovery",
+     "concept": "io-contract",
+     "role": "checker"
+    },
+    {
+     "skill": "context-infrastructure-engineering",
+     "concept": "io-contract",
+     "role": "checker"
+    },
+    {
+     "skill": "inference-pipeline-engineering",
+     "concept": "io-contract",
+     "role": "checker"
+    },
+    {
+     "skill": "ai-platform-engineering",
+     "concept": "io-contract",
+     "role": "checker"
+    },
+    {
+     "skill": "structured-context-world-engineering",
+     "concept": "context-management",
+     "role": "checker"
+    },
+    {
+     "skill": "context-persistence-engineering",
+     "concept": "context-management",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey74",
+   "name": "Debugger Agent",
+   "slug": "debugger-agent",
+   "specialization": "Debugging",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "ai-observability",
+     "concept": "observability",
+     "role": "checker"
+    },
+    {
+     "skill": "agent-trace-analysis",
+     "concept": "observability",
+     "role": "primary"
+    },
+    {
+     "skill": "memory-access-telemetry",
+     "concept": "observability",
+     "role": "support"
+    },
+    {
+     "skill": "context-utilization-analytics",
+     "concept": "observability",
+     "role": "primary"
+    },
+    {
+     "skill": "reasoning-path-instrumentation",
+     "concept": "claim-verification",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey79",
+   "name": "DR Coordinator",
+   "slug": "dr-coordinator",
+   "specialization": "DR ops",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "hierarchical-agent-orchestration",
+     "concept": "orchestration",
+     "role": "support"
+    },
+    {
+     "skill": "swarm-intelligence",
+     "concept": "orchestration",
+     "role": "support"
+    },
+    {
+     "skill": "swarm-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey795",
+   "name": "Feature Attribution Analyst",
+   "slug": "feature-attribution-analyst",
+   "specialization": "Causal feature attribution",
+   "provenance": "proposed",
+   "assignments": [
+    {
+     "skill": "latent-feature-attribution",
+     "concept": "latent",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey796",
+   "name": "Latent World Constructor",
+   "slug": "latent-world-constructor",
+   "specialization": "Latent scenario construction",
+   "provenance": "proposed",
+   "assignments": [
+    {
+     "skill": "latent-world-construction",
+     "concept": "latent",
+     "role": "primary"
+    },
+    {
+     "skill": "world-based-reasoning",
+     "concept": "reasoning",
+     "role": "support"
+    },
+    {
+     "skill": "multi-world-reasoning",
+     "concept": "reasoning",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey797",
+   "name": "Context Boundary Warden",
+   "slug": "context-boundary-warden",
+   "specialization": "Context isolation and boundary enforcement",
+   "provenance": "proposed",
+   "assignments": [
+    {
+     "skill": "multi-tenant-agent-infrastructure",
+     "concept": "infrastructure",
+     "role": "primary"
+    },
+    {
+     "skill": "context-boundary-engineering",
+     "concept": "context-management",
+     "role": "primary"
+    },
+    {
+     "skill": "scw-partition-isolation",
+     "concept": "agentic-loops",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey8",
+   "name": "API Gateway Engineer",
+   "slug": "api-gateway-engineer",
+   "specialization": "API gateway engineering & tool registry",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-registry-management",
+     "concept": "orchestration",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey80",
+   "name": "Incident Commander",
+   "slug": "incident-commander",
+   "specialization": "Incident mgmt",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-platform-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    },
+    {
+     "skill": "distributed-agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey800",
+   "name": "Superposition Runtime Engineer",
+   "slug": "superposition-runtime-engineer",
+   "specialization": "Tick-level parallel runtime for agentic superposition",
+   "provenance": "proposed",
+   "assignments": [
+    {
+     "skill": "shared-state-synchronization",
+     "concept": "superposition",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey801",
+   "name": "State Vector Cartographer",
+   "slug": "state-vector-cartographer",
+   "specialization": "Superposition coordinate logging and transition modeling",
+   "provenance": "proposed",
+   "assignments": [
+    {
+     "skill": "superposition-coordinate-mapping",
+     "concept": "superposition",
+     "role": "primary"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey85",
+   "name": "Security Scanner",
+   "slug": "security-scanner",
+   "specialization": "Security scanning",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "checker"
+    },
+    {
+     "skill": "agent-infrastructure-engineering",
+     "concept": "infrastructure",
+     "role": "checker"
+    },
+    {
+     "skill": "agent-platform-engineering",
+     "concept": "infrastructure",
+     "role": "checker"
+    },
+    {
+     "skill": "multi-tenant-agent-infrastructure",
+     "concept": "infrastructure",
+     "role": "checker"
+    },
+    {
+     "skill": "distributed-agent-runtime-engineering",
+     "concept": "infrastructure",
+     "role": "checker"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey88",
+   "name": "Compliance Auditor",
+   "slug": "compliance-auditor",
+   "specialization": "Compliance",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "memory-promotion-policy-engineering",
+     "concept": "memory",
+     "role": "checker"
+    },
+    {
+     "skill": "enterprise-constitution-evaluation",
+     "concept": "evaluation",
+     "role": "checker"
+    },
+    {
+     "skill": "constitutional-constraint-enforcement",
+     "concept": "governance",
+     "role": "checker"
+    },
+    {
+     "skill": "enterprise-agent-governance",
+     "concept": "governance",
+     "role": "checker"
+    },
+    {
+     "skill": "enterprise-constitution-modeling",
+     "concept": "governance",
+     "role": "primary"
+    },
+    {
+     "skill": "cross-organization-policy-negotiation",
+     "concept": "governance",
+     "role": "checker"
+    },
+    {
+     "skill": "enterprise-memory-isolation",
+     "concept": "governance",
+     "role": "checker"
+    },
+    {
+     "skill": "claim-lineage-analysis",
+     "concept": "claim-verification",
+     "role": "checker"
+    },
+    {
+     "skill": "hallucination-localization",
+     "concept": "claim-verification",
+     "role": "checker"
+    },
+    {
+     "skill": "hallucination-attribution",
+     "concept": "claim-verification",
+     "role": "checker"
+    },
+    {
+     "skill": "context-lineage-tracking",
+     "concept": "context-management",
+     "role": "checker"
+    },
+    {
+     "skill": "loop-composition-battery",
+     "concept": "agentic-loops",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey96",
+   "name": "Artifact Store",
+   "slug": "artifact-store",
+   "specialization": "Provenance store",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "context-persistence-engineering",
+     "concept": "context-management",
+     "role": "support"
+    }
+   ]
+  },
+  {
+   "registry_index": "Maxey98",
+   "name": "Drift Detector",
+   "slug": "drift-detector",
+   "specialization": "Drift analytics",
+   "provenance": "registry",
+   "assignments": [
+    {
+     "skill": "agent-evaluation",
+     "concept": "evaluation",
+     "role": "support"
+    },
+    {
+     "skill": "superposition-observation",
+     "concept": "superposition",
+     "role": "support"
+    }
+   ]
+  }
+ ]
+}

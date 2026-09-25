@@ -1,0 +1,67 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "Maxey0-SuperSpace",
+  "description": "Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.",
+  "url": "https://mcp.maxey0.com/v1/a2a",
+  "preferredTransport": "JSONRPC",
+  "version": "0.3.0",
+  "provider": {
+    "organization": "mmc7676",
+    "url": "https://maxey0.com"
+  },
+  "documentationUrl": "https://maxey0.com/docs",
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": true
+  },
+  "defaultInputModes": [
+    "text/plain",
+    "application/json"
+  ],
+  "defaultOutputModes": [
+    "application/json"
+  ],
+  "skills": [
+    {
+      "id": "scw-governance",
+      "name": "Governed context windows",
+      "description": "Open, describe and close explicit context windows, and gate what crosses between them.",
+      "tags": [
+        "context",
+        "isolation",
+        "governance"
+      ]
+    },
+    {
+      "id": "containment-evidence",
+      "name": "Containment evidence",
+      "description": "The hash-chained record of what was attempted across every boundary, with a verifier a third party can run.",
+      "tags": [
+        "observability",
+        "audit",
+        "evidence"
+      ]
+    },
+    {
+      "id": "gated-egress",
+      "name": "Gated model egress",
+      "description": "Model calls admitted by the gate and recorded before they leave, with the prompt digested rather than stored.",
+      "tags": [
+        "safety",
+        "egress",
+        "providers"
+      ]
+    }
+  ],
+  "securitySchemes": {
+    "bearer": {
+      "type": "http",
+      "scheme": "bearer"
+    }
+  },
+  "_surface": {
+    "tools": 29,
+    "resources": 3
+  }
+}

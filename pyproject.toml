@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maxey0-superspace"
+version = "0.3.0"
+description = "Maxey0-SuperSpace harness-neutral context, execution, SCW, semantic/drift, A2A, MCP delivery, and observability infrastructure."
+requires-python = ">=3.10"
+# `mcp` is a core dependency, not only an extra: `maxey0_ss.api.app` builds the
+# session transport at import, so a plain install without it could not start
+# `maxey0-ss-public` at all. The `mcp` extra is kept, with the same bound, so
+# existing `pip install maxey0-superspace[mcp]` commands still resolve.
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn>=0.29",
+    "pydantic>=2.0",
+    "mcp>=1.19.0,<2",
+]
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.19.0,<2"]
+claude-agent-sdk = ["claude-agent-sdk"]
+openai-agents = ["openai-agents"]
+langchain = ["langgraph"]
+google-adk = ["google-adk"]
+microsoft = ["agent-framework"]
+nvidia = ["nvidia-nat"]
+all-harnesses = ["agent-framework", "claude-agent-sdk", "google-adk", "langchain-core", "langgraph", "nvidia-nat", "openai-agents"]
+graph = ["networkx>=3.0"]
+all = ["mcp>=1.19.0,<2", "agent-framework", "claude-agent-sdk", "google-adk", "langchain-core", "langgraph", "nvidia-nat", "openai-agents", "networkx>=3.0"]
+
+[project.scripts]
+maxey0-ss = "maxey0_ss.__main__:main"
+maxey0-ss-api = "maxey0_ss.__main__:main"
+maxey0-ss-public = "maxey0_ss.public_server:main"
+maxey0-ss-mcp = "maxey0_ss.mcp_stdio_server:main"
+
+# The repository root holds several non-package directories (server/, tests/,
+# ui/, scw/, site/ ...). Without an explicit include, setuptools auto-discovery
+# finds no importable package and `pip install -e .` succeeds while installing
+# nothing — which is what made `python -m maxey0_ss...` fail outside the repo.
+[tool.setuptools.packages.find]
+include = ["maxey0_ss*"]
+
+[tool.setuptools.package-data]
+# Recorded evidence and schemas ship with the package; without this a wheel
+# installs the code that references them and not the files themselves.
+"maxey0_ss" = ["examples/*.json", "schemas/*.json", "docs/*.md"]
+
+[tool.pytest.ini_options]
+testpaths = ["maxey0_ss/tests", "tests"]
+pythonpath = ["."]
