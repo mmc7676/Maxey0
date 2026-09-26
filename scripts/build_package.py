@@ -406,13 +406,13 @@ def main(argv: list[str] | None = None) -> int:
           " not portably ship \u2014\nitself. Nothing to pip install by hand on"
           " a machine that has never\nseen this project before.\n\n"
           "Installing the Claude Code plugin from the marketplace is separate"
-          "\nand still needs `mcp` and `pydantic` on the interpreter that"
-          "\n`python` resolves to:\n\n    python -m pip install mcp pydantic"
-          "\n\nNamed as packages, not as a file. The single-plugin archive"
-          " contains\nno requirements.txt at all, so the older banner pointed"
-          " the reader at\nsomething they could not open."
-          " `server/_preflight.py` prints these\nsame two package names on the"
-          " only start-up failure path.")
+          "\nand still needs the `maxey0` package on the interpreter that"
+          "\n`python` resolves to:\n\n    python -m pip install maxey0"
+          "\n\nNamed as a package, not as a file. The single-plugin archive"
+          " contains\nno requirements.txt at all.\n`server/_preflight.py` names"
+          " the individual missing modules (such as\n`mcp` and `pydantic`) on"
+          " the only start-up failure path; installing\n`maxey0` provides"
+          " them.")
     return 0
 
 

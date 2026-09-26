@@ -34,6 +34,8 @@ class ContextService:
         isolation: ContainmentProvider | None = None,
         *,
         root_reach: set[str] | None = None,
+        max_depth: int | None = None,
+        max_children: int | None = None,
         denial_threshold: int = 64,
     ) -> None:
         self.graph = graph or ContextGraph()
@@ -51,7 +53,15 @@ class ContextService:
         # An unbounded root is the honest default for an embedded process: it
         # makes the induction true and vacuous, and a deployment wanting a real
         # ceiling passes root_reach. What matters is the grant is recorded.
-        root = Constitution(reach=frozenset(root_reach) if root_reach is not None else None)
+        # The spawn caps ride on the same root: every chartered SCW derives from
+        # it, and `derive` refuses a child asking for more, so a cap set here
+        # binds the whole tree and no caller below the root can widen it.
+        root = Constitution(
+            reach=frozenset(root_reach) if root_reach is not None else None,
+            max_depth=max_depth,
+            max_children=max_children,
+        )
+        self.root_constitution = root
         charter_root = getattr(self.isolation, "charter_root", None)
         if charter_root is not None:
             charter_root(self.ROOT_SCW, root)

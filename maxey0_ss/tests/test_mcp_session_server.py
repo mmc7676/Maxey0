@@ -69,7 +69,7 @@ def test_initialize_opens_a_real_session_with_a_handshake():
         assert r.status_code == 200
         assert r.headers.get("mcp-session-id")
         body = _sse_json(r)
-        assert body["result"]["serverInfo"] == {"name": "Maxey0-SuperSpace", "version": "0.3.0"}
+        assert body["result"]["serverInfo"] == {"name": "Maxey0-SuperSpace", "version": __import__("maxey0_ss").__version__}
 
 
 def test_tool_call_reaches_the_same_shared_surface_as_the_stateless_transport():

@@ -2,8 +2,8 @@
 
 `python -m maxey0_ss.mcp_public_server` and `python -m maxey0_ss.a2a_server`
 were published as install commands and exited without serving (neither module
-has an entry point), and the harness targets said `pip install
-maxey0-superspace[...]`, which needs a PyPI release that does not exist.
+has an entry point), and the harness targets named a PyPI distribution that
+did not exist. They now name `maxey0`, the distribution pyproject.toml builds.
 """
 from __future__ import annotations
 
@@ -29,10 +29,15 @@ def test_server_targets_name_a_real_console_script():
         assert target.install in SCRIPTS, target.install
 
 
-def test_no_target_installs_from_pypi():
+def test_every_pip_install_names_the_distribution_pyproject_builds():
+    project = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))["project"]
+    extras = set(project["optional-dependencies"])
     for target in _targets():
-        if "pip install" in target.install:
-            assert "git+" in target.install, target.install
+        if "pip install" not in target.install:
+            continue
+        assert f'pip install "{project["name"]}[' in target.install, target.install
+        extra = target.install.split("[", 1)[1].split("]", 1)[0]
+        assert extra in extras, target.install
 
 
 def test_the_standard_agent_card_path_is_served():

@@ -1,10 +1,19 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from collections import deque
+from typing import TYPE_CHECKING
 
 from ..models import DriftRecord
 from .math import drift, superposition
+
+if TYPE_CHECKING:  # the containment package imports nothing from here
+    from ..containment.attestation import AttestationLog
+
+#: Recorded as the deciding provider on every drift attestation.
+DRIFT_PROVIDER = "semantic-runtime"
 
 
 class UnanchoredWindow(RuntimeError):
@@ -57,15 +66,55 @@ def validate_threshold(threshold: object) -> float:
     return threshold
 
 
+def vector_digest(vector: list[float]) -> str:
+    """SHA-256 of a validated vector's canonical JSON.
+
+    What the attestation chain carries instead of the vector. The chain is
+    published through `evidence.attestations`, and an embedding is derived
+    from the content it describes, so recording it would publish that content
+    in a recoverable form. A digest still lets an auditor match a record to a
+    vector they already hold.
+    """
+    return hashlib.sha256(
+        json.dumps(vector, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
 class SemanticRuntime:
     """Second runtime: observes semantic state, detects drift, and proposes correction."""
 
-    def __init__(self) -> None:
+    def __init__(self, log: "AttestationLog | None" = None) -> None:
         self.baselines: dict[str, list[float]] = {}
         self.records: deque[DriftRecord] = deque(maxlen=MAX_RECORDS)
+        #: Where anchors and inspections are attested. Anchoring decides what
+        #: every later measurement is judged against, so a re-anchor that made
+        #: a drifted window read as healthy used to leave no trace outside the
+        #: bounded, in-memory `records`; on the chain it is tamper-evident.
+        self.log = log
+
+    def _attest(self, kind: str, scw_id: str, metadata: dict) -> None:
+        if self.log is None:
+            return
+        # Imported here: containment -> context -> semantic would otherwise be
+        # a cycle at import time for callers that import this module first.
+        from ..containment.protocol import ContainmentDecision, Operation
+
+        self.log.record(ContainmentDecision(
+            allowed=True,
+            operation=Operation.READ if kind == "inspect" else Operation.WRITE,
+            agent_scw=scw_id,
+            target_scw=scw_id,
+            reason=f"drift {kind}",
+            provider=DRIFT_PROVIDER,
+            metadata={"kind": f"semantic.drift.{kind}", "scw_id": scw_id, **metadata},
+        ))
 
     def anchor(self, scw_id: str, vector: list[float]) -> None:
-        self.baselines[scw_id] = validate_vector(vector)
+        vector = validate_vector(vector)
+        self.baselines[scw_id] = vector
+        self._attest("anchor", scw_id, {
+            "vector_sha256": vector_digest(vector), "dimension": len(vector),
+        })
 
     def inspect(self, scw_id: str, current: list[float], threshold: float) -> DriftRecord:
         """Measure drift against the anchored baseline.
@@ -89,10 +138,22 @@ class SemanticRuntime:
         correction = "re-anchor-and-reroute" if drifted else None
         record = DriftRecord(scw_id, baseline, current, distance, threshold, drifted, correction)
         self.records.append(record)
+        self._attest("inspect", scw_id, {
+            "baseline_sha256": vector_digest(baseline),
+            "vector_sha256": vector_digest(current),
+            "distance": distance, "threshold": threshold,
+            "drifted": drifted, "correction": correction,
+        })
         return record
 
     def maintain_superposition(self, states: list[list[float]], weights: list[float]) -> list[float]:
         return superposition(states, weights)
 
     def correct(self, scw_id: str, vector: list[float]) -> None:
-        self.baselines[scw_id] = validate_vector(vector)
+        # Replaces the baseline exactly as anchor() does, so it is attested
+        # the same way; otherwise it was the unrecorded way to re-anchor.
+        vector = validate_vector(vector)
+        self.baselines[scw_id] = vector
+        self._attest("correct", scw_id, {
+            "vector_sha256": vector_digest(vector), "dimension": len(vector),
+        })

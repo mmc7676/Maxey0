@@ -230,7 +230,7 @@ class TestHarnessAdapters:
         The registry said `langchain-core`, pyproject said `langchain-core`, and
         the adapter's own note said "langchain and/or langgraph". A reader
         following the note installed a different package from the one
-        `pip install maxey0-superspace[langchain]` would have given them. The
+        `pip install "maxey0[langchain]"` would have given them. The
         note is now checked against the registry rather than against a string
         format, so the two cannot drift again.
         """

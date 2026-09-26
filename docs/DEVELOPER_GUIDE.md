@@ -16,7 +16,7 @@ is required, and nothing is built. The tool names are declared once, in
 `server/planes/catalog.py`.
 
 The repository also carries a separate server that is not part of the plugin:
-`maxey0-ss`, from the `maxey0_ss/` package (29 tools, 3 resources, surface in
+`maxey0-ss`, from the `maxey0_ss/` package (30 tools, 3 resources, surface in
 `maxey0_ss/mcp_surface.py`), registered by the repository's own `.mcp.json` and
 launched as the `maxey0-ss-mcp` console script. It needs `pip install -e .`;
 see `docs/MCP_SERVERS.md`. This guide covers the plugin and the Studio.
@@ -644,7 +644,7 @@ Other environment overrides: `SCW_EVENT_LOG`, `SCW_HOME`, `MAXEY0_STUDIO_PORT`,
 
 ## 8. Release
 
-The version is currently `0.3.0`. The one literal is `__version__` in
+The version is currently `0.3.1`. The one literal is `__version__` in
 `maxey0_ss/__init__.py`, and `tests/test_version.py` requires every other
 declaration to agree with it:
 

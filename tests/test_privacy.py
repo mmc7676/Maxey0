@@ -85,6 +85,8 @@ class RedactUnit(unittest.TestCase):
     def test_the_runtime_copy_is_byte_identical(self):
         self.assertEqual((SERVER / "gate" / "privacy.py").read_bytes(),
                          (SERVER / "vendor" / "scw_runtime" / "privacy.py").read_bytes())
+        self.assertEqual((SERVER / "gate" / "privacy.py").read_bytes(),
+                         (ROOT / "maxey0_ss" / "privacy.py").read_bytes())
 
 
 class GateJournalOnDisk(unittest.TestCase):
@@ -187,6 +189,7 @@ class NoUnredactedDiskWrites(unittest.TestCase):
         "server/gate/attribution.py": "persists loop ids and workdirs already passed through shorten_home",
         "server/vendor/scw_runtime/events.py": "emit() redacts the payload before the line is written",
         "hooks/session_notice.py": "writes the hook reply to stdout for the host, not to disk",
+        "maxey0_ss/containment/attestation.py": "record() redact()s a persisted decision before it is digested and written",
     }
 
     def test_every_disk_write_is_redacted_or_reviewed(self):

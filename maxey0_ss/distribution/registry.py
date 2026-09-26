@@ -42,7 +42,7 @@ from .. import __version__
 PRODUCT = "Maxey0-SuperSpace"
 SHORT = "Maxey0"
 MCP_NAMESPACE = "maxey0-ss"
-DISTRIBUTION_ID = "maxey0-superspace"
+DISTRIBUTION_ID = "maxey0"
 PYTHON_PACKAGE = "maxey0_ss"
 HOMEPAGE = "https://maxey0.com"
 REPOSITORY = "https://github.com/mmc7676/Maxey0"
@@ -309,8 +309,7 @@ def _harness(hid: str, title: str, module: str, dependency: str, notes: str) -> 
         platform="harness",
         kind="harness",
         status="shipped",
-        # Not on PyPI: install the extra straight from the repository.
-        install=f'pip install "{DISTRIBUTION_ID}[{hid}] @ git+{REPOSITORY}"',
+        install=f'pip install "{DISTRIBUTION_ID}[{hid}]"',
         artifacts=(f"{PYTHON_PACKAGE}/adapters/harnesses/{module}.py",),
         generates=(
             f"distributions/harnesses/{hid}/README.md",

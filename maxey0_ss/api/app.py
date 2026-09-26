@@ -90,6 +90,7 @@ V1_CAPABILITIES: dict[tuple[str, str], str] = {
     ("GET", "/v1/context/scws"): SCW_READ,
     ("GET", "/v1/semantic/drift"): SCW_READ,
     ("POST", "/v1/context/scws/close"): SCW_ADMIT,
+    ("POST", "/v1/context/scws/start"): SCW_ADMIT,
     ("POST", "/v1/context/scws/anchor"): SCW_ADMIT,
     ("POST", "/v1/context/scws/drift"): SCW_ADMIT,
 }
@@ -108,6 +109,7 @@ def _required_capability(method: str, path: str) -> str | None:
         return direct
     for suffix, capability in (
         ("/close", SCW_ADMIT), ("/anchor", SCW_ADMIT), ("/drift", SCW_ADMIT),
+        ("/start", SCW_ADMIT),
     ):
         if path.startswith("/v1/context/scws/") and path.endswith(suffix):
             return capability
@@ -306,6 +308,27 @@ def create_app(system: SuperSpaceSystem | None = None) -> FastAPI:
         system.context.close(scw_id)
         return {"closed": scw_id}
 
+    @app.post("/v1/context/scws/{scw_id}/start")
+    def start_scw(scw_id: str, request: Request):
+        """Start a specification, owned by the authenticated caller.
+
+        The middleware has already admitted this principal for scw.admit; it is
+        resolved again only to learn its subject, so the owner is never a
+        request field a caller could set to somebody else.
+        """
+        from ..mcp_surface import AlreadyRunning, start_instance
+
+        if scw_id not in system.context.graph.scw_specs:
+            raise HTTPException(404, "SCW specification not found")
+        try:
+            owner = authorizer.principal(request.headers.get("authorization")).subject
+        except AuthError as exc:
+            raise HTTPException(exc.status, str(exc)) from exc
+        try:
+            return start_instance(system, scw_id, owner or "local", surface.app_cache)
+        except AlreadyRunning as exc:
+            raise HTTPException(409, str(exc)) from exc
+
     @app.get("/v1/context/scws")
     def scws():
         return system.context.snapshot()["scw_instances"]
@@ -337,7 +360,12 @@ def create_app(system: SuperSpaceSystem | None = None) -> FastAPI:
         except UnanchoredWindow as exc:
             # The MCP tool answers this as a structured refusal; REST let the
             # exception escape as a 500. Same state, same answer, here a 409.
-            raise HTTPException(409, str(exc)) from exc
+            # Same fields the MCP tool answers with, so a client handles one
+            # shape whichever door it used. Still 409: the request is refused.
+            raise HTTPException(409, {
+                "scw_id": scw_id, "anchored": False, "drifted": None,
+                "reason": str(exc),
+            }) from exc
         except (TypeError, ValueError) as exc:
             raise HTTPException(400, str(exc)) from exc
         return record.__dict__

@@ -9,7 +9,7 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 ## Install
 
 ```
-pip install "maxey0-superspace[openai-agents] @ git+https://github.com/mmc7676/Maxey0"
+pip install "maxey0[openai-agents]"
 ```
 
 The `openai-agents` package is an *optional* dependency and is never vendored. The adapter imports it at the moment it is used, so a build that does not use this harness does not import it.
@@ -24,8 +24,8 @@ The SDK stays the execution harness; this owns the window and the record.
 
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
-- distribution id `maxey0-superspace`
-- version `0.3.0`
+- distribution id `maxey0`
+- version `0.3.1`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../../DISTRIBUTION_MATRIX.md).

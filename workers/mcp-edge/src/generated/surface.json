@@ -3,7 +3,7 @@
     "bytes": 480954,
     "kind": "built",
     "path": "mcp-app.html",
-    "sha256": "2af3160d2812aebb89fb712571143e0d9d46042046ece38d094db2a34721b778",
+    "sha256": "318fdbea9d2ad6cd15b0074159ab5e0130a6c464aac821a4d3cc094235630adc",
     "uri": "ui://maxey0-ss/super-space.html"
   },
   "protocolVersion": "2026-07-28",
@@ -33,7 +33,7 @@
     }
   ],
   "serverName": "Maxey0-SuperSpace",
-  "serverVersion": "0.3.0",
+  "serverVersion": "0.3.1",
   "staticResources": {
     "maxey0-ss://architecture/planes": [
       "context",
@@ -115,6 +115,15 @@
       "inputSchema": {
         "properties": {
           "anchor_prev_digest": {
+            "type": "string"
+          },
+          "expected_entries": {
+            "description": "Number of records expected; detects truncation.",
+            "minimum": 0,
+            "type": "integer"
+          },
+          "expected_head": {
+            "description": "Chain head the records must end at; detects entries removed from the end.",
             "type": "string"
           },
           "records": {
@@ -213,6 +222,21 @@
       "name": "maxey0-ss.scw.describe"
     },
     {
+      "description": "Instantiate an SCW specification on the SCW runtime, owned by the caller.",
+      "inputSchema": {
+        "properties": {
+          "scw_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "scw_id"
+        ],
+        "type": "object"
+      },
+      "name": "maxey0-ss.scw.start"
+    },
+    {
       "description": "Close an instantiated Maxey0 SCW by explicit application identifier.",
       "inputSchema": {
         "properties": {
@@ -268,6 +292,10 @@
       "description": "Send a prompt to a model provider. The egress is gated and written to the containment chain before it leaves; the prompt is digested, never recorded.",
       "inputSchema": {
         "properties": {
+          "async": {
+            "description": "Return the task handle while it is still working; fetch the result with tasks/get.",
+            "type": "boolean"
+          },
           "max_tokens": {
             "type": "integer"
           },

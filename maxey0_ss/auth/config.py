@@ -173,7 +173,7 @@ class AuthConfig:
                 self.issuer or self.jwks_url or self.default_bearer_token
             ),
             "credential_values_exposed": False,
-            "supported_binding": ["oidc", "oauth2", "deployment-secret-manager"],
+            "supported_binding": ["oidc", "oauth2"],
             "sources": sorted({source for _, source in self.sources}),
             "inert": self.inert_credentials(),
         }

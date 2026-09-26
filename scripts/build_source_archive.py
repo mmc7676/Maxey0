@@ -147,10 +147,10 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     OUT.mkdir(exist_ok=True)
-    target = OUT / f"maxey0-superspace-{version}-source.zip"
+    target = OUT / f"maxey0-{version}-source.zip"
     body = manifest(selection, version, dirty=dirty, allow_dirty=args.allow_dirty)
 
-    root = f"maxey0-superspace-{version}"
+    root = f"maxey0-{version}"
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
         archive.writestr(f"{root}/MANIFEST.txt", body)
         for path in selection.files:

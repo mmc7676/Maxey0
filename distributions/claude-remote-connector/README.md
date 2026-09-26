@@ -14,7 +14,7 @@ Add https://mcp.maxey0.com/mcp as a custom connector.
 
 The endpoint answers MCP 2026-07-28 and the manifest is complete. Directory listing is a platform action and is not claimed here.
 
-## The 29 tools
+## The 30 tools
 
 | tool | capability |
 |---|---|
@@ -32,6 +32,7 @@ The endpoint answers MCP 2026-07-28 and the manifest is complete. Directory list
 | `maxey0-ss.super_space` | public |
 | `maxey0-ss.scw.create` | scw.create |
 | `maxey0-ss.scw.describe` | scw.read |
+| `maxey0-ss.scw.start` | scw.admit |
 | `maxey0-ss.scw.close` | scw.admit |
 | `maxey0-ss.scw.observe_host_window` | observe |
 | `maxey0-ss.provider.status` | observe |
@@ -52,8 +53,8 @@ The endpoint answers MCP 2026-07-28 and the manifest is complete. Directory list
 
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
-- distribution id `maxey0-superspace`
-- version `0.3.0`
+- distribution id `maxey0`
+- version `0.3.1`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../DISTRIBUTION_MATRIX.md).

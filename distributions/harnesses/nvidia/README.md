@@ -9,7 +9,7 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 ## Install
 
 ```
-pip install "maxey0-superspace[nvidia] @ git+https://github.com/mmc7676/Maxey0"
+pip install "maxey0[nvidia]"
 ```
 
 The `nvidia-nat` package is an *optional* dependency and is never vendored. The adapter imports it at the moment it is used, so a build that does not use this harness does not import it.
@@ -24,8 +24,8 @@ Binds a NeMo workflow to a window; NIM endpoints are ordinary egress.
 
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
-- distribution id `maxey0-superspace`
-- version `0.3.0`
+- distribution id `maxey0`
+- version `0.3.1`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../../DISTRIBUTION_MATRIX.md).

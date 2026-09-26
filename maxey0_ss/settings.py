@@ -45,7 +45,7 @@ from typing import Any
 PACKAGE_DIR = Path(__file__).resolve().parent
 _PARENT = PACKAGE_DIR.parent
 
-_DISTRIBUTION_NAME = re.compile(r'(?m)^name\s*=\s*"maxey0-superspace"\s*$')
+_DISTRIBUTION_NAME = re.compile(r'(?m)^name\s*=\s*"maxey0"\s*$')
 
 
 def _is_source_tree(root: Path) -> bool:

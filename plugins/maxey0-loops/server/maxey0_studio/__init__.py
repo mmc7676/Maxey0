@@ -7,4 +7,4 @@ cannot read, and run the experiment that reports on all of it.
     python -m maxey0_studio
 """
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"

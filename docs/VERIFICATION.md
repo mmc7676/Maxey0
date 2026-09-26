@@ -9,7 +9,7 @@ records what is **not** verified, which is the part that matters most.
 ```
 Python : 1109 passed, 1 skipped, 981 subtests passed
 Worker :  52 passed (vitest), tsc --noEmit clean
-Surface:  29 tools, 3 resources
+Surface:  30 tools, 3 resources
 ```
 
 `.venv/Scripts/python.exe -m pytest -q`, plus `npm run check` in `ui/`

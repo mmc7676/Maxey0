@@ -33,8 +33,9 @@ CANONICAL = {
     "product": "Maxey0-SuperSpace",
     "short": "Maxey0",
     "python_package": "maxey0_ss",
+    "import_name": "maxey0",
     "mcp_namespace": "maxey0-ss",
-    "distribution_id": "maxey0-superspace",
+    "distribution_id": "maxey0",
     "system_class": "SuperSpaceSystem",
 }
 
@@ -46,6 +47,7 @@ RETIRED = {
     "M0-SS": "abbreviation of the product name",
     "Maxey0System": "pre-rename compatibility alias",
     "Super Space": "the product is one word after Maxey0-, never two",
+    "maxey0-superspace": "the distribution is `maxey0` from 0.3.1",
 }
 
 #: Files that record history and must keep the words they recorded. A changelog
@@ -189,6 +191,19 @@ class TestCanonicalNamesAreActuallyUsed(unittest.TestCase):
 
             module = importlib.import_module(CANONICAL["python_package"])
         self.assertTrue(hasattr(module, CANONICAL["system_class"]))
+
+    def test_the_import_name_re_exports_the_implementation(self):
+        """`maxey0` is a front door onto `maxey0_ss`, never a second copy."""
+        import maxey0
+        import maxey0_ss
+
+        self.assertEqual(maxey0.__name__, CANONICAL["import_name"])
+        self.assertIs(maxey0.SuperSpaceSystem, maxey0_ss.SuperSpaceSystem)
+        self.assertEqual(maxey0.__version__, maxey0_ss.__version__)
+        self.assertEqual(
+            sorted(maxey0.__all__),
+            ["SCWSpec", "SuperSpaceSystem", "__version__", "scw"],
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover

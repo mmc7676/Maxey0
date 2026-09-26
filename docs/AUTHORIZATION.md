@@ -18,7 +18,7 @@ An unauthorized caller must not reach either.
 | **public** | `None` | health, distribution, auth.manifest, cache.status, app.artifact, tasks.status, gate.inspect, super_space |
 | **observe** | `observe` | observe.events, observe.attempts, observe.traces, observe.gate_activity, observe.gate_mode, observe.isolation_level, observe.studio, maxey0-ss.scw.observe_host_window |
 | **read state** | `scw.read` | scw.describe |
-| **write state** | `scw.create`, `scw.admit` | scw.create, scw.close |
+| **write state** | `scw.create`, `scw.admit` | scw.create, scw.start, scw.close |
 | **gate** | `gate.write` | gate.set_mode, gate.set_policy, gate.declare_isolation |
 
 **`gate.write` is admin-only by construction.** No role in `auth/roles.py` holds
@@ -117,7 +117,19 @@ Request caps:
 
 Limits and caps are on automatically when `MAXEY0_PUBLIC` is set or auth is
 enabled. On public deployments `/docs` and `/openapi.json` are not served.
-Limits are per process and in memory, so they reset on restart.
+By default limits are per process and in memory, so they reset on restart.
+`MAXEY0_RATE_LIMIT_STORE=sqlite:<path>` keeps them in one SQLite file instead:
+they survive a restart and are shared by every process on the host that names
+the same file. They are still not shared across hosts.
+
+### Other settings
+
+| Variable | Effect |
+|---|---|
+| `MAXEY0_MCP_TOKEN_HASHES_FILE` | A file of hashed token entries, one per line, in the same format as `MAXEY0_MCP_TOKEN_HASHES`. It is re-read about once a second, so tokens can be rotated without a restart. |
+| `MAXEY0_ATTESTATION_PATH` | Persists the attestation log as JSONL. The file is reloaded and verified at startup; a broken chain refuses to start. Records are redacted before they are hashed. |
+| `MAXEY0_ATTESTATION_KEY_FILE` | Adds an HMAC-SHA256 signature to each attestation record. It proves integrity to whoever holds the key, not public authorship. |
+| `MAXEY0_ROOT_REACH`, `MAXEY0_MAX_DEPTH`, `MAXEY0_MAX_CHILDREN` | Bound the root window SCW0: a comma-separated list of SCW IDs it may reach, the maximum depth and the maximum number of children. Unset means unbounded. A malformed value refuses to start. `maxey0-ss.deployment` reports them under `root_bounds`. |
 
 ### Live posture (measured 2026-09-23 against mcp.maxey0.com and origin.maxey0.com)
 
@@ -148,9 +160,10 @@ sending a malformed SCW address gets `-32002` (capability denied), never
 - Isolation of the origin host. It still runs on a personal development
   laptop. Fly.io artifacts exist (`docs/FLY_DEPLOYMENT.md`), but the image has
   never been built and nothing has been deployed.
-- A shared limiter across processes. Limits are in-memory and per-process.
-- Credential rotation beyond restarting with new environment values.
-- Secrets manager. The token hash lives in `.env`, and the hash is not
-  sensitive. The plaintext token lives only on the client side.
+- A limiter shared across hosts. `MAXEY0_RATE_LIMIT_STORE=sqlite:<path>`
+  shares limits among processes on one host only.
+- Secrets manager, unless the host provides one (for example, Fly secrets).
+  The token hash lives in `.env` or `MAXEY0_MCP_TOKEN_HASHES_FILE`, and the
+  hash is not sensitive. The plaintext token lives only on the client side.
 - A security audit. One adversarial review pass ran; its 7 reproduced
   findings are fixed (see `docs/VERIFICATION.md`).

@@ -61,7 +61,7 @@ class build_py_with_bundle(build_py):
             missing = [rel for rel in REQUIRED if not (HERE / rel).is_file()]
             if missing:
                 raise FileError(
-                    "cannot build a complete maxey0-superspace wheel; missing: "
+                    "cannot build a complete maxey0 wheel; missing: "
                     + ", ".join(missing)
                     + ". Build from a full checkout or from the sdist (the App "
                     "bundle is produced by `npm run build` in "

@@ -54,9 +54,9 @@ questions.
 | Question | Claude Code plugin | Python package, with your own framework | Claude Desktop bundle |
 |---|---|---|---|
 | 1. What could each agent see? | **Yes**, for roles dispatched through a partition. Each role is bound to its own regions of the session's window, and region reads outside its scope are refused by code. What the orchestrating model pastes into a subagent's prompt is observed, not enforced. | **Partial.** Containment decides and records every read your code asks about. It does not hold your agents' content or see reads your code does not ask about. | **Partial.** The context tools partition the window, but Claude Desktop dispatches no subagents, so there are no separate agents to keep apart. |
-| 2. What did each agent try to reach? | **Yes.** The Gate sees every tool call, including subagents' calls. | **No.** Adapters do not intercept a framework's tool calls, and the Gate needs Claude Code's hooks. | **No.** Claude Desktop runs no hooks, so the Gate does not run. |
+| 2. What did each agent try to reach? | **Yes.** The Gate sees every tool call, including subagents' calls. | **Partial.** The LangChain and OpenAI Agents adapters record the framework's model and tool calls, but do not block them; the Gate needs Claude Code's hooks. | **No.** Claude Desktop runs no hooks, so the Gate does not run. |
 | 3. What left the machine? | **No.** A subagent's model calls go through Claude Code, not through Maxey0. | **Partial.** Only calls you send through `maxey0_ss.providers`: single-turn text completions (a prompt, an optional system prompt, `max_tokens`, `temperature`) to Anthropic, OpenAI or Hugging Face. There is no message list, tool use or streaming, so a framework agent's own model calls cannot practically go through them. | **No.** |
-| 4. Can anyone prove the record was not edited? | **Yes, with Maxey0's own tools.** The context ledger and the Gate journal are hash-chained files. No standalone verifier ships for them. | **Yes, offline.** The attestation log verifies from exported records alone. It is in memory, so it is lost on restart. | **Partial.** The context ledger is written and can be verified; there is no Gate journal. |
+| 4. Can anyone prove the record was not edited? | **Yes, with Maxey0's own tools.** The context ledger and the Gate journal are hash-chained files. `maxey0-verify` checks them offline. | **Yes, offline.** The attestation log verifies from exported records alone. It is in memory unless `MAXEY0_ATTESTATION_PATH` persists it. | **Partial.** The context ledger is written and can be verified; there is no Gate journal. |
 
 Every record is tamper-evident, not signed: it shows that nothing was changed
 inside the chain, not who wrote it.
@@ -104,7 +104,7 @@ The region types in the plugin (from `/maxey0:window partition`):
 
 | Record | Install | Where it lives | What writes to it | How to check it |
 |---|---|---|---|---|
-| **Attestation log** | Python package | In memory, in one process. Export it with `system.context.isolation.log.export()` or `maxey0-ss.evidence.attestations`. | Every containment decision, egress admission and completed egress | `AttestationLog.verify_records(records)` offline, or `maxey0-ss.evidence.verify` |
+| **Attestation log** | Python package | In memory, in one process, unless `MAXEY0_ATTESTATION_PATH` names a JSONL file. Export it with `system.context.isolation.log.export()` or `maxey0-ss.evidence.attestations`. | Every containment decision, egress admission and completed egress | `AttestationLog.verify_records(records)` offline, or `maxey0-ss.evidence.verify` |
 | **Context ledger** | Claude Code plugin and the Claude Desktop bundle | `~/.scw/events.jsonl` on disk (`SCW_EVENT_LOG` overrides it) | The context tools: regions, bindings, bridges, routing decisions and refusals | `/maxey0:window verify` checks the chain and that replaying the ledger rebuilds the same window |
 | **Gate journal** | Claude Code plugin | `~/.scw/gate.jsonl` on disk (`MAXEY0_GATE_LOG` overrides it) | The Gate's hooks, one record per intercepted tool call | `/maxey0:gate status` reports the chain check (from `observe_gate_activity`) |
 
@@ -139,18 +139,18 @@ your agents run.
 | You want | Install | You get |
 |---|---|---|
 | Governance for **Claude Code** subagents | The Claude Code plugin `maxey0` | Three MCP servers (`maxey0-context`, 32 tools; `maxey0-loops`, 10; `maxey0-observe`, 8), 10 slash commands, the Gate hooks and the Studio |
-| Governance for **your own agents**, or a server | The Python package `maxey0-superspace` (import name `maxey0_ss`) | The `maxey0-ss` MCP server (29 tools, over stdio and HTTP), a REST API, A2A routing, harness adapters, gated model providers and the attestation log |
+| Governance for **your own agents**, or a server | The Python package `maxey0` (`pip install maxey0`; import names `maxey0` and `maxey0_ss`) | The `maxey0-ss` MCP server (30 tools, over stdio and HTTP), a REST API, A2A routing, harness adapters, gated model providers and the attestation log |
 
-The plugin does not install the 29-tool `maxey0-ss` server, and the Python
+The plugin does not install the 30-tool `maxey0-ss` server, and the Python
 package does not install the Gate hooks.
 
 ### Claude Code (plugin)
 
 The plugin's servers and hooks run with the `python` on your `PATH`. That Python
-needs the MCP SDK:
+needs the `maxey0` package, which brings the MCP SDK with it:
 
 ```bash
-python -m pip install mcp pydantic
+python -m pip install maxey0
 ```
 
 Then, inside a Claude Code session:
@@ -183,8 +183,17 @@ loops, so Claude routes with `loops_route` first.
 
 ### Python package (Windows, macOS, Linux)
 
-The package is not on PyPI. Install it from a checkout. Python 3.10 or later is
-required.
+Python 3.10 or later is required. Install from PyPI:
+
+```bash
+python -m pip install maxey0
+```
+
+That installs two import packages: `maxey0`, a short front door, and
+`maxey0_ss`, the implementation. The console scripts are the same either way.
+
+To work on the code, or to run the scripts in `scripts/` and the tests, install
+from a checkout instead.
 
 Windows (PowerShell):
 
@@ -207,7 +216,7 @@ python -m venv .venv
 The editable install (`-e`) is what the rest of this README assumes: the
 scripts in `scripts/` and the tests run from the checkout, and the checkout's
 `.env` is read wherever you start the server. A non-editable install, including
-`pip install git+https://github.com/mmc7676/Maxey0`, also serves all 29 tools
+`pip install git+https://github.com/mmc7676/Maxey0`, also serves all 30 tools
 and the built MCP App, which it carries in `maxey0_ss/_bundled/`. It reads
 `.env` and `config/credentials.json` from the **current working directory**
 when it is imported. Starting `maxey0-ss-mcp` in a folder that holds another
@@ -217,7 +226,8 @@ Variables already set in the environment win over the file.
 Optional extras add a framework for a harness adapter: `claude-agent-sdk`,
 `openai-agents`, `langchain`, `google-adk`, `microsoft`, `nvidia` and
 `all-harnesses`. `graph` installs `networkx`, which no code in this build
-imports. `all` installs everything. For example: `pip install -e ".[langchain]"`.
+imports. `all` installs everything. For example: `pip install "maxey0[langchain]"`, or
+`pip install -e ".[langchain]"` from a checkout.
 
 After installing you have these commands:
 
@@ -226,6 +236,29 @@ After installing you have these commands:
 | `maxey0-ss-mcp` | The MCP server over stdio, for a host that launches it |
 | `maxey0-ss-public` | The HTTP server (MCP, REST, health) on `127.0.0.1:8765` unless `MAXEY0_HOST` / `MAXEY0_PORT` say otherwise. It applies the proxy and rate-limit rules described under [Security and privacy](#security-and-privacy). |
 | `maxey0-ss`, `maxey0-ss-api` | Aliases of `maxey0-ss-public`: the same HTTP app, the same `MAXEY0_HOST`/`MAXEY0_PORT` settings and the same proxy handling. |
+| `maxey0-verify` | An offline verifier that needs only the standard library: `maxey0-verify attestation FILE` (exported attestations, JSON or JSONL), `gate FILE` (the plugin's `gate.jsonl`) or `ledger FILE` (the context ledger's `events.jsonl`). Exit code 0 means verified, 1 not verified, 2 unreadable. `scripts/verify_records.py` is the same verifier. |
+
+### Python API
+
+`maxey0.scw` runs the same handlers as the `maxey0-ss.scw.*` MCP tools, in your
+own process:
+
+```python
+from maxey0 import scw
+
+scw.create("SCW1", task="Summarize the Q3 filings", concept="Finance")
+scw.start("SCW1")                                   # instantiate it
+scw.drift("SCW1", [0.12, 0.40, 0.33], anchor=True)  # install a baseline
+scw.drift("SCW1", [0.10, 0.42, 0.35])               # measure against it
+scw.describe()
+scw.close("SCW1")
+```
+
+Its windows last as long as the process. `scw.surface()` returns the full tool
+surface for the tools it does not wrap, and `scw.reset()` starts over. No
+capability check is made; the caller is your own process. `maxey0.SCWSpec` and
+`maxey0.SuperSpaceSystem` are re-exported, and everything else is in
+`maxey0_ss`.
 
 To use the stdio server from Claude Code: opening Claude Code inside the checkout
 on Windows picks up `.mcp.json`, which launches `.venv/Scripts/maxey0-ss-mcp.exe`.
@@ -239,7 +272,7 @@ package installed:
 
 ```bash
 python scripts/build_package.py --check   # validate, write nothing
-python scripts/build_package.py           # writes dist/maxey0-0.3.0.mcpb
+python scripts/build_package.py           # writes dist/maxey0-0.3.1.mcpb
 ```
 
 The built MCP App (`mcp_apps/super_space_react/dist/mcp-app.html`) is in the
@@ -430,8 +463,8 @@ parent. "Reach [unbounded]" means SCW0 may name any window, which is the default
 **What Path B answers.** All three of the auditor's questions, for what goes
 through Maxey0: the maker's refused read (seq 3), the late model call refused
 after the maker finished (seq 8), and a chain that verifies from the exported
-records alone. The attestation log is in memory and unsigned, so export it
-before the process ends.
+records alone. By default the attestation log is in memory and unsigned, so
+export it before the process ends, or set `MAXEY0_ATTESTATION_PATH`.
 
 With `ANTHROPIC_API_KEY` set, a call from an **open** window is admitted, sent,
 and followed by an `egress completed` record that carries the model, token
@@ -658,8 +691,9 @@ it is a structural check of the SCW address.
   never reported as 0.
 - **How to use:** `maxey0-ss.scw.drift {scw_id: "SCW1", vector: [...], anchor: true}`
   once, then `maxey0-ss.scw.drift {scw_id: "SCW1", vector: [...]}` to measure.
-  Over HTTP: `POST /v1/context/scws/{id}/anchor` and `/drift`, which keep a
-  separate store keyed by instance ID.
+  Over HTTP: `POST /v1/context/scws/{id}/anchor` and `/drift`, which share one
+  store with the MCP tool. Anchors and measurements are written to the
+  attestation log as digests, never as raw vectors.
 
 ### Loop library and routing
 
@@ -713,9 +747,13 @@ it is a structural check of the SCW address.
   `nvidia` (NeMo Agent Toolkit). `bind_agent()` starts an instance of an
   existing SCW specification for the agent and returns a binding. Framework
   imports are deferred, so `bind_agent()` works without the framework installed,
-  and using the framework without it raises a clear install message. Adapters
-  do not intercept the framework's own tool or model calls: egress is recorded
-  only when it goes through `maxey0_ss.providers`.
+  and using the framework without it raises a clear install message. Two adapters
+  also record the framework's own calls to the containment log, as digests and
+  lengths: `LangChainAdapter.callback_handler(system, scw_id)` (pass it as
+  `config={"callbacks": [handler]}`) and
+  `OpenAIAgentsAdapter.install_trace_processor(system, scw_id)`. They observe;
+  they do not gate. A recorded call has already been made. Otherwise, egress
+  is recorded only when it goes through `maxey0_ss.providers`.
 - **How to use:** create the specification first, bind, then use the binding's
   instance ID for every check and model call:
 
@@ -748,18 +786,18 @@ it is a structural check of the SCW address.
 | Feature | Purpose | What it does and how to use it |
 |---|---|---|
 | **MCP App** (`ui://maxey0-ss/super-space.html`) | See windows, evidence, providers and posture in a host that renders MCP Apps | Opened by `maxey0-ss.super_space`. Five tabs: **Observe** (check an SCW address with `gate.inspect` and report host segments), **Windows** (list, create and close specifications, and measure drift), **Evidence** (the attestation summary and records, and the event stream), **Providers** (provider status and a gated model call) and **Posture** (auth manifest, deployment, health, cache and distribution). The built page is in the repository; if it is missing, a small fallback page is served, and `maxey0-ss.app.artifact` reports which one. |
-| **MCP Tasks** | Fetch the record of a finished model call again | `maxey0-ss.provider.complete` runs synchronously and attaches a completed or failed task record to its result. `tasks/get` on the stateless endpoint returns that record again for its TTL (one hour by default). A client that timed out never received the task ID, so it cannot recover the call this way. There is no `tasks/list`; `maxey0-ss.tasks.status` gives counts only. In memory, per process. |
+| **MCP Tasks** | Fetch the record of a finished model call again | `maxey0-ss.provider.complete` runs synchronously and attaches a completed or failed task record to its result. With `"async": true` it returns a `working` task handle at once, and `tasks/get` on the stateless endpoint returns the result when it is ready. Either way `tasks/get` returns the record for its TTL (one hour by default). There is no `tasks/list`; `maxey0-ss.tasks.status` gives counts only. In memory, per process. |
 | **Caching** | Speed up repeated read-only answers without mixing windows | Only `health`, `distribution` and `app.artifact` are cached. Closing an SCW invalidates its entries. See `docs/CACHING.md`. |
 | **A2A routing** | Let an external agent ask which registered skill should handle a task | `POST /v1/a2a/message`, checked against `MAXEY0_A2A_SHARED_SECRET` rather than a capability. The task text is recorded only as a digest. Agent card: `/.well-known/maxey0-agent.json`. |
 
 ### The `maxey0-ss` tool catalog
 
-The Python package's MCP server exposes 29 tools. The capability column is what
+The Python package's MCP server exposes 30 tools. The capability column is what
 a caller's role must hold (see [Security and privacy](#security-and-privacy)).
 
 | Group | Tools | Capability |
 |---|---|---|
-| Windows | `scw.create`, `scw.describe`, `scw.close`, `scw.drift` | `scw.create`, `scw.read`, `scw.admit`, `scw.read` (anchoring also needs `scw.admit`) |
+| Windows | `scw.create`, `scw.describe`, `scw.start`, `scw.close`, `scw.drift` | `scw.create`, `scw.read`, `scw.admit`, `scw.admit`, `scw.read` (anchoring also needs `scw.admit`) |
 | Gate | `gate.inspect` / `gate.set_mode`, `gate.set_policy`, `gate.declare_isolation` | none / `gate.write` (admin only) |
 | Evidence | `evidence.summary`, `evidence.attestations` / `evidence.verify` | `observe` / none |
 | Observation | `scw.observe_host_window`, `observe.events`, `observe.attempts`, `observe.traces`, `observe.gate_activity`, `observe.gate_mode`, `observe.isolation_level`, `observe.studio` | `observe` |
@@ -788,14 +826,10 @@ plane, and `maxey0-observe` serves the Engineering plane.
 
 An honest list. Details are in `docs/AUTHORIZATION.md` and `docs/VERIFICATION.md`.
 
-- **MCP alone cannot start a window.** `scw.create` makes a specification, and
-  no MCP tool or `/v1` route starts an instance, so `maxey0-ss.provider.complete`
-  called over MCP alone is always refused ("window is not registered"). Start
-  instances from Python or through a harness adapter.
-- **Adapters do not intercept framework calls.** A LangGraph or OpenAI Agents
-  agent's own tool and model calls are not recorded. Only egress through
-  `maxey0_ss.providers` is, and those providers are single-turn text
-  completions.
+- **Adapters observe; they do not gate.** Only the LangChain and OpenAI Agents
+  adapters record a framework's own model and tool calls, and a recorded call
+  has already been made. The other adapters record only egress through
+  `maxey0_ss.providers`, which are single-turn text completions.
 - **The Gate runs only where hooks run.** That means Claude Code. The generic
   adapter for other hosts has been tested only with a Codex-shaped payload.
   Not Claude Desktop. The Gate defaults to `observe`, records nothing as checked
@@ -805,36 +839,26 @@ An honest list. Details are in `docs/AUTHORIZATION.md` and `docs/VERIFICATION.md
 - **Model calls made outside Maxey0 are not seen.** That includes every model
   call a Claude Code subagent makes. The gated provider wraps a provider that
   can still be called directly.
-- **The Python attestation log is unsigned and in memory.** It proves internal
-  consistency, not authorship: anyone holding the log can build a fresh valid
-  chain. It lives in one process and does not survive a restart. Records
-  removed from the end are detected only when you pass the expected head or
-  entry count, and the `maxey0-ss.evidence.verify` tool accepts neither. On a
-  `bearer` server that tool also needs a token; the offline Python verifier
-  needs nothing. The plugin's context ledger and Gate journal are on disk, but
-  they are unsigned too.
-- **No standalone verifier for the plugin's records.** The context ledger and
-  the Gate journal are checked with `/maxey0:window verify` and
-  `/maxey0:gate status`, which run Maxey0's own code.
-- **MCP Tasks cannot recover a timed-out call.** The task ID arrives only with
-  the finished result.
+- **Attestation persistence and signing are opt-in.** By default the log is in
+  memory and lost on restart. `MAXEY0_ATTESTATION_PATH` persists it, and
+  `MAXEY0_ATTESTATION_KEY_FILE` adds HMAC-SHA256 signatures, which prove
+  integrity to whoever holds the key, not authorship to the public. There is no
+  public-key signing. The plugin's context ledger and Gate journal are unsigned.
+- **MCP Tasks are in memory.** An `async` task handle lives in one process and
+  is lost on restart.
 - **No semantic gate provider ships.** The default checks the address
   structurally only.
-- **SCW0's reach is unbounded, and depth and child caps are off, by default.**
-  The narrowing rule holds, but it constrains nothing until you pass
-  `root_reach` to `ContextService`, or caps to a `Constitution`, in Python. No
-  MCP tool sets either.
-- **Drift is measurement only.** You supply the vectors, the correction is a
-  label, drift results are not written to the attestation log, and the MCP and
-  `/v1` drift stores are separate.
+- **Drift is measurement only.** You supply the vectors, and the correction is
+  an advisory label.
+- **Rate limits are per host at best.** In memory per process by default;
+  `MAXEY0_RATE_LIMIT_STORE=sqlite:<path>` shares them among processes on one
+  host and keeps them across restarts. Nothing shares them across hosts.
 - **Security gaps.** No OAuth sign-in for MCP clients, and OIDC has not been run
-  against a real identity provider. No per-tenant isolation. Rate limits are per
-  process and reset on restart. Token changes need a restart. No secrets manager.
-  No independent security audit. Redaction is pattern-based, so a secret in an
-  unrecognized shape can still be written.
-- **Not on PyPI.** Install from a checkout.
-- `maxey0-ss.incident.*` is not part of this package. Corpus-replay research
-  lives in a separate consumer of it.
+  against a real identity provider. No per-tenant isolation. No independent
+  security audit. Redaction is pattern-based, so a secret in an unrecognized
+  shape can still be written. No secrets manager unless the host provides one
+  (for example, Fly secrets). Tokens rotate without a restart only when they
+  are in `MAXEY0_MCP_TOKEN_HASHES_FILE`.
 
 ---
 
@@ -843,7 +867,7 @@ An honest list. Details are in `docs/AUTHORIZATION.md` and `docs/VERIFICATION.md
 | You get | How it works |
 |---|---|
 | **Tokens stored as hashes** | The recommended store is `sha256:<hex>:<role>:<label>` entries in `MAXEY0_MCP_TOKEN_HASHES`, compared in constant time, so a leaked config does not reveal a working token. `scripts/mint_token.py` mints tokens. Plaintext tokens are still accepted in `MAXEY0_MCP_TOKENS` and `MAXEY0_MCP_DEFAULT_BEARER_TOKEN`, and a config that uses them leaks working tokens. `auth.manifest` reports how many hashed and plaintext tokens are configured. Logs name the caller as `bearer:<label>` (or `bearer:sha256:<12 hex>` and `bearer:default` for plaintext tokens), never the token. |
-| **Least privilege by role** | `viewer` (observe: 21 tools), `operator` (+ read windows: 23), `builder` (+ create and admit windows, call providers: 26), `admin` (everything: 29). With `MAXEY0_PUBLIC=1` and auth disabled, anonymous callers get only the 10 tools that need no capability. Only `admin` can change the Gate. |
+| **Least privilege by role** | `viewer` (observe: 21 tools), `operator` (+ read windows: 23), `builder` (+ create and admit windows, call providers: 27), `admin` (everything: 30). With `MAXEY0_PUBLIC=1` and auth disabled, anonymous callers get only the 10 tools that need no capability. Only `admin` can change the Gate. |
 | **Fail-closed configuration** | Over HTTP, a malformed token entry, a leftover `<BEARER_TOKEN>` placeholder, an unknown `MAXEY0_AUTH_MODE` or an incomplete OIDC setup refuses every tool call and every capability-gated `/v1` request (HTTP 501) and names the variable, never its value. `/health`, discovery, the agent card, `/docs` (when not public) and capability-free `/v1` routes such as `POST /v1/a2a/message` are still served. |
 | **A switch for internet-reachable servers** | `MAXEY0_PUBLIC=1` drops unauthenticated callers to the anonymous tier, turns on rate limits, hides `/docs` and `/openapi.json`, refuses A2A messages when no shared secret is set, and stops tools from reading or writing the host's own `~/.scw` journals (unless `MAXEY0_PUBLIC_HOST_PLANES=1`). |
 | **Authorization before admission** | A caller is authorized before any window gate or handler runs, so an unauthorized caller cannot probe them. |

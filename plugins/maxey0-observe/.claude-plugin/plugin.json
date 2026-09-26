@@ -1,6 +1,6 @@
 {
   "name": "maxey0-observe",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The Observatory plane, alone. The Gate stands at every tool call \u2014 the only moment an agent in a delegated context has to ask its host for something, and so the only place an outside observer can stand. It attributes each call to the role that made it, records it in its own hash-chained journal, and in enforce mode refuses the ones reaching outside that role's declared scope. That is global workspace semantics, and it needs no window and no library to be useful. It reads the Context plane's ledger from disk when one exists, so it can report what the evidence supports across a process boundary; a run carrying residue \u2014 an unattributed call, a fail-open, a lost record \u2014 reports its containment as not claimable rather than clean. Installs inert: the default mode records and blocks nothing. 8 tools and the Studio.",
   "author": {
     "name": "mmc7676",

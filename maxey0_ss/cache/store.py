@@ -22,6 +22,7 @@ from .identity import Namespace, SemanticPlane
 NEVER_CACHE: dict[str, str] = {
     "maxey0-ss.scw.create": "mutates the SCW graph",
     "maxey0-ss.scw.close": "mutates the SCW graph",
+    "maxey0-ss.scw.start": "mutates the SCW graph and is owned by its caller",
     "maxey0-ss.scw.describe": "reads live SCW state that a sibling call may have changed",
     "maxey0-ss.scw.observe_host_window": "reads host-supplied context belonging to one request",
     "maxey0-ss.auth.manifest": "derives from environment; caching outlives a credential change",

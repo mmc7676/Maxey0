@@ -2,7 +2,7 @@
 
 # Maxey0-SuperSpace distribution matrix
 
-Version `0.3.0` · MCP `2026-07-28`
+Version `0.3.1` · MCP `2026-07-28`
 
 Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.
 
@@ -13,7 +13,7 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 | [`claude-code-loops`](claude-code-loops/) | claude-code | plugin | shipped | `/plugin marketplace add mmc7676/Maxey0` |
 | [`claude-code-observe`](claude-code-observe/) | claude-code | plugin | shipped | `/plugin marketplace add mmc7676/Maxey0` |
 | [`claude-code-lab`](claude-code-lab/) | claude-code | plugin | shipped | `/plugin marketplace add mmc7676/Maxey0` |
-| [`claude-desktop-connector`](claude-desktop-connector/) | claude-desktop | connector | shipped | `Drag dist/maxey0-0.3.0.mcpb into Claude Desktop.` |
+| [`claude-desktop-connector`](claude-desktop-connector/) | claude-desktop | connector | shipped | `Drag dist/maxey0-0.3.1.mcpb into Claude Desktop.` |
 | [`claude-skills`](claude-skills/) | claude | skills | shipped | `Included in the Claude Code plugin; copy skills/ to use them alone.` |
 | [`claude-remote-connector`](claude-remote-connector/) | claude | connector | external | `Add https://mcp.maxey0.com/mcp as a custom connector.` |
 | [`chatgpt-app`](chatgpt-app/) | chatgpt | app | external | `Settings → Connectors → Add: https://mcp.maxey0.com/mcp` |
@@ -21,12 +21,12 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 | [`mcp-stdio`](mcp-stdio/) | mcp | server | shipped | `python -m maxey0_ss.mcp_stdio_server` |
 | [`mcp-http`](mcp-http/) | mcp | server | shipped | `maxey0-ss-public` |
 | [`a2a`](a2a/) | a2a | server | shipped | `maxey0-ss-public` |
-| [`claude-agent-sdk`](harnesses/claude-agent-sdk/) | harness | harness | shipped | `pip install "maxey0-superspace[claude-agent-sdk] @ git+https://github.com/mmc7676/Maxey0"` |
-| [`openai-agents`](harnesses/openai-agents/) | harness | harness | shipped | `pip install "maxey0-superspace[openai-agents] @ git+https://github.com/mmc7676/Maxey0"` |
-| [`langchain`](harnesses/langchain/) | harness | harness | shipped | `pip install "maxey0-superspace[langchain] @ git+https://github.com/mmc7676/Maxey0"` |
-| [`google-adk`](harnesses/google-adk/) | harness | harness | shipped | `pip install "maxey0-superspace[google-adk] @ git+https://github.com/mmc7676/Maxey0"` |
-| [`microsoft`](harnesses/microsoft/) | harness | harness | shipped | `pip install "maxey0-superspace[microsoft] @ git+https://github.com/mmc7676/Maxey0"` |
-| [`nvidia`](harnesses/nvidia/) | harness | harness | shipped | `pip install "maxey0-superspace[nvidia] @ git+https://github.com/mmc7676/Maxey0"` |
+| [`claude-agent-sdk`](harnesses/claude-agent-sdk/) | harness | harness | shipped | `pip install "maxey0[claude-agent-sdk]"` |
+| [`openai-agents`](harnesses/openai-agents/) | harness | harness | shipped | `pip install "maxey0[openai-agents]"` |
+| [`langchain`](harnesses/langchain/) | harness | harness | shipped | `pip install "maxey0[langchain]"` |
+| [`google-adk`](harnesses/google-adk/) | harness | harness | shipped | `pip install "maxey0[google-adk]"` |
+| [`microsoft`](harnesses/microsoft/) | harness | harness | shipped | `pip install "maxey0[microsoft]"` |
+| [`nvidia`](harnesses/nvidia/) | harness | harness | shipped | `pip install "maxey0[nvidia]"` |
 | [`sdk-python`](sdks/python/) | sdk | sdk | shipped | `see sdks/python/` |
 
 ## What the two statuses mean

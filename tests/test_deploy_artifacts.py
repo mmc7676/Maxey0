@@ -127,7 +127,7 @@ class TestBuildContextKeepsSecretsOut(unittest.TestCase):
             "mcp_apps/super_space_react/dist/mcp-app.html",
             "dist/maxey0-0.3.0.zip",
             "experiments/exp-001/run.json",
-            "maxey0_superspace.egg-info/PKG-INFO",
+            "maxey0.egg-info/PKG-INFO",
         ):
             with self.subTest(path=rel):
                 self.assertFalse(_in_context(rel), f"{rel} would be in the build context")
@@ -566,7 +566,7 @@ class TestDependencies(unittest.TestCase):
     def test_nothing_local_or_windows_only_is_pinned(self):
         text = CONSTRAINTS.read_text(encoding="utf-8")
         self.assertNotRegex(text, r"(?m)^\s*-e\b")
-        self.assertNotIn("maxey0-superspace", self.pins)
+        self.assertNotIn("maxey0", self.pins)
         self.assertNotIn("pywin32", self.pins)
         self.assertNotIn("colorama", self.pins)
 

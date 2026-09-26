@@ -3,14 +3,32 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "maxey0-superspace"
-version = "0.3.0"
-description = "Maxey0-SuperSpace harness-neutral context, execution, SCW, semantic/drift, A2A, MCP delivery, and observability infrastructure."
+name = "maxey0"
+version = "0.3.1"
+description = "Structured Context Windows for AI agents: partition what each agent can see, gate what it can do, and keep a verifiable record of both."
+readme = "README.md"
 requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "mmc7676", email = "support@maxey0.com" }]
+keywords = ["mcp", "model-context-protocol", "agents", "llm", "context-window", "scw", "claude", "a2a", "observability", "governance"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries",
+]
 # `mcp` is a core dependency, not only an extra: `maxey0_ss.api.app` builds the
 # session transport at import, so a plain install without it could not start
 # `maxey0-ss-public` at all. The `mcp` extra is kept, with the same bound, so
-# existing `pip install maxey0-superspace[mcp]` commands still resolve.
+# `pip install "maxey0[mcp]"` and `pip install -e ".[mcp]"` still resolve.
 dependencies = [
     "fastapi>=0.110",
     "uvicorn>=0.29",
@@ -30,18 +48,27 @@ all-harnesses = ["agent-framework", "claude-agent-sdk", "google-adk", "langchain
 graph = ["networkx>=3.0"]
 all = ["mcp>=1.19.0,<2", "agent-framework", "claude-agent-sdk", "google-adk", "langchain-core", "langgraph", "nvidia-nat", "openai-agents", "networkx>=3.0"]
 
+[project.urls]
+Homepage = "https://github.com/mmc7676/Maxey0"
+Source = "https://github.com/mmc7676/Maxey0"
+Issues = "https://github.com/mmc7676/Maxey0/issues"
+Changelog = "https://github.com/mmc7676/Maxey0/blob/main/CHANGELOG.md"
+
 [project.scripts]
 maxey0-ss = "maxey0_ss.__main__:main"
 maxey0-ss-api = "maxey0_ss.__main__:main"
 maxey0-ss-public = "maxey0_ss.public_server:main"
 maxey0-ss-mcp = "maxey0_ss.mcp_stdio_server:main"
+maxey0-verify = "maxey0_ss.containment.verify_cli:main"
 
 # The repository root holds several non-package directories (server/, tests/,
 # ui/, scw/, site/ ...). Without an explicit include, setuptools auto-discovery
 # finds no importable package and `pip install -e .` succeeds while installing
 # nothing — which is what made `python -m maxey0_ss...` fail outside the repo.
+# `maxey0` is the short import name; `maxey0_ss` is the implementation. Each is
+# named exactly, because a bare "maxey0*" would also match "maxey0_ss".
 [tool.setuptools.packages.find]
-include = ["maxey0_ss*"]
+include = ["maxey0", "maxey0.*", "maxey0_ss", "maxey0_ss.*"]
 
 [tool.setuptools.package-data]
 # Recorded evidence and schemas ship with the package; without this a wheel

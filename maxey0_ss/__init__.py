@@ -11,9 +11,10 @@ role             token                       where it appears
 ===============  ==========================  ===============================
 product          ``Maxey0-SuperSpace``       prose, titles, manifests
 short form       ``Maxey0``                  prose where the full name is noise
-python package   ``maxey0_ss``               imports
+python package   ``maxey0_ss``               the implementation's imports
+import name      ``maxey0``                  the short front door (``maxey0/``)
 MCP namespace    ``maxey0-ss``               every tool and resource
-distribution id  ``maxey0-superspace``       PyPI, npm, plugin identifiers
+distribution id  ``maxey0``                  PyPI (``pip install maxey0``)
 system class     ``SuperSpaceSystem``        the API
 ===============  ==========================  ===============================
 
@@ -32,7 +33,7 @@ was meant to end.
 #: three of them, so `mcp_2026.build_router` could report a `serverInfo.version`
 #: that disagreed with `mcp_surface.SERVER_VERSION` and nothing would notice.
 #: `tests/test_version.py` asserts every other declaration agrees with this one.
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 # Load .env before anything reads the environment. AuthConfig.load(),
 # is_public_deployment() and the cache all resolve at construction time, so a

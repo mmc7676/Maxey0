@@ -12,6 +12,7 @@ one, because neither transport owns the list.
 from __future__ import annotations
 
 import hashlib
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, replace
 from pathlib import Path
 
@@ -40,14 +41,14 @@ from .cache import (
 from .cache.policy import MCPMetadataCache
 from .gating.address import EnforceableAddress
 from .gating.semantic import SemanticGateProvider, select_semantic_gate
-from .semantic.runtime import SemanticRuntime, UnanchoredWindow, validate_threshold, validate_vector
+from .semantic.runtime import UnanchoredWindow, validate_threshold, validate_vector
 from .host_window import HostWindowObserver
 from .mcp_2026 import Resource, Tool
 from .ratelimit import RateLimiter
 from .scw_deployer import deploy_default_scw
 from .containment import GENESIS, AttestationLog
 from .settings import settings as _deployment_settings
-from .tasks import TaskStore
+from .tasks import TaskError, TaskStore, _OWNER
 from .system import SuperSpaceSystem
 
 SERVER_NAME = "Maxey0-SuperSpace"
@@ -183,6 +184,13 @@ def super_space_html() -> str:
     return _read_artifact()[1]
 
 
+#: Runs `provider.complete` for callers that asked for an early task handle.
+#: Module-level and small on purpose: a model round-trip is I/O-bound, and the
+#: pool bounds how many egresses one process has in flight however many
+#: callers ask for `async`. Excess submissions queue rather than spawn.
+_TASK_WORKERS = ThreadPoolExecutor(max_workers=4, thread_name_prefix="maxey0-task")
+
+
 #: Most attestations any single `evidence.attestations` call will return.
 MAX_ATTESTATION_LIMIT = 1000
 DEFAULT_ATTESTATION_LIMIT = 200
@@ -307,6 +315,38 @@ def _wire_cache(tools: list[Tool], app_cache: MaxeyCache) -> None:
         tools[index] = replace(tool, handler=cached)
 
 
+class AlreadyRunning(ValueError):
+    """The specification already has an open instance on this runtime.
+
+    A ValueError for the MCP transports; its own type so HTTP answers 409.
+    Starting again re-registered the same instance id with containment and
+    replaced the live window's state, silently discarding what it had admitted.
+    """
+
+
+def start_instance(system: SuperSpaceSystem, scw_id: str, owner: str,
+                   app_cache: MaxeyCache | None = None) -> dict:
+    """Start `scw_id` for `owner`. Shared by the MCP tool and /v1."""
+    if scw_id not in system.context.graph.scw_specs:
+        raise ValueError(f"Unknown SCW specification: {scw_id}")
+    running = [
+        iid for iid, inst in system.context.instances.items()
+        if inst.spec_id == scw_id and inst.open
+        and inst.runtime_id == system.scw_runtime.runtime_id
+    ]
+    if running:
+        raise AlreadyRunning(f"{scw_id} is already running as {running[0]}")
+    instance = system.scw_runtime.start(scw_id, owner)
+    dropped = 0
+    if app_cache is not None:
+        # A reused identifier must not answer from the previous window's cache.
+        dropped = app_cache.invalidate_scw(scw_id) + app_cache.invalidate_scw(instance.id)
+    system.observatory.record("scw.start", "maxey0-ss", scw=instance.id, owner=owner)
+    return {"started": instance.id, "scw_id": scw_id, "owner": owner,
+            "runtime": instance.runtime_id, "address": instance.address.key(),
+            "cache_entries_dropped": dropped}
+
+
 @dataclass
 class Surface:
     """Everything a transport needs, and nothing transport-specific."""
@@ -347,7 +387,10 @@ def build_surface(
     # not a fresh default: `gate.inspect` must answer for the same provider
     # the transports enforce with.
     semantic_gate = semantic_gate or select_semantic_gate()
-    drift_runtime = SemanticRuntime()
+    # The system's runtime, not a second one. The surface used to build its
+    # own, so a baseline anchored over MCP was invisible to /v1 drift and the
+    # reverse: two stores answering the same question differently.
+    drift_runtime = system.drift_runtime
     # Providers share the containment log the rest of the surface writes to,
     # so `evidence.attestations` returns one ordered record of everything
     # that crossed a boundary -- including the calls that left the process.
@@ -504,6 +547,19 @@ def build_surface(
             }
         raise ValueError(f"Unknown SCW: {scw_id}")
 
+    def start_scw(args: dict):
+        """Instantiate a specification on this system's SCW runtime.
+
+        The owner is the authenticated caller -- the subject the transport set
+        with `owned_by` -- and never an argument, so a caller cannot start a
+        window in somebody else's name. "local" is an in-process call with no
+        transport around it.
+        """
+        scw_id = args.get("scw_id")
+        if not isinstance(scw_id, str) or not scw_id:
+            raise ValueError("scw_id is required")
+        return start_instance(system, scw_id, _OWNER.get() or "local", app_cache)
+
     def app_artifact(_: dict):
         return super_space_artifact()
 
@@ -523,6 +579,9 @@ def build_surface(
         base = _deployment_settings().public_manifest()
         base["models"] = providers_manifest(log=system.context.isolation.log)
         base["rate_limit"] = limiter.summary()
+        # Read-only here: the bounds come from the environment at system
+        # construction, and no tool takes an argument that could widen them.
+        base["root_bounds"] = system.root_bounds.as_dict()
         return base
 
     def provider_complete(args: dict):
@@ -548,6 +607,9 @@ def build_surface(
         for key in ("model", "system", "max_tokens", "temperature", "scw_id"):
             if args.get(key) is not None:
                 kwargs[key] = args[key]
+        early = args.get("async", False)
+        if not isinstance(early, bool):
+            raise ValueError("async must be a boolean")
 
         # A model round-trip is the one genuinely long-running thing on this
         # surface, so it is the one that raises a task. SEP-2663 removed
@@ -557,6 +619,14 @@ def build_surface(
             scw_address=args.get("scw_id"),
             status_message=f"egress to {name}",
         )
+        if early:
+            # Opt-in early return: the handle goes back while the task is still
+            # WORKING and `tasks/get` delivers the result. Without it a caller
+            # whose client times out before the model answers could only wait.
+            _TASK_WORKERS.submit(_run_complete, task.task_id, provider, prompt, kwargs, name)
+            return {"ok": True, "pending": True, "provider": name,
+                    "task": task_store.get(task.task_id).as_result(
+                        result_type="task")}
         try:
             result = provider.complete(prompt, **kwargs)
         except ProviderRefused as exc:
@@ -589,6 +659,27 @@ def build_surface(
         return {"ok": True, **payload,
                 "task": task_store.get(task.task_id).as_result(
                     result_type="complete")}
+
+    def _run_complete(task_id, provider, prompt, kwargs, name):
+        """Worker body for an early-return task. Terminal state only via the store."""
+        try:
+            try:
+                result = provider.complete(prompt, **kwargs)
+            except ProviderRefused as exc:
+                task_store.fail(task_id, {"code": -32003, "message": str(exc)},
+                                message="refused by the gate")
+            except ProviderError as exc:
+                task_store.fail(task_id, {"code": -32004, "message": str(exc)},
+                                message="provider not configured")
+            except Exception as exc:  # noqa: BLE001 - a worker must not die silently
+                task_store.fail(task_id, {"code": -32603, "message": type(exc).__name__},
+                                message=f"egress to {name} failed")
+            else:
+                task_store.complete(task_id, result.as_dict(), message="egress completed")
+        except TaskError:
+            # Canceled or expired while the egress was in flight; the caller
+            # already has a terminal answer and this result has nowhere to go.
+            pass
 
     def provider_status(_: dict):
         """Which providers are callable, which are inert, and why."""
@@ -669,8 +760,22 @@ def build_surface(
         start_seq = args.get("start_seq") or 0
         if isinstance(start_seq, bool) or not isinstance(start_seq, int) or start_seq < 0:
             return {"ok": False, "error": "start_seq must be a non-negative integer"}
+        expected_head = args.get("expected_head")
+        if expected_head is not None and not isinstance(expected_head, str):
+            return {"ok": False, "error": "expected_head must be a string"}
+        expected_entries = args.get("expected_entries")
+        if expected_entries is not None and (
+            isinstance(expected_entries, bool) or not isinstance(expected_entries, int)
+            or expected_entries < 0
+        ):
+            return {"ok": False, "error": "expected_entries must be a non-negative integer"}
+        # Without these a truncated chain verified clean: any prefix of a valid
+        # chain is valid. The verifier supported both; the tool never passed them.
         try:
-            result = AttestationLog.verify_records(records, expected_prev=anchor, start_seq=start_seq)
+            result = AttestationLog.verify_records(
+                records, expected_prev=anchor, start_seq=start_seq,
+                expected_head=expected_head, expected_entries=expected_entries,
+            )
         except (AttributeError, TypeError, ValueError):
             return {"ok": False, "error": "records are not attestation records"}
         return result.as_dict()
@@ -759,17 +864,18 @@ def build_surface(
         Tool("maxey0-ss.app.artifact", "Identify the SuperSpace MCP App artifact actually being served.", {"type": "object", "properties": {}}, app_artifact),
         Tool("maxey0-ss.evidence.summary", "Containment evidence counts and chain head.", {"type": "object", "properties": {}}, evidence_summary, capability=OBSERVE_READ),
         Tool("maxey0-ss.evidence.attestations", "The containment record: what was attempted across SCW boundaries, and the outcome.", {"type": "object", "properties": {"denials_only": {"type": "boolean"}, "limit": {"type": "integer"}}}, evidence_attestations, capability=OBSERVE_READ),
-        Tool("maxey0-ss.evidence.verify", "Verify the containment chain. Pass exported records to verify evidence from elsewhere.", {"type": "object", "properties": {"records": {"type": "array"}, "anchor_prev_digest": {"type": "string"}, "start_seq": {"type": "integer"}}, "required": ["records"]}, evidence_verify),
+        Tool("maxey0-ss.evidence.verify", "Verify the containment chain. Pass exported records to verify evidence from elsewhere.", {"type": "object", "properties": {"records": {"type": "array"}, "anchor_prev_digest": {"type": "string"}, "start_seq": {"type": "integer"}, "expected_head": {"type": "string", "description": "Chain head the records must end at; detects entries removed from the end."}, "expected_entries": {"type": "integer", "minimum": 0, "description": "Number of records expected; detects truncation."}}, "required": ["records"]}, evidence_verify),
         Tool("maxey0-ss.deployment", "Report deployment shape and provider sockets without exposing any secret value.", {"type": "object", "properties": {}}, deployment),
         Tool("maxey0-ss.tasks.status", "Describe MCP Tasks extension state without exposing task payloads.", {"type": "object", "properties": {}}, tasks_status),
         Tool("maxey0-ss.gate.inspect", "Validate an explicit Maxey0 SCW enforceable address.", {"type": "object", "properties": {"scw_address": {"type": "string"}}, "required": ["scw_address"]}, gate_inspect),
         Tool("maxey0-ss.super_space", "Open the Maxey0-SuperSpace MCP App.", {"type": "object", "properties": {}}, lambda _: {"app": SUPER_SPACE_URI}, app_meta),
         Tool("maxey0-ss.scw.create", "Create an explicit Maxey0 SCW specification without creating a protocol session.", {"type": "object", "properties": {"scw_id": {"type": "string"}, "task": {"type": "string"}, "concept": {"type": "string"}, "parent_id": {"type": "string"}}, "required": ["scw_id", "task"]}, create_scw, capability=SCW_CREATE),
         Tool("maxey0-ss.scw.describe", "Describe Maxey0 SCW specifications and instantiated SCWs.", {"type": "object", "properties": {}}, describe_scws, capability=SCW_READ),
+        Tool("maxey0-ss.scw.start", "Instantiate an SCW specification on the SCW runtime, owned by the caller.", {"type": "object", "properties": {"scw_id": {"type": "string"}}, "required": ["scw_id"]}, start_scw, capability=SCW_ADMIT),
         Tool("maxey0-ss.scw.close", "Close an instantiated Maxey0 SCW by explicit application identifier.", {"type": "object", "properties": {"scw_id": {"type": "string"}}, "required": ["scw_id"]}, close_scw, capability=SCW_ADMIT),
         Tool("maxey0-ss.scw.observe_host_window", "Observe host-supplied context partitions without claiming access to hidden model context.", {"type": "object", "properties": {"scw_address": {"type": "string", "description": "Explicit Maxey0 SCW enforceable address."}, "segments": {"type": "array"}}, "required": ["scw_address", "segments"]}, observe_window, app_meta, True, capability=OBSERVE_READ),
         Tool("maxey0-ss.provider.status", "Report which model providers are configured, which hold a placeholder credential, and which are unset.", {"type": "object", "properties": {}}, provider_status, capability=OBSERVE_READ),
-        Tool("maxey0-ss.provider.complete", "Send a prompt to a model provider. The egress is gated and written to the containment chain before it leaves; the prompt is digested, never recorded.", {"type": "object", "properties": {"provider": {"type": "string", "enum": ["anthropic", "openai", "huggingface"]}, "prompt": {"type": "string"}, "model": {"type": "string"}, "system": {"type": "string"}, "max_tokens": {"type": "integer"}, "temperature": {"type": "number"}, "scw_id": {"type": "string", "description": "The window this egress belongs to. Recorded as the source of the call."}}, "required": ["provider", "prompt"]}, provider_complete, capability=SCW_ADMIT),
+        Tool("maxey0-ss.provider.complete", "Send a prompt to a model provider. The egress is gated and written to the containment chain before it leaves; the prompt is digested, never recorded.", {"type": "object", "properties": {"provider": {"type": "string", "enum": ["anthropic", "openai", "huggingface"]}, "prompt": {"type": "string"}, "model": {"type": "string"}, "system": {"type": "string"}, "max_tokens": {"type": "integer"}, "temperature": {"type": "number"}, "scw_id": {"type": "string", "description": "The window this egress belongs to. Recorded as the source of the call."}, "async": {"type": "boolean", "description": "Return the task handle while it is still working; fetch the result with tasks/get."}}, "required": ["provider", "prompt"]}, provider_complete, capability=SCW_ADMIT),
         Tool("maxey0-ss.scw.drift", "Anchor or measure semantic drift for one SCW against its declared threshold. Measuring requires scw.read; anchor=true installs a baseline and also requires scw.admit.", {"type": "object", "properties": {"scw_id": {"type": "string"}, "vector": {"type": "array", "items": {"type": "number"}}, "anchor": {"type": "boolean", "description": "Install this vector as the baseline instead of measuring against one. Requires scw.admit."}, "threshold": {"type": "number", "description": "Overrides the SCW specification's drift_threshold."}}, "required": ["scw_id", "vector"]}, scw_drift, capability=SCW_READ, argument_capability=_drift_capability),
     ]
 

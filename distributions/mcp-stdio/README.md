@@ -12,7 +12,7 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 python -m maxey0_ss.mcp_stdio_server
 ```
 
-## The 29 tools
+## The 30 tools
 
 | tool | capability |
 |---|---|
@@ -30,6 +30,7 @@ python -m maxey0_ss.mcp_stdio_server
 | `maxey0-ss.super_space` | public |
 | `maxey0-ss.scw.create` | scw.create |
 | `maxey0-ss.scw.describe` | scw.read |
+| `maxey0-ss.scw.start` | scw.admit |
 | `maxey0-ss.scw.close` | scw.admit |
 | `maxey0-ss.scw.observe_host_window` | observe |
 | `maxey0-ss.provider.status` | observe |
@@ -54,8 +55,8 @@ python -m maxey0_ss.mcp_stdio_server
 
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
-- distribution id `maxey0-superspace`
-- version `0.3.0`
+- distribution id `maxey0`
+- version `0.3.1`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../DISTRIBUTION_MATRIX.md).

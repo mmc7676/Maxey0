@@ -1,5 +1,59 @@
 # Changelog
 
+## 0.3.1 — on PyPI, and the gaps narrowed
+
+The package is now `pip install maxey0`. Several items that 0.3.0 listed as
+"not yet" are implemented; what remains is in the README under "What it is not
+yet". 30 tools, 3 resources.
+
+**Packaging**
+- Distribution renamed to `maxey0` and published on PyPI. It installs two
+  import packages: `maxey0`, a short front door (`from maxey0 import scw`, with
+  `create`, `start`, `describe`, `close`, `drift`, `surface` and `reset`, plus
+  `maxey0.SCWSpec` and `maxey0.SuperSpaceSystem`), and `maxey0_ss`, the
+  implementation. Extras install as `pip install "maxey0[langchain]"`.
+  Contributors still use `pip install -e .` from a clone.
+- The Claude Code plugin's prerequisite is now `python -m pip install maxey0`.
+- New console script `maxey0-verify` (also `scripts/verify_records.py`): a
+  standard-library-only verifier for exported attestations, the plugin Gate
+  journal and the context ledger. Exit codes: 0 verified, 1 not verified,
+  2 unreadable.
+
+**Windows and evidence**
+- `maxey0-ss.scw.start` and `POST /v1/context/scws/{scw_id}/start` instantiate
+  a specification (capability `scw.admit`). The owner is the authenticated
+  caller, and a duplicate start is refused. MCP alone can now start a window.
+- `maxey0-ss.evidence.verify` accepts `expected_head` and `expected_entries`,
+  so records removed from the end are detected.
+- `maxey0-ss.provider.complete` accepts `"async": true` and returns a `working`
+  task handle at once; `tasks/get` returns the result later. In memory, per
+  process.
+- MCP and `/v1` share one drift store. Anchors and inspections are written to
+  the attestation log as digests, never raw vectors. Vectors are still
+  supplied by the caller, and the correction is still an advisory label.
+- `MAXEY0_ATTESTATION_PATH` persists the attestation log as JSONL; it is
+  reloaded and verified at startup, and a broken chain refuses to start.
+  Persisted records are redacted before hashing. `MAXEY0_ATTESTATION_KEY_FILE`
+  adds HMAC-SHA256 signatures, which prove integrity to key holders, not
+  public authorship.
+- `LangChainAdapter.callback_handler(system, scw_id)` and
+  `OpenAIAgentsAdapter.install_trace_processor(system, scw_id)` record a
+  framework's model and tool calls to the containment log as digests and
+  lengths. They observe; they do not gate.
+
+**Operations**
+- `MAXEY0_ROOT_REACH`, `MAXEY0_MAX_DEPTH` and `MAXEY0_MAX_CHILDREN` bound the
+  root window from the environment (unbounded by default; a malformed value
+  refuses to start), reported under `root_bounds` by `maxey0-ss.deployment`.
+- `MAXEY0_MCP_TOKEN_HASHES_FILE` is re-read about once a second, so tokens
+  rotate without a restart.
+- `MAXEY0_RATE_LIMIT_STORE=sqlite:<path>` keeps rate limits across restarts
+  and shares them among processes on one host. The default is still in memory,
+  per process.
+
+**Removed**
+- The advertised but unimplemented `deployment-secret-manager` binding.
+
 ## 0.3.0 — a live endpoint, hardened for what it is
 
 `mcp.maxey0.com` serves tool execution: a Cloudflare Worker edge, then a named

@@ -29,6 +29,18 @@ Modes, from `MAXEY0_AUTH_MODE`:
     `maxey0_ss.auth.oidc`. Misconfiguration refuses with -32004/501 and names
     the missing variable — it does not fall back to a weaker mode.
 
+Token hot-reload: ``MAXEY0_MCP_TOKEN_HASHES_FILE`` names a file of hashed
+entries, one per line (``#`` starts a comment), read in addition to
+``MAXEY0_MCP_TOKEN_HASHES``. Rotating a token used to mean restarting the
+process to re-read the environment. The `Authorizer` now checks the file's
+mtime at most once per second and, when it changed, parses the whole file and
+swaps the credential table in one assignment, so a request sees either the old
+table or the new one, never a mix. A file that fails to parse on reload keeps
+the previous table and logs why: rejecting every caller because an edit was
+half-saved is an outage, and the previous table was valid. At startup there is
+no previous table, so a malformed or unreadable file refuses every request
+with -32004/501, like a malformed variable.
+
 Any other value — a typo included — refuses every request with -32004/501. It
 used to fall through to ``disabled``, so a misspelt ``bearer`` on a deployment
 without ``MAXEY0_PUBLIC=1`` made every caller admin.
@@ -42,7 +54,10 @@ from __future__ import annotations
 import hashlib
 import hmac
 import os
+import logging
 import re
+import threading
+import time
 from dataclasses import dataclass
 
 from .config import AuthConfig, normalize_mode
@@ -84,6 +99,13 @@ BEARER_MISCONFIGURED = (
 
 #: Per-caller tokens, stored as `sha256:<64 lowercase hex>:<role>:<label>`.
 TOKEN_HASHES_VAR = "MAXEY0_MCP_TOKEN_HASHES"
+#: A file of hashed entries, one per line, re-read when its mtime changes.
+TOKEN_HASHES_FILE_VAR = "MAXEY0_MCP_TOKEN_HASHES_FILE"
+#: Minimum seconds between mtime checks of the token file, so a busy server
+#: does not stat the file on every request.
+TOKEN_FILE_CHECK_INTERVAL = 1.0
+
+_log = logging.getLogger(__name__)
 #: Plaintext `token:role` pairs. Accepted so existing deployments keep working.
 PLAINTEXT_TOKENS_VAR = "MAXEY0_MCP_TOKENS"
 #: One shared plaintext token, mapped to `operator`.
@@ -192,6 +214,27 @@ def _entries(raw: str) -> list[tuple[int, str]]:
     return [(i, e.strip()) for i, e in enumerate(raw.split(","), 1) if e.strip()]
 
 
+def _file_entries(raw: str) -> list[tuple[int, str]]:
+    """(line number, entry) for each non-blank, non-comment line of a token file.
+
+    Everything after `#` is a comment, so an entry can carry a note about whose
+    it is. Line numbers, like `_entries` positions, count skipped lines.
+    """
+    out = []
+    for number, line in enumerate(raw.splitlines(), 1):
+        entry = line.split("#", 1)[0].strip()
+        if entry:
+            out.append((number, entry))
+    return out
+
+
+def read_token_file(path: str) -> list[tuple[str, str]]:
+    """(where, entry) pairs from a token file. Raises OSError if unreadable."""
+    with open(path, encoding="utf-8") as handle:
+        raw = handle.read()
+    return [(f"{TOKEN_HASHES_FILE_VAR} line {n}", e) for n, e in _file_entries(raw)]
+
+
 @dataclass(frozen=True)
 class BearerTokens:
     """Every bearer credential this deployment accepts, parsed once.
@@ -210,15 +253,25 @@ class BearerTokens:
     errors: tuple[str, ...] = ()
 
     @classmethod
-    def load(cls, default_token: str = "") -> "BearerTokens":
+    def load(cls, default_token: str = "",
+             file_entries: list[tuple[str, str]] | None = None) -> "BearerTokens":
+        """Parse every configured source.
+
+        `file_entries` are hashed entries already read from
+        `MAXEY0_MCP_TOKEN_HASHES_FILE`, as `(where, entry)`; they are validated
+        exactly like the variable's, and a label or digest repeated across the
+        two sources is an error like one repeated within either.
+        """
         credentials: list[BearerCredential] = []
         errors: list[str] = []
         seen: dict[bytes, str] = {}
-        labels: dict[str, int] = {}
+        labels: dict[str, str] = {}
         role_names = ", ".join(sorted(ROLES))
 
-        for index, entry in _entries(os.getenv(TOKEN_HASHES_VAR, "")):
-            where = f"{TOKEN_HASHES_VAR} entry {index}"
+        hashed_entries = [(f"{TOKEN_HASHES_VAR} entry {index}", entry)
+                          for index, entry in _entries(os.getenv(TOKEN_HASHES_VAR, ""))]
+        hashed_entries += list(file_entries or ())
+        for where, entry in hashed_entries:
             parts = [p.strip() for p in entry.split(":")]
             if len(parts) != 4 or parts[0] != "sha256":
                 errors.append(f"{where} is not sha256:<64 lowercase hex>:<role>:<label>")
@@ -234,13 +287,16 @@ class BearerTokens:
                 errors.append(f"{where}: the label is not 1-64 of A-Z a-z 0-9 . _ -")
                 continue
             if label in labels:
-                errors.append(f"{where} repeats the label of entry {labels[label]}")
+                errors.append(f"{where} repeats the label of {labels[label]}")
                 continue
             digest = bytes.fromhex(digest_hex)
             if digest in seen:
                 errors.append(f"{where} repeats the digest of {seen[digest]}")
                 continue
-            labels[label], seen[digest] = index, where
+            # "entry N" within the variable, as the message always read; the
+            # full name when the earlier copy came from the other source.
+            labels[label] = where.removeprefix(f"{TOKEN_HASHES_VAR} ")
+            seen[digest] = where
             credentials.append(BearerCredential(digest, role, f"bearer:{label}", True))
 
         for index, entry in _entries(os.getenv(PLAINTEXT_TOKENS_VAR, "")):
@@ -361,6 +417,10 @@ class Authorizer:
         self.public_deployment = is_public_deployment()
         self._verifier = None
         self._tokens: BearerTokens | None = None
+        self._token_file = os.getenv(TOKEN_HASHES_FILE_VAR, "").strip()
+        self._token_file_mtime: float | None = None
+        self._token_file_checked = 0.0
+        self._token_lock = threading.Lock()
 
     @property
     def mode(self) -> str:
@@ -384,11 +444,62 @@ class Authorizer:
         meant a token supplied in the credentials file was loaded, reported, and
         then rejected at the door.
         """
-        if self._tokens is None:
-            default = (self.config.default_bearer_token
-                       or os.getenv(DEFAULT_TOKEN_VAR, "")).strip()
-            self._tokens = BearerTokens.load(default)
+        if self._tokens is None or self._token_file:
+            with self._token_lock:
+                if self._tokens is None:
+                    self._tokens = self._load_tokens(initial=True)
+                elif self._token_file:
+                    self._maybe_reload_tokens()
         return self._tokens
+
+    def _load_tokens(self, *, initial: bool) -> BearerTokens | None:
+        """Parse every source; None means "keep the previous table".
+
+        With `initial` a bad token file becomes a table whose `errors` refuse
+        every request: there is no previous table to fall back on.
+        """
+        default = (self.config.default_bearer_token
+                   or os.getenv(DEFAULT_TOKEN_VAR, "")).strip()
+        if not self._token_file:
+            return BearerTokens.load(default)
+        self._token_file_checked = time.monotonic()
+        try:
+            mtime = os.stat(self._token_file).st_mtime
+            entries = read_token_file(self._token_file)
+        except (OSError, UnicodeDecodeError) as exc:
+            message = f"{TOKEN_HASHES_FILE_VAR} could not be read ({type(exc).__name__})"
+            if initial:
+                return BearerTokens((), (message,))
+            _log.error("%s; keeping the previous token table", message)
+            return None
+        tokens = BearerTokens.load(default, entries)
+        # Remember the mtime even for a bad file, so the same bad file is not
+        # re-parsed and re-logged every second; the next edit changes it.
+        self._token_file_mtime = mtime
+        if tokens.errors and not initial:
+            _log.error("%s is invalid (%s); keeping the previous token table",
+                       TOKEN_HASHES_FILE_VAR, "; ".join(tokens.errors))
+            return None
+        return tokens
+
+    def _maybe_reload_tokens(self) -> None:
+        """Re-read the token file when its mtime changed, at most once a second."""
+        now = time.monotonic()
+        if now - self._token_file_checked < TOKEN_FILE_CHECK_INTERVAL:
+            return
+        self._token_file_checked = now
+        try:
+            mtime = os.stat(self._token_file).st_mtime
+        except OSError:
+            mtime = None
+        if mtime is not None and mtime == self._token_file_mtime:
+            return
+        # A startup table that failed closed is replaced by the next file that
+        # parses (or fails closed again), so fixing the file recovers without a
+        # restart; a working table is only ever replaced by a valid one.
+        loaded = self._load_tokens(initial=bool(self._tokens and self._tokens.errors))
+        if loaded is not None:
+            self._tokens = loaded  # one assignment: the swap is atomic
 
     def principal(self, authorization: str | None) -> Principal:
         mode = self.mode

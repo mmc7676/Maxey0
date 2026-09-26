@@ -1,6 +1,6 @@
 {
   "name": "maxey0-context",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "The Context plane, alone. Partition the context window into typed, policy-enforced regions and bind each role to one \u2014 the runtime decides what a role can read, not the prompt. A region declares what it is (reference, durable, episodic, working, scratchpad) and the runtime holds every call against it: a bound role reads its own region and is refused elsewhere, a read-only reference region refuses the role that consumes it, and a verdict is refused unless the judge's read closure provably excludes the maker's write closure. Every decision lands in a hash-chained ledger that replays to an identical window. `context_admit` gates what actually crosses a declared handoff \u2014 approve, summarize, redact, or reject \u2014 and `context_assert_admitted` finds any handoff a scope permits that no such decision has ever governed. 32 tools. No library, no Gate.",
   "author": {
     "name": "mmc7676",

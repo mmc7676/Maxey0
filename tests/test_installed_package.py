@@ -15,7 +15,7 @@ directory outside the repository with the checkout's configuration stripped
 from the environment. Dependencies are pinned by `deploy/constraints.txt`, the
 set the suite passes with, so a new upstream release cannot fail this test for
 a reason that has nothing to do with packaging. The sdist step refreshes the
-gitignored `maxey0_superspace.egg-info/` in the checkout, as any sdist build
+gitignored `maxey0.egg-info/` in the checkout, as any sdist build
 does; nothing tracked is written.
 
 The rest pin the resolution order and the degraded paths without building.
@@ -51,7 +51,7 @@ APP_FILES = ("mcp_apps/super_space.html", "mcp_apps/super_space_react/dist/mcp-a
 #: the checkout's, and these being in the checkout's is what stops that
 #: comparison from passing with both of them short.
 BRIDGE_TOOLS = bridge.HOST_STATE_READS | bridge.HOST_STATE_WRITES | bridge.HOST_INDEPENDENT
-CONSOLE_SCRIPTS = ("maxey0-ss", "maxey0-ss-api", "maxey0-ss-public", "maxey0-ss-mcp")
+CONSOLE_SCRIPTS = ("maxey0-ss", "maxey0-ss-api", "maxey0-ss-public", "maxey0-ss-mcp", "maxey0-verify")
 
 needs_build = pytest.mark.skipif(
     importlib.util.find_spec("build") is None,
@@ -304,7 +304,7 @@ def test_the_http_app_and_every_console_entry_point_load(installed):
         "from importlib.metadata import distribution\n"
         "from fastapi.testclient import TestClient\n"
         "from maxey0_ss.api.app import app\n"
-        "eps = [e for e in distribution('maxey0-superspace').entry_points\n"
+        "eps = [e for e in distribution('maxey0').entry_points\n"
         "       if e.group == 'console_scripts']\n"
         "loaded = {e.name: callable(e.load()) for e in eps}\n"
         "with TestClient(app) as client:\n"

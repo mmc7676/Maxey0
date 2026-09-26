@@ -21,6 +21,12 @@ Machine (fly.toml pins exactly one, for the same in-memory reason); a second
 worker or Machine would multiply every number here, and the manifest says
 "per-process" so nobody reads it as a global guarantee.
 
+`MAXEY0_RATE_LIMIT_STORE=sqlite:<path>` swaps the in-memory buckets for
+`SQLiteTokenBuckets`: state in one SQLite file, so it survives a restart
+(a crash loop no longer hands every caller a fresh bucket) and is shared by
+every process on the host that names the same file. It is still not shared
+across hosts. Empty or `memory` keeps the in-memory default.
+
 The limiter itself is standard library only; the middleware borrows
 starlette's threadpool to resolve credentials off the event loop.
 """
@@ -31,6 +37,7 @@ import ipaddress
 import json
 import math
 import os
+import sqlite3
 import threading
 import time
 from collections import OrderedDict
@@ -48,6 +55,7 @@ PRINCIPAL_PER_MIN_VAR = "MAXEY0_RATE_LIMIT_PRINCIPAL_PER_MIN"
 SESSION_OPEN_PER_MIN_VAR = "MAXEY0_RATE_LIMIT_SESSION_OPEN_PER_MIN"
 AUTH_FAILURES_PER_HOUR_VAR = "MAXEY0_RATE_LIMIT_AUTH_FAILURES_PER_HOUR"
 MAX_KEYS_VAR = "MAXEY0_RATE_LIMIT_MAX_KEYS"
+STORE_VAR = "MAXEY0_RATE_LIMIT_STORE"
 TRUSTED_PROXIES_VAR = "MAXEY0_TRUSTED_PROXY_IPS"
 MAX_REQUEST_BYTES_VAR = "MAXEY0_MAX_REQUEST_BYTES"
 SESSION_MAX_VAR = "MAXEY0_SESSION_MAX"
@@ -72,6 +80,7 @@ UVICORN_PROXY_HEADERS = False
 #: authorization and gate refusals; -32010/-32011 by the edge.
 RATE_LIMITED_CODE = -32005
 SCOPE = "per-process, in-memory, resets on restart"
+SQLITE_SCOPE = "per-host, sqlite, survives restart"
 
 #: The one route that authenticates with its own shared secret rather than the
 #: Authorizer. Its failures are counted from the response instead.
@@ -166,6 +175,18 @@ def _trusted_proxies(invalid: list[str]) -> tuple[str, ...]:
         return _LOOPBACK
 
 
+def _store(invalid: list[str]) -> str:
+    """The bucket store. Anything unrecognized falls back to memory and is
+    reported, like every other variable here: limits keep being enforced."""
+    raw = _raw(STORE_VAR)
+    if raw.lower() in {"", "memory"}:
+        return "memory"
+    if raw.startswith("sqlite:") and raw[len("sqlite:"):].strip():
+        return "sqlite:" + raw[len("sqlite:"):].strip()
+    invalid.append(STORE_VAR)
+    return "memory"
+
+
 @dataclass(frozen=True)
 class RateLimitConfig:
     """Everything in `.env.example`'s rate limiting block, resolved.
@@ -191,8 +212,14 @@ class RateLimitConfig:
     max_request_bytes: int = 1048576
     session_max: int = 50
     session_idle_timeout_s: float = 600.0
+    #: "memory", or "sqlite:<path>" from MAXEY0_RATE_LIMIT_STORE.
+    store: str = "memory"
     #: Variables that were set to something unusable and fell back. Names only.
     invalid: tuple[str, ...] = ()
+
+    @property
+    def sqlite_path(self) -> str | None:
+        return self.store[len("sqlite:"):] if self.store.startswith("sqlite:") else None
 
     @classmethod
     def from_env(cls) -> "RateLimitConfig":
@@ -231,6 +258,7 @@ class RateLimitConfig:
             session_max=_positive_int(SESSION_MAX_VAR, defaults.session_max, invalid),
             session_idle_timeout_s=_positive_seconds(
                 SESSION_IDLE_TIMEOUT_VAR, defaults.session_idle_timeout_s, invalid),
+            store=_store(invalid),
             invalid=tuple(invalid),
         )
 
@@ -307,6 +335,77 @@ class TokenBuckets:
             return (cost - tokens) / self.rate
 
 
+class SQLiteTokenBuckets:
+    """`TokenBuckets` with its state in a SQLite file.
+
+    Same refill arithmetic and the same `check` contract, but the clock is
+    wall time: `time.monotonic` restarts with the process and is per-process,
+    so a stamp written by one process means nothing to the next. Each check is
+    one `BEGIN IMMEDIATE` transaction, which takes SQLite's write lock, so two
+    processes charging the same key serialize instead of both spending the
+    last token. Eviction past `max_keys` drops the least recently seen keys.
+    """
+
+    def __init__(self, path: str, family: str, capacity: int, period_s: float,
+                 max_keys: int, clock: Callable[[], float] = time.time) -> None:
+        self.capacity = float(capacity)
+        self.rate = capacity / period_s
+        self.max_keys = max_keys
+        self.family = family
+        self._clock = clock
+        self._lock = threading.Lock()
+        self._db = sqlite3.connect(path, timeout=5.0, isolation_level=None,
+                                   check_same_thread=False)
+        self._db.execute(
+            "CREATE TABLE IF NOT EXISTS buckets (family TEXT NOT NULL, key TEXT NOT NULL,"
+            " tokens REAL NOT NULL, stamp REAL NOT NULL, PRIMARY KEY (family, key))")
+        self.evictions = 0
+
+    def __len__(self) -> int:
+        with self._lock:
+            row = self._db.execute("SELECT COUNT(*) FROM buckets WHERE family = ?",
+                                   (self.family,)).fetchone()
+        return int(row[0])
+
+    def close(self) -> None:
+        with self._lock:
+            self._db.close()
+
+    def check(self, key: str, cost: float = 1, consume: bool = True) -> float:
+        """See `TokenBuckets.check`."""
+        with self._lock:
+            db = self._db
+            db.execute("BEGIN IMMEDIATE")
+            try:
+                now = self._clock()
+                row = db.execute("SELECT tokens, stamp FROM buckets WHERE family = ? AND key = ?",
+                                 (self.family, key)).fetchone()
+                if row is None:
+                    tokens = self.capacity
+                else:
+                    elapsed = max(0.0, now - row[1])
+                    tokens = min(self.capacity, row[0] + elapsed * self.rate)
+                allowed = tokens >= cost
+                # A peek at an unseen key writes nothing, as in `TokenBuckets`.
+                if consume or row is not None:
+                    left = tokens - cost if (consume and allowed) else tokens
+                    db.execute("INSERT OR REPLACE INTO buckets VALUES (?, ?, ?, ?)",
+                               (self.family, key, left, now))
+                    if row is None:
+                        over = db.execute("SELECT COUNT(*) FROM buckets WHERE family = ?",
+                                          (self.family,)).fetchone()[0] - self.max_keys
+                        if over > 0:
+                            db.execute(
+                                "DELETE FROM buckets WHERE rowid IN (SELECT rowid FROM buckets"
+                                " WHERE family = ? ORDER BY stamp LIMIT ?)", (self.family, over))
+                            self.evictions += over
+                db.execute("COMMIT")
+            except BaseException:
+                db.execute("ROLLBACK")
+                raise
+            return 0.0 if allowed else (cost - tokens) / self.rate
+
+
 # ---------------------------------------------------------------------------
 # who is calling
 # ---------------------------------------------------------------------------
@@ -355,11 +454,18 @@ class RateLimiter:
                  clock: Callable[[], float] = time.monotonic) -> None:
         self.config = config if config is not None else RateLimitConfig.from_env()
         c = self.config
-        self.buckets: dict[str, TokenBuckets] = {
-            IP: TokenBuckets(c.ip_per_min, 60.0, c.max_keys, clock),
-            PRINCIPAL: TokenBuckets(c.principal_per_min, 60.0, c.max_keys, clock),
-            SESSION_OPEN: TokenBuckets(c.session_open_per_min, 60.0, c.max_keys, clock),
-            AUTH_FAILURES: TokenBuckets(c.auth_failures_per_hour, 3600.0, c.max_keys, clock),
+        families = {
+            IP: (c.ip_per_min, 60.0),
+            PRINCIPAL: (c.principal_per_min, 60.0),
+            SESSION_OPEN: (c.session_open_per_min, 60.0),
+            AUTH_FAILURES: (c.auth_failures_per_hour, 3600.0),
+        }
+        path = c.sqlite_path
+        self.scope = SQLITE_SCOPE if path else SCOPE
+        self.buckets: dict[str, Any] = {
+            ns: (SQLiteTokenBuckets(path, ns, cap, period, c.max_keys)
+                 if path else TokenBuckets(cap, period, c.max_keys, clock))
+            for ns, (cap, period) in families.items()
         }
         self._trusted = tuple(_network(n) for n in c.trusted_proxies)
         self._lock = threading.Lock()
@@ -503,7 +609,7 @@ class RateLimiter:
                 "trusted_proxy_count": len(c.trusted_proxies),
                 "uvicorn_proxy_headers": UVICORN_PROXY_HEADERS,
             },
-            "scope": SCOPE,
+            "scope": self.scope,
             "counters": {
                 "limited": limited,
                 "request_too_large": too_large,
@@ -528,7 +634,7 @@ class RateLimiter:
             "enabled": self.config.enabled,
             "source": self.config.source,
             "enforced": self.enforced,
-            "scope": SCOPE,
+            "scope": self.scope,
             "detail": "maxey0-ss.auth.manifest",
         }
 
