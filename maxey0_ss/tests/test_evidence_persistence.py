@@ -224,3 +224,40 @@ def test_verifier_accepts_real_context_ledger(server_paths):
     lines = ["x"] + lines  # a torn line is a loss, not ignorable
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     assert verify_cli.main(["ledger", str(path)]) == 1
+
+
+def test_concurrent_records_keep_one_chain_on_disk(tmp_path):
+    """Threads recording at once used to fork the chain.
+
+    record() read the head, fsynced, then appended; two threads between those
+    steps chained to the same head. The file then refused to load, so the next
+    restart failed closed and the evidence could only be kept by deleting it.
+    """
+    import threading
+
+    from maxey0_ss.containment.attestation import AttestationLog
+    from maxey0_ss.containment.protocol import ContainmentDecision, Operation
+
+    decision = ContainmentDecision(
+        allowed=True, operation=Operation.READ, agent_scw="SCW0",
+        target_scw="SCW0", reason="concurrent", provider="test",
+    )
+    path = tmp_path / "attestations.jsonl"
+    log = AttestationLog(path=path)
+    start = threading.Barrier(8)
+
+    def writer():
+        start.wait()
+        for _ in range(25):
+            log.record(decision)
+
+    threads = [threading.Thread(target=writer) for _ in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    assert len(log) == 200
+    assert AttestationLog.verify_records(log.export()).ok
+    reloaded = AttestationLog(path=path)
+    assert len(reloaded) == 200 and reloaded.head == log.head

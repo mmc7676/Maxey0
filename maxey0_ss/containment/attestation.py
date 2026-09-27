@@ -42,6 +42,7 @@ import hashlib
 import hmac
 import json
 import os
+import threading
 import time
 from pathlib import Path
 from dataclasses import dataclass, field, replace
@@ -162,6 +163,13 @@ class AttestationLog:
     ) -> None:
         self._clock = clock or (lambda: int(time.time() * 1000))
         self._entries: list[Attestation] = []
+        # record() reads the head, digests against it and appends. Two threads
+        # interleaving there both chain to the same head and fork the chain --
+        # the HTTP app runs handlers on a thread pool and provider.complete's
+        # async mode on worker threads. With persistence the fsync in the middle
+        # widened the window enough to fork it routinely, and a forked file
+        # refuses to load, so the next restart failed closed.
+        self._lock = threading.RLock()
         if path is None:
             path = os.environ.get("MAXEY0_ATTESTATION_PATH") or None
         if key is None:
@@ -236,35 +244,36 @@ class AttestationLog:
                 reason=redact(decision.reason),
                 metadata=redact(dict(decision.metadata)),
             )
-        prev = self.head
-        body = {
-            "seq": len(self._entries),
-            "recorded_ms": self._clock(),
-            **decision.as_dict(),
-        }
-        entry = Attestation(
-            seq=body["seq"],
-            recorded_ms=body["recorded_ms"],
-            decision=decision,
-            prev_digest=prev,
-            digest=compute_digest(body, prev),
-        )
-        if self._key is not None:
+        with self._lock:
+            prev = self.head
+            body = {
+                "seq": len(self._entries),
+                "recorded_ms": self._clock(),
+                **decision.as_dict(),
+            }
             entry = Attestation(
-                seq=entry.seq, recorded_ms=entry.recorded_ms, decision=decision,
-                prev_digest=prev, digest=entry.digest,
-                sig=sign_digest(self._key, entry.digest),
+                seq=body["seq"],
+                recorded_ms=body["recorded_ms"],
+                decision=decision,
+                prev_digest=prev,
+                digest=compute_digest(body, prev),
             )
-        if self._path is not None:
-            # Written and fsynced before the entry joins the in-memory chain, so
-            # a failed write raises without leaving memory ahead of disk.
-            line = json.dumps(entry.as_dict(), sort_keys=True, separators=(",", ":"))
-            with self._path.open("a", encoding="utf-8") as fh:
-                fh.write(line + "\n")
-                fh.flush()
-                os.fsync(fh.fileno())
-        self._entries.append(entry)
-        return entry
+            if self._key is not None:
+                entry = Attestation(
+                    seq=entry.seq, recorded_ms=entry.recorded_ms, decision=decision,
+                    prev_digest=prev, digest=entry.digest,
+                    sig=sign_digest(self._key, entry.digest),
+                )
+            if self._path is not None:
+                # Written and fsynced before the entry joins the in-memory chain, so
+                # a failed write raises without leaving memory ahead of disk.
+                line = json.dumps(entry.as_dict(), sort_keys=True, separators=(",", ":"))
+                with self._path.open("a", encoding="utf-8") as fh:
+                    fh.write(line + "\n")
+                    fh.flush()
+                    os.fsync(fh.fileno())
+            self._entries.append(entry)
+            return entry
 
     # -- reading ------------------------------------------------------------
 
