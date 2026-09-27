@@ -1,6 +1,6 @@
 {
   "name": "@maxey0/super-space-mcp-app",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": false,
   "type": "module",
   "description": "Maxey0-SuperSpace MCP App built against the MCP Apps extension.",

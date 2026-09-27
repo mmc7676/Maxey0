@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "maxey0"
-version = "0.3.1"
+version = "0.3.2"
 description = "Structured Context Windows for AI agents: partition what each agent can see, gate what it can do, and keep a verifiable record of both."
 readme = "README.md"
 requires-python = ">=3.10"

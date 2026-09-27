@@ -2,7 +2,7 @@
 
 # Maxey0-SuperSpace distribution matrix
 
-Version `0.3.1` · MCP `2026-07-28`
+Version `0.3.2` · MCP `2026-07-28`
 
 Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.
 
@@ -13,7 +13,7 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 | [`claude-code-loops`](claude-code-loops/) | claude-code | plugin | shipped | `/plugin marketplace add mmc7676/Maxey0` |
 | [`claude-code-observe`](claude-code-observe/) | claude-code | plugin | shipped | `/plugin marketplace add mmc7676/Maxey0` |
 | [`claude-code-lab`](claude-code-lab/) | claude-code | plugin | shipped | `/plugin marketplace add mmc7676/Maxey0` |
-| [`claude-desktop-connector`](claude-desktop-connector/) | claude-desktop | connector | shipped | `Drag dist/maxey0-0.3.1.mcpb into Claude Desktop.` |
+| [`claude-desktop-connector`](claude-desktop-connector/) | claude-desktop | connector | shipped | `Drag dist/maxey0-0.3.2.mcpb into Claude Desktop.` |
 | [`claude-skills`](claude-skills/) | claude | skills | shipped | `Included in the Claude Code plugin; copy skills/ to use them alone.` |
 | [`claude-remote-connector`](claude-remote-connector/) | claude | connector | external | `Add https://mcp.maxey0.com/mcp as a custom connector.` |
 | [`chatgpt-app`](chatgpt-app/) | chatgpt | app | external | `Settings → Connectors → Add: https://mcp.maxey0.com/mcp` |

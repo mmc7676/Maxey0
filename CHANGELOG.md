@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.2 — attestation records serialized
+
+**Fixed**
+- `AttestationLog.record()` read the chain head, digested against it and
+  appended with no lock. The HTTP app runs handlers on a thread pool and
+  `provider.complete`'s `async` mode on worker threads, so two records could
+  chain to the same head. With `MAXEY0_ATTESTATION_PATH` set, the fsync between
+  those steps made this routine: the chain failed verification and the file
+  refused to load, so the next restart failed closed. A lock now covers the
+  whole step. The in-memory default was affected only in principle; no forked
+  chain was observed without persistence.
+
 ## 0.3.1 — on PyPI, and the gaps narrowed
 
 The package is now `pip install maxey0`. Several items that 0.3.0 listed as

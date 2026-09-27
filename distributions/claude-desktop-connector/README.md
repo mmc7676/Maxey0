@@ -9,7 +9,7 @@ Governed context and execution for agents: an explicit SCW address space, a gate
 ## Install
 
 ```
-Drag dist/maxey0-0.3.1.mcpb into Claude Desktop.
+Drag dist/maxey0-0.3.2.mcpb into Claude Desktop.
 ```
 
 The manifest declares the UV runtime, so Claude Desktop provisions Python and every dependency itself. The .dxt is the same bytes under the former extension.
@@ -58,7 +58,7 @@ The manifest declares the UV runtime, so Claude Desktop provisions Python and ev
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
 - distribution id `maxey0`
-- version `0.3.1`
+- version `0.3.2`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../DISTRIBUTION_MATRIX.md).

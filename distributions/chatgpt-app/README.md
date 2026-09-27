@@ -54,7 +54,7 @@ A ChatGPT app is an MCP server plus a manifest; both are here. Submission and re
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
 - distribution id `maxey0`
-- version `0.3.1`
+- version `0.3.2`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../DISTRIBUTION_MATRIX.md).
