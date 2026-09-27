@@ -1,5 +1,11 @@
 # Maxey0-SuperSpace
 
+[![PyPI](https://img.shields.io/pypi/v/maxey0)](https://pypi.org/project/maxey0/) [![Python](https://img.shields.io/pypi/pyversions/maxey0)](https://pypi.org/project/maxey0/) [![CI](https://github.com/mmc7676/Maxey0/actions/workflows/ci.yml/badge.svg)](https://github.com/mmc7676/Maxey0/actions/workflows/ci.yml) [![License](https://img.shields.io/pypi/l/maxey0)](LICENSE)
+
+```bash
+pip install maxey0
+```
+
 Maxey0-SuperSpace (Maxey0 for short) is a governance and evidence layer for
 multi-agent work. It gives each agent's working context a name the system can
 enforce. It decides every crossing between those contexts, and every prompt sent

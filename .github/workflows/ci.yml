@@ -1,0 +1,96 @@
+# Tests, generated-file checks and the edge worker, on every push and pull
+# request. Third-party actions are pinned to a commit SHA, with the release
+# they came from in a comment, so a moved tag cannot change what runs here.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Python ${{ matrix.python }} (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.11", "3.12", "3.13"]
+        include:
+          - os: windows-latest
+            python: "3.11"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python }}
+      # The same pins the origin image installs with, so CI tests the
+      # dependency set production runs rather than whatever resolved today.
+      - name: Install
+        run: python -m pip install -e ".[mcp]" -c deploy/constraints.txt pytest build
+      - name: Test suite
+        run: python -m pytest -q -p no:cacheprovider
+      - name: Generated files match their sources
+        run: |
+          python scripts/build_distributions.py --check
+          python scripts/build_planes.py --check
+          python scripts/validate_plugin.py
+          python scripts/check_lexicon.py
+
+  # The suite imports tomllib (3.11+), but the package declares 3.10. This job
+  # checks that claim the way a user would meet it: install the wheel, import
+  # both packages, build the full surface and use the facade.
+  install-3-10:
+    name: Install smoke test (Python 3.10)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.10"
+      - name: Build and install the wheel
+        run: |
+          python -m pip install build
+          python -m build --wheel --outdir dist .
+          python -m venv /tmp/smoke
+          /tmp/smoke/bin/python -m pip install dist/*.whl
+      - name: Import and exercise
+        working-directory: /tmp
+        run: |
+          /tmp/smoke/bin/python - <<'EOF'
+          import maxey0
+          from maxey0 import scw
+          from maxey0_ss.mcp_surface import super_space_artifact
+          scw.create("SCW1", task="smoke test")
+          assert scw.start("SCW1")["scw_id"] == "SCW1"
+          tools = len(scw.surface().tools)
+          app = super_space_artifact()["kind"]
+          assert app == "built", app
+          print(maxey0.__version__, tools, "tools, app", app)
+          EOF
+          /tmp/smoke/bin/maxey0-verify --help > /dev/null
+
+  edge:
+    name: Edge worker
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: workers/mcp-edge
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: workers/mcp-edge/package-lock.json
+      - run: npm ci
+      - run: npx vitest run
+      - run: npx tsc --noEmit
