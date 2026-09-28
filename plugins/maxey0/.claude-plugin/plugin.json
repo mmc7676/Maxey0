@@ -1,6 +1,6 @@
 {
   "name": "maxey0",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Most agent infrastructure primarily adds capability to the execution plane. Maxey0 makes the contextual environment surrounding agentic execution an independently structured, routable, partitionable, and observable plane, while providing an engineering plane that can observe and tune both.\n\nThe full stack: all three planes, ten slash commands, the role-agent slate, the Gate, and the Studio. 50 tools. Start here unless you know you want one plane.",
   "author": {
     "name": "mmc7676",

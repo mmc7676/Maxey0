@@ -644,7 +644,7 @@ Other environment overrides: `SCW_EVENT_LOG`, `SCW_HOME`, `MAXEY0_STUDIO_PORT`,
 
 ## 8. Release
 
-The version is currently `0.3.2`. The one literal is `__version__` in
+The version is currently `0.3.3`. The one literal is `__version__` in
 `maxey0_ss/__init__.py`, and `tests/test_version.py` requires every other
 declaration to agree with it:
 

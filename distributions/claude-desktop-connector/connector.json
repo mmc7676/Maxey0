@@ -2,7 +2,7 @@
   "name": "maxey0-ss",
   "title": "Maxey0 for Claude Desktop",
   "description": "Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "transport": {
     "type": "streamable-http",
     "url": "https://mcp.maxey0.com/mcp",

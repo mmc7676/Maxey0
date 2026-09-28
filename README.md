@@ -278,7 +278,7 @@ package installed:
 
 ```bash
 python scripts/build_package.py --check   # validate, write nothing
-python scripts/build_package.py           # writes dist/maxey0-0.3.2.mcpb
+python scripts/build_package.py           # writes dist/maxey0-0.3.3.mcpb
 ```
 
 The built MCP App (`mcp_apps/super_space_react/dist/mcp-app.html`) is in the

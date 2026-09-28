@@ -3,7 +3,7 @@
     "bytes": 480954,
     "kind": "built",
     "path": "mcp-app.html",
-    "sha256": "6b71689e896dbe464eb91d776351e174a87b188040d233fe1ebf0adb06a9891c",
+    "sha256": "93d1e3538280b45863964675e6909864749843511c3649d5e2f2d188eb195bcd",
     "uri": "ui://maxey0-ss/super-space.html"
   },
   "protocolVersion": "2026-07-28",
@@ -33,7 +33,7 @@
     }
   ],
   "serverName": "Maxey0-SuperSpace",
-  "serverVersion": "0.3.2",
+  "serverVersion": "0.3.3",
   "staticResources": {
     "maxey0-ss://architecture/planes": [
       "context",

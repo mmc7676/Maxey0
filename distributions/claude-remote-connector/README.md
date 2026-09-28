@@ -54,7 +54,7 @@ The endpoint answers MCP 2026-07-28 and the manifest is complete. Directory list
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
 - distribution id `maxey0`
-- version `0.3.2`
+- version `0.3.3`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../DISTRIBUTION_MATRIX.md).

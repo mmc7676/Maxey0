@@ -1,6 +1,6 @@
 {
   "name": "maxey0-lab",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Research tooling, and explicitly not part of the product. The spec-driven experiment harness: workload specs, conditions, leak probes, and reports. It shipped inside the plugin through 0.6.0 while the roadmap said since 0.3.0 that experiment protocol and analysis belong in a consumer repository \u2014 a measurement instrument that ships the study it was used for is a lab notebook with an installer. Install this only if you are running a study. Nothing in the three planes depends on it.",
   "author": {
     "name": "mmc7676",

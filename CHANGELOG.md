@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.3.3 — production path regularized
 
 **Production path**
 - `GET /health` on the origin and the edge reports `version` and the MCP
