@@ -278,7 +278,7 @@ package installed:
 
 ```bash
 python scripts/build_package.py --check   # validate, write nothing
-python scripts/build_package.py           # writes dist/maxey0-0.3.3.mcpb
+python scripts/build_package.py           # writes dist/maxey0-0.3.4.mcpb
 ```
 
 The built MCP App (`mcp_apps/super_space_react/dist/mcp-app.html`) is in the
@@ -964,13 +964,23 @@ public and authenticated and, with the tunnel on, bound to loopback.
 
 ## Hosted endpoint
 
-`mcp.maxey0.com` is the project's hosted instance, not a service you can sign
-up for. Every tool call needs a token that the project issues; minting your own
-token does nothing there. Stateless clients use `https://mcp.maxey0.com/mcp`.
+`mcp.maxey0.com` is the project's hosted instance. Connect an MCP client to
+`https://mcp.maxey0.com/mcp`; no account or token is needed to use SCWs there.
+
+Without a token you are a **guest**: you can create, start, drift, describe and
+close SCWs, and you see and act on only the SCWs you created. Omit `scw_id` on
+`maxey0-ss.scw.create` and one is assigned to you. A guest holds at most 5 SCWs
+at a time (close one and start it again to reuse it), and guest SCWs last until
+the server restarts. Model calls (`maxey0-ss.provider.complete`), the evidence
+log and the Gate and observe tools need a token, which the project issues.
 Session clients (Claude Code, Claude Desktop) use
 `https://origin.maxey0.com/mcp/session` with `Authorization: Bearer <token>`.
 `GET https://mcp.maxey0.com/health` reports the running version. For your own
 use, [run your own server](#running-your-own-server).
+
+Guest access is off by default on a server you run yourself; turn it on with
+`MAXEY0_GUEST_SCW=1` (caps: `MAXEY0_GUEST_SCW_PER_CLIENT`, default 5, and
+`MAXEY0_GUEST_SCW_TOTAL`, default 1000).
 
 The hosted endpoint and `from maxey0 import scw` are separate. `maxey0.scw` runs
 an in-process runtime inside your Python program; it never connects to

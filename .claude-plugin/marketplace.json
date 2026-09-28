@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Maxey0 full stack: harness-neutral Context Graph + Execution Graph + SCW Runtime + Semantic/Drift Runtime + A2A Directory + MCP Directory + MCP Delivery + A2A integration + Engineering/Observability. Claude Code is one distribution surface; the core also ships adapters for Claude Agent SDK, OpenAI Agents SDK, LangChain/LangGraph, and Google ADK, plus MCP/A2A integration bundles for Codex, Claude, and ChatGPT.",
-    "version": "0.3.3"
+    "version": "0.3.4"
   },
   "plugins": [
     {

@@ -205,6 +205,7 @@ def create_app(system: SuperSpaceSystem | None = None) -> FastAPI:
     app.include_router(build_router(
         surface.tools, surface.resources, SERVER_NAME,
         cache=surface.cache, tasks=surface.tasks, authorizer=authorizer,
+        rate_limiter=surface.rate_limiter,
     ))
     # Session-based Streamable HTTP, for hosts that open a session (Claude
     # Code, Claude Desktop) and so cannot speak to the stateless /mcp above.

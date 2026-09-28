@@ -1,6 +1,6 @@
 {
   "name": "maxey0-loops",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "The Loop plane, alone. Route a task against 16 concepts, 83 skills, 67 agents and 84 hardened loops, and get the formation that was already built for it instead of an improvised maker/checker pair \u2014 in one measured case, 10,800 tokens against 253,000 for the same task done by hand. Every loop carries its real hardening record, so a design that has never been executed says so. This plane holds no window state at all, which is what lets it run against an entirely fixed context scheme with nothing else installed. 10 tools, including the cross-window runner that checks isolation by grepping the actual dispatched prompts rather than asserting it held.",
   "author": {
     "name": "mmc7676",

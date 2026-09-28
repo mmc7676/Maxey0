@@ -120,7 +120,7 @@ const IDLE: PanelState = { status: "Ready", result: "", error: null, busy: false
 
 export function App() {
   const { app, isConnected, error } = useApp({
-    appInfo: { name: "Maxey0-SuperSpace", version: "0.3.3" },
+    appInfo: { name: "Maxey0-SuperSpace", version: "0.3.4" },
     capabilities: {},
   });
   useHostStyles(app, app?.getHostContext() ?? null);

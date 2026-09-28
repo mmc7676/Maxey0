@@ -4,7 +4,7 @@
   "name_for_model": "maxey0_ss",
   "description_for_human": "Governed context and execution for agents: an explicit SCW address space, a gate at every tool call and every model egress, and a hash-chained record of both.",
   "description_for_model": "Governed context and execution. Create and describe SCW windows, inspect the gate on an explicit SCW address, observe host-supplied context partitions, send gated model egress, and read the hash-chained containment record. Every tool call and every model egress is attributed to a window and attested.",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "mcp": {
     "url": "https://mcp.maxey0.com/mcp",
     "protocol_version": "2026-07-28",

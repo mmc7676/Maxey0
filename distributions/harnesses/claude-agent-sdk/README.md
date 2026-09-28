@@ -25,7 +25,7 @@ The SDK stays the execution harness; this owns the window and the record.
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
 - distribution id `maxey0`
-- version `0.3.3`
+- version `0.3.4`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../../DISTRIBUTION_MATRIX.md).

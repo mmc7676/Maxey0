@@ -33,7 +33,7 @@ was meant to end.
 #: three of them, so `mcp_2026.build_router` could report a `serverInfo.version`
 #: that disagreed with `mcp_surface.SERVER_VERSION` and nothing would notice.
 #: `tests/test_version.py` asserts every other declaration agrees with this one.
-__version__ = "0.3.3"
+__version__ = "0.3.4"
 
 # Load .env before anything reads the environment. AuthConfig.load(),
 # is_public_deployment() and the cache all resolve at construction time, so a

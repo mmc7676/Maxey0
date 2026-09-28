@@ -1,6 +1,6 @@
 {
   "name": "maxey0-ui",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "private": true,
   "type": "module",
   "description": "Typed client and React views for the Maxey0 Studio. Optional: the Studio runs without it, on the standard library alone.",

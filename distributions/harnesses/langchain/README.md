@@ -25,7 +25,7 @@ Binds a LangGraph node to a window so its tool calls are attributed; langgraph p
 - product `Maxey0-SuperSpace`
 - MCP namespace `maxey0-ss` — every tool and resource
 - distribution id `maxey0`
-- version `0.3.3`
+- version `0.3.4`
 - protocol `2026-07-28`
 
 See [the distribution matrix](../../DISTRIBUTION_MATRIX.md).

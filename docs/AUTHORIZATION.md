@@ -88,6 +88,27 @@ absent, so no MCP client can obtain a token through this server:
 
 Tokens have to come from out of band.
 
+### Guest access (`MAXEY0_GUEST_SCW=1`)
+
+Off by default. When on, a `tools/call` on the stateless `/mcp` endpoint that
+carries no `Authorization` header runs as a guest instead of being refused. A
+guest may call the public tools and the SCW tools (`scw.create`, `scw.start`,
+`scw.drift`, `scw.describe`, `scw.close`) and nothing else: model egress,
+evidence, Gate and observe tools answer `-32002`. The decision is by tool, not
+by capability, because `scw.admit` also covers `provider.complete`.
+
+- A guest is named by a digest of its client address (the same address the rate
+  limiter uses), so its SCWs follow the address. Clients sharing an address
+  share a guest.
+- A guest sees and acts on only the SCWs it created; another guest's SCW
+  answers "Unknown SCW". Token holders are unaffected and see every SCW.
+- A request whose token is wrong still gets `401`; it is never downgraded to a
+  guest.
+- `MAXEY0_GUEST_SCW_PER_CLIENT` (default 5) and `MAXEY0_GUEST_SCW_TOTAL`
+  (default 1000) cap guest SCWs. They last until the server restarts.
+- The session transport (`/mcp/session`) and the `/v1` REST routes never admit
+  guests.
+
 ### Host planes on public deployments
 
 With `MAXEY0_PUBLIC` set, the observe/gate bridge tools that read the host's

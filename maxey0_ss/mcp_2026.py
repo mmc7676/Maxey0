@@ -17,7 +17,7 @@ from starlette.concurrency import run_in_threadpool
 from . import __version__
 from .cache.policy import CacheHint, MCPMetadataCache
 from .gating.address import EnforceableAddress
-from .auth.policy import AuthError, Authorizer
+from .auth.policy import AuthError, Authorizer, guest_principal, guest_scw_enabled
 from .gating.semantic import SemanticGateProvider, select_semantic_gate
 from .tasks import (
     ACK_NOTIFICATION,
@@ -83,7 +83,7 @@ def _structured(value: Any) -> dict[str, Any]:
     return {"content": [{"type": "text", "text": json.dumps(value, sort_keys=True)}], "structuredContent": value}
 
 
-def build_router(tools: list[Tool], resources: list[Resource], server_name: str = "Maxey0-SuperSpace", *, cache: MCPMetadataCache | None = None, semantic_gate: SemanticGateProvider | None = None, tasks: TaskStore | None = None, authorizer: Authorizer | None = None) -> APIRouter:
+def build_router(tools: list[Tool], resources: list[Resource], server_name: str = "Maxey0-SuperSpace", *, cache: MCPMetadataCache | None = None, semantic_gate: SemanticGateProvider | None = None, tasks: TaskStore | None = None, authorizer: Authorizer | None = None, rate_limiter=None) -> APIRouter:
     router = APIRouter()
     tool_map = {t.name: t for t in tools}
     resource_map = {r.uri: r for r in resources}
@@ -160,8 +160,15 @@ def build_router(tools: list[Tool], resources: list[Resource], server_name: str 
             try:
                 # In a worker thread: an OIDC verifier may fetch a key set, and
                 # a network round-trip on the event loop stalls every request.
-                principal = await run_in_threadpool(
-                    authorizer.principal, request.headers.get("authorization"))
+                header = request.headers.get("authorization")
+                if (header is None or not header.strip()) and guest_scw_enabled()                         and rate_limiter is not None:
+                    # No credential at all, on a deployment that opted in: a
+                    # guest keyed by the same client address the rate limiter
+                    # uses. A credential that is present but wrong is never
+                    # downgraded to a guest; it still gets 401 below.
+                    principal = guest_principal(rate_limiter.client_key(request.scope))
+                else:
+                    principal = await run_in_threadpool(authorizer.principal, header)
                 for capability in tool.required_capabilities(arguments):
                     authorizer.authorize(principal, capability, tool.name)
             except AuthError as exc:

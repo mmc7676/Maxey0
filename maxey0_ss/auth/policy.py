@@ -161,6 +161,40 @@ ANONYMOUS = Principal(role="public", subject="anonymous", authenticated=False)
 #: Trusted local caller.
 LOCAL_ADMIN = Principal(role="admin", subject="local", authenticated=True)
 
+#: Guest access: an opt-in (MAXEY0_GUEST_SCW=1) that lets a caller with no
+#: Authorization header use the SCW lifecycle tools on the stateless endpoint
+#: -- create, start, drift, describe and close -- and nothing else. A guest is
+#: a role no token can hold and no route but `tools/call` on `/mcp` produces.
+#: Every other capability (model egress, evidence, gate, observe) still needs a
+#: token. Ownership (a guest acts only on its own SCWs) and the caps are
+#: enforced in `mcp_surface`; this module only says who a guest is.
+GUEST_ROLE = "guest"
+GUEST_TOOLS = frozenset({
+    "maxey0-ss.scw.create", "maxey0-ss.scw.start", "maxey0-ss.scw.close",
+    "maxey0-ss.scw.describe", "maxey0-ss.scw.drift",
+})
+GUEST_SUBJECT_PREFIX = "guest:"
+
+
+def guest_scw_enabled() -> bool:
+    return os.getenv("MAXEY0_GUEST_SCW", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def guest_principal(client_key: str) -> Principal:
+    """The guest for one client address, named by a digest of it.
+
+    The digest is the subject SCWs are owned by, so a guest's windows follow its
+    address and the address itself is never stored or reported. Clients that
+    share an address (a NAT) share one guest.
+    """
+    digest = hashlib.sha256(client_key.encode("utf-8")).hexdigest()[:16]
+    return Principal(role=GUEST_ROLE, subject=GUEST_SUBJECT_PREFIX + digest,
+                     authenticated=False)
+
+
+def is_guest_subject(subject: str | None) -> bool:
+    return bool(subject) and subject.startswith(GUEST_SUBJECT_PREFIX)
+
 
 # ---------------------------------------------------------------------------
 # bearer tokens
@@ -578,6 +612,18 @@ class Authorizer:
         return Principal(role=role, subject=verified.subject, authenticated=True)
 
     def authorize(self, principal: Principal, capability: str | None, tool_name: str) -> None:
+        if principal.role == GUEST_ROLE:
+            # Decided by tool, not capability: `scw.admit` covers both closing
+            # a window and sending a prompt to a paid provider, and a guest may
+            # do the first and never the second.
+            if capability is None or tool_name in GUEST_TOOLS:
+                return
+            raise AuthError(
+                f"{tool_name} requires a token; anonymous guests may only use "
+                f"the SCW tools (create, start, drift, describe, close)",
+                code=-32002,
+                status=403,
+            )
         if principal.may(capability):
             return
         raise AuthError(

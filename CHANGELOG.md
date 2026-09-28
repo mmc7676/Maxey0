@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.4 — guest access to SCWs
+
+- `MAXEY0_GUEST_SCW=1` lets a caller with no token create, start, drift,
+  describe and close SCWs on the stateless `/mcp` endpoint. Each guest acts on
+  only its own SCWs, is named by a digest of its client address, and is capped
+  by `MAXEY0_GUEST_SCW_PER_CLIENT` (default 5) and `MAXEY0_GUEST_SCW_TOTAL`
+  (default 1000). Model calls, evidence, Gate and observe tools still need a
+  token, and a wrong token is never downgraded to a guest. Off by default.
+- A guest's `scw.create` without `scw_id` is assigned a free identifier.
+- The README states how to use the hosted endpoint without a token.
+
 ## 0.3.3 — production path regularized
 
 **Production path**

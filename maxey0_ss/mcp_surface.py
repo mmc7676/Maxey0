@@ -12,6 +12,9 @@ one, because neither transport owns the list.
 from __future__ import annotations
 
 import hashlib
+import os
+import secrets
+import threading
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -23,6 +26,7 @@ from .auth.policy import (
     SCW_CREATE,
     SCW_READ,
     Authorizer,
+    is_guest_subject,
 )
 from .observability.bridge import observability_tools
 from .providers import ProviderError, ProviderRefused
@@ -369,6 +373,25 @@ class Surface:
     rate_limiter: RateLimiter | None = None
 
 
+def _guest_limits() -> tuple[int, int]:
+    """(SCWs per guest, SCWs across all guests), from the environment.
+
+    Guest SCWs are never deleted -- specifications have no removal path -- so
+    these caps are what bound the memory anonymous callers can claim. A
+    malformed value refuses to start rather than falling back to no cap.
+    """
+    out = []
+    for name, default in (("MAXEY0_GUEST_SCW_PER_CLIENT", 5), ("MAXEY0_GUEST_SCW_TOTAL", 1000)):
+        raw = os.environ.get(name, "").strip()
+        if not raw:
+            out.append(default)
+            continue
+        if not raw.isdigit() or int(raw) < 1:
+            raise ValueError(f"{name} must be a positive integer, got {raw!r}")
+        out.append(int(raw))
+    return out[0], out[1]
+
+
 def build_surface(
     system: SuperSpaceSystem | None = None,
     *,
@@ -383,6 +406,19 @@ def build_surface(
     cache = MCPMetadataCache()
     app_cache = MaxeyCache(CacheConfig.from_env())
     task_store = TaskStore()
+    # Guest ownership: spec id -> the guest subject that created it. A guest
+    # (MAXEY0_GUEST_SCW=1, no token) acts only on its own SCWs and sees only
+    # them; a token holder is unaffected and sees everything, as before.
+    guest_per_client, guest_total = _guest_limits()
+    guest_owner: dict[str, str] = {}
+    guest_lock = threading.Lock()
+
+    def _guest() -> str | None:
+        subject = _OWNER.get()
+        return subject if is_guest_subject(subject) else None
+
+    def _guest_may(guest: str | None, spec_id: str | None) -> bool:
+        return guest is None or (spec_id is not None and guest_owner.get(spec_id) == guest)
     # The gate the surface reports on is the gate configuration selected,
     # not a fresh default: `gate.inspect` must answer for the same provider
     # the transports enforce with.
@@ -505,6 +541,9 @@ def build_surface(
         return observer.observe(args.get("segments", []))
 
     def create_scw(args: dict):
+        guest = _guest()
+        if guest is not None:
+            return _create_guest_scw(guest, args)
         scw_id = args.get("scw_id", "SCW0")
         task = args.get("task", "Maxey0 SuperSpace task")
         concept = args.get("concept", "Task")
@@ -515,8 +554,45 @@ def build_surface(
         system.create_scw(spec)
         return spec.__dict__
 
+    def _create_guest_scw(guest: str, args: dict):
+        """Create an SCW owned by `guest`, inside the per-guest and total caps.
+
+        Without `scw_id` one is assigned, so guests sharing the server do not
+        race for SCW1. A parent must be one of the guest's own SCWs.
+        """
+        parent_id = args.get("parent_id")
+        if parent_id is not None and not _guest_may(guest, parent_id):
+            raise ValueError(f"Unknown SCW specification: {parent_id}")
+        with guest_lock:
+            mine = sum(1 for owner in guest_owner.values() if owner == guest)
+            if mine >= guest_per_client:
+                raise ValueError(
+                    f"guest limit reached: {guest_per_client} SCWs per client; "
+                    f"close one and start it again to reuse it")
+            if len(guest_owner) >= guest_total:
+                raise ValueError("guest capacity on this server is full; try again later")
+            scw_id = args.get("scw_id")
+            if scw_id is None:
+                scw_id = f"SCW{100_000_000 + secrets.randbelow(900_000_000)}"
+                while scw_id in system.context.graph.scw_specs:
+                    scw_id = f"SCW{100_000_000 + secrets.randbelow(900_000_000)}"
+            if scw_id in system.context.graph.scw_specs:
+                raise ValueError(f"SCW specification already exists: {scw_id}")
+            spec = deploy_default_scw(
+                args.get("task", "Maxey0 SuperSpace task"), scw_id=scw_id,
+                parent_id=parent_id, concept=args.get("concept", "Task"))
+            system.create_scw(spec)
+            guest_owner[scw_id] = guest
+        return spec.__dict__
+
     def describe_scws(_: dict):
-        return system.context.snapshot()["scw_instances"] | {
+        guest = _guest()
+        instances = system.context.snapshot()["scw_instances"]
+        if guest is not None:
+            live = system.context.instances
+            instances = {k: v for k, v in instances.items()
+                         if k in live and _guest_may(guest, live[k].spec_id)}
+        return instances | {
             "specifications": {
                 k: {
                     "parent_id": v.parent_id,
@@ -525,6 +601,7 @@ def build_surface(
                     "drift_threshold": v.drift_threshold,
                 }
                 for k, v in system.context.graph.scw_specs.items()
+                if _guest_may(guest, k)
             }
         }
 
@@ -532,6 +609,12 @@ def build_surface(
         scw_id = args.get("scw_id")
         if not isinstance(scw_id, str) or not scw_id:
             raise ValueError("scw_id is required")
+        guest = _guest()
+        if guest is not None:
+            instance = system.context.instances.get(scw_id)
+            spec_id = instance.spec_id if instance is not None else scw_id
+            if not _guest_may(guest, spec_id):
+                raise ValueError(f"Unknown SCW: {scw_id}")
         if scw_id in system.context.instances:
             system.scw_runtime.stop(scw_id)
             # Dependency-aware invalidation: a reopened identifier must not
@@ -558,6 +641,8 @@ def build_surface(
         scw_id = args.get("scw_id")
         if not isinstance(scw_id, str) or not scw_id:
             raise ValueError("scw_id is required")
+        if not _guest_may(_guest(), scw_id):
+            raise ValueError(f"Unknown SCW specification: {scw_id}")
         return start_instance(system, scw_id, _OWNER.get() or "local", app_cache)
 
     def app_artifact(_: dict):
@@ -823,7 +908,7 @@ def build_surface(
         vector = validate_vector(vector)
 
         spec = system.context.graph.scw_specs.get(scw_id)
-        if spec is None:
+        if spec is None or not _guest_may(_guest(), scw_id):
             raise ValueError(f"Unknown SCW specification: {scw_id}")
 
         # Authorized as a write before this handler ran; see `_drift_capability`.
