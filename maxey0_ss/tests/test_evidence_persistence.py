@@ -261,3 +261,44 @@ def test_concurrent_records_keep_one_chain_on_disk(tmp_path):
     assert AttestationLog.verify_records(log.export()).ok
     reloaded = AttestationLog(path=path)
     assert len(reloaded) == 200 and reloaded.head == log.head
+
+
+def test_concurrent_tool_calls_through_the_surface_keep_one_chain(tmp_path, monkeypatch):
+    """The server's own execution path, not a bare log: tool handlers on threads.
+
+    Drift anchors and measurements are attested, and the HTTP app runs tool
+    handlers on a thread pool, so this is the path production traffic takes.
+    """
+    import threading
+
+    from maxey0_ss.containment.attestation import AttestationLog
+    from maxey0_ss.mcp_surface import build_surface
+
+    path = tmp_path / "attestations.jsonl"
+    monkeypatch.setenv("MAXEY0_ATTESTATION_PATH", str(path))
+    surface = build_surface()
+    tools = {t.name: t.handler for t in surface.tools}
+    tools["maxey0-ss.scw.create"]({"scw_id": "SCW1", "task": "concurrency"})
+    tools["maxey0-ss.scw.drift"]({"scw_id": "SCW1", "vector": [0.1, 0.2, 0.3], "anchor": True})
+    start = threading.Barrier(8)
+
+    def caller(n):
+        start.wait()
+        for i in range(10):
+            tools["maxey0-ss.scw.drift"]({"scw_id": "SCW1", "vector": [0.1, 0.2 + i / 100, 0.3 + n / 100]})
+
+    threads = [threading.Thread(target=caller, args=(n,)) for n in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    log = surface.system.context.isolation.log
+    exported = log.export()
+    assert len(exported) >= 81
+    assert len({r["prev_digest"] for r in exported}) == len(exported), "duplicate predecessor"
+    assert AttestationLog.verify_records(exported).ok
+    lines = path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == len(exported)
+    reloaded = AttestationLog(path=path)
+    assert reloaded.head == log.head and len(reloaded) == len(log)

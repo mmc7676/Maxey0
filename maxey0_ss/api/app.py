@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import contextlib
+import os
+import re
 from collections.abc import AsyncIterator
 
 from fastapi import FastAPI, HTTPException, Request
@@ -17,7 +19,7 @@ from ..host_window import HostWindowObserver
 from ..context.service import SpecificationExists
 from ..semantic.runtime import UnanchoredWindow
 from ..scw_deployer import deploy_default_scw
-from ..mcp_2026 import build_router
+from ..mcp_2026 import MCP_VERSION, build_router
 from ..mcp_session_server import build_session_manager
 from ..ratelimit import RateLimitMiddleware
 from ..auth.policy import (
@@ -118,6 +120,20 @@ def _required_capability(method: str, path: str) -> str | None:
     if path.startswith("/v1/mcp/delivery/") and method == "POST":
         return SCW_CREATE
     return None
+
+
+_BUILD_ID = re.compile(r"[0-9A-Za-z._+-]{1,64}")
+
+
+def build_id() -> str | None:
+    """`MAXEY0_BUILD_ID`, if it is a plain identifier; otherwise nothing.
+
+    Published on the unauthenticated /health, so anything that is not a short
+    token of safe characters -- a path, a URL, a sentence -- is dropped rather
+    than echoed.
+    """
+    raw = os.environ.get("MAXEY0_BUILD_ID", "").strip()
+    return raw if _BUILD_ID.fullmatch(raw) else None
 
 
 def create_app(system: SuperSpaceSystem | None = None) -> FastAPI:
@@ -224,7 +240,15 @@ def create_app(system: SuperSpaceSystem | None = None) -> FastAPI:
 
     @app.get("/health")
     def health():
-        return {"ok": True, "service": "maxey0-ss"}
+        # Identifies what software is answering -- version, protocol and, when
+        # the operator sets MAXEY0_BUILD_ID (a commit SHA, say), the build --
+        # and nothing about the machine or network it runs on.
+        body = {"ok": True, "service": "maxey0-ss", "version": __version__,
+                "mcp_protocol": MCP_VERSION}
+        build = build_id()
+        if build:
+            body["build"] = build
+        return body
 
     # agent-card.json is the path A2A clients look for; the two maxey0-*
     # names are kept for callers that already use them.

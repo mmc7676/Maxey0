@@ -56,8 +56,8 @@ AUTHOR = {"name": "mmc7676", "url": "https://github.com/mmc7676"}
 #: `workers/mcp-edge/wrangler.jsonc`), fronting a Python origin over a
 #: Cloudflare Tunnel. It resolves, and the edge serves the full 2026-07-28
 #: metadata surface. Tool execution reaches the origin only while that origin
-#: is up — it is a laptop process, so when it is down the host still resolves
-#: and metadata still answers but `tools/call` returns -32011 / 502.
+#: is up; when it is down the host still resolves and metadata still answers,
+#: but `tools/call` returns -32011 / 502.
 #:
 #: Attaching the Custom Domain is what retired `maxey0-ss-mcp.maxey0.workers.dev`:
 #: Cloudflare disables the workers.dev route once a custom domain is attached,

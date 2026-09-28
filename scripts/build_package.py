@@ -245,8 +245,9 @@ def check_manifests() -> list[str]:
         if not pyproject.exists():
             problems.append("manifest.json declares server.type 'uv' but "
                             "pyproject.toml is missing")
-        elif f'version = "{version}"' not in pyproject.read_text(encoding="utf-8"):
-            problems.append(f"pyproject.toml's version does not say {version!r}")
+        elif 'attr = "maxey0_ss.__version__"' not in pyproject.read_text(encoding="utf-8"):
+            problems.append("pyproject.toml must derive its version from "
+                            "maxey0_ss.__version__")
         for forbidden in ("server/lib", "server/venv"):
             if (ROOT / forbidden).exists():
                 problems.append(f"{forbidden}/ exists but the UV runtime "

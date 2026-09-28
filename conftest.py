@@ -8,7 +8,7 @@ this checkout at a live deployment — `MAXEY0_PUBLIC=1`, `MAXEY0_AUTH_MODE=bear
 a real `MAXEY0_MCP_TOKENS`, the cache switched off — the suite inherits it and
 tests that assert the trusted-local defaults fail, not because the code changed
 but because the machine did. On a clean checkout there is no `.env` and nothing
-leaks, so the failures appear only on the maintainer's own box and vanish in CI,
+leaks, so the failures appear only on a developer's own machine and vanish in CI,
 which is the worst place for a failure to live.
 
 So every variable this project's own `.env` would inject is removed for the

@@ -4,7 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "maxey0"
-version = "0.3.2"
+# The version is read from `maxey0_ss.__version__`, the one literal in the
+# tree, so the distribution cannot disagree with what the server reports.
+dynamic = ["version"]
 description = "Structured Context Windows for AI agents: partition what each agent can see, gate what it can do, and keep a verifiable record of both."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -67,6 +69,9 @@ maxey0-verify = "maxey0_ss.containment.verify_cli:main"
 # nothing — which is what made `python -m maxey0_ss...` fail outside the repo.
 # `maxey0` is the short import name; `maxey0_ss` is the implementation. Each is
 # named exactly, because a bare "maxey0*" would also match "maxey0_ss".
+[tool.setuptools.dynamic]
+version = { attr = "maxey0_ss.__version__" }
+
 [tool.setuptools.packages.find]
 include = ["maxey0", "maxey0.*", "maxey0_ss", "maxey0_ss.*"]
 

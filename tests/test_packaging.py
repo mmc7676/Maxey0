@@ -77,7 +77,7 @@ class TestNeverPackage(unittest.TestCase):
 
     def test_ordinary_source_is_not_refused(self):
         for rel in ("maxey0_ss/mcp_surface.py", "README.md",
-                    "config/credentials.example.json", "fly.toml"):
+                    "config/credentials.example.json", "Dockerfile"):
             with self.subTest(rel=rel):
                 self.assertIsNone(never_package(rel))
 

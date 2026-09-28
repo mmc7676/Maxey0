@@ -862,8 +862,7 @@ An honest list. Details are in `docs/AUTHORIZATION.md` and `docs/VERIFICATION.md
 - **Security gaps.** No OAuth sign-in for MCP clients, and OIDC has not been run
   against a real identity provider. No per-tenant isolation. No independent
   security audit. Redaction is pattern-based, so a secret in an unrecognized
-  shape can still be written. No secrets manager unless the host provides one
-  (for example, Fly secrets). Tokens rotate without a restart only when they
+  shape can still be written. No secrets manager unless the host provides one. Tokens rotate without a restart only when they
   are in `MAXEY0_MCP_TOKEN_HASHES_FILE`.
 
 ---
@@ -956,24 +955,33 @@ with the `cryptography` package). The role comes from the claim named in
 `MAXEY0_OIDC_ROLE_CLAIM`. Tokens must be obtained outside Maxey0; there is no
 OAuth sign-in flow for MCP clients.
 
-**Hosting.** `Dockerfile`, `fly.toml` and `deploy/entrypoint.sh` prepare a
-Fly.io deployment whose entrypoint refuses to start unless the server is
-public and authenticated and, with the tunnel on, bound to loopback. They have
-never been built or deployed, and `fly.toml` ships with `CHANGE-ME` values you
-must replace. See `docs/FLY_DEPLOYMENT.md`.
+**Container image.** `Dockerfile` and `deploy/entrypoint.sh` build an origin
+image that runs the server and, when `TUNNEL_TOKEN` is set, a Cloudflare Tunnel
+connector beside it. The entrypoint refuses to start unless the server is
+public and authenticated and, with the tunnel on, bound to loopback.
 
 ---
 
 ## Hosted endpoint
 
-`mcp.maxey0.com` is the maintainer's own running instance, not a service you can
-sign up for. Every tool call needs a token that the maintainer issues; minting
-your own token does nothing there. Stateless clients use
-`https://mcp.maxey0.com/mcp`. Claude Code and Claude Desktop use
-`https://origin.maxey0.com/mcp/session` with `Authorization: Bearer <token>`. The
-origin runs on a development machine, not an isolated host. These statements
-describe the maintainer's deployment; nothing in this repository's tests checks
-them. For your own use, [run your own server](#running-your-own-server).
+`mcp.maxey0.com` is the project's hosted instance, not a service you can sign
+up for. Every tool call needs a token that the project issues; minting your own
+token does nothing there. Stateless clients use `https://mcp.maxey0.com/mcp`.
+Session clients (Claude Code, Claude Desktop) use
+`https://origin.maxey0.com/mcp/session` with `Authorization: Bearer <token>`.
+`GET https://mcp.maxey0.com/health` reports the running version. For your own
+use, [run your own server](#running-your-own-server).
+
+The hosted endpoint and `from maxey0 import scw` are separate. `maxey0.scw` runs
+an in-process runtime inside your Python program; it never connects to
+`mcp.maxey0.com`, and windows it creates exist only in that process.
+
+`/mcp` is an MCP Streamable HTTP endpoint: it answers `POST`, and a browser
+`GET` gets `405` with a pointer to `/health`. To check a deployment end to end
+(health, then create, start, anchor, measure, describe and close one SCW through
+the public endpoint), run `python scripts/smoke_production.py <base URL>` with a
+builder or admin token in `MAXEY0_SMOKE_TOKEN`. Each failing step is labeled
+by layer: network, routing, auth, authz, protocol, application or version.
 
 ---
 
@@ -1011,8 +1019,7 @@ than described, and its surface counts are checked against the code by a test.
 | [LEXICON](docs/LEXICON.md) | One name per thing |
 | [MCP_2026_07_28](docs/MCP_2026_07_28.md) | The stateless protocol surface |
 | [CACHING](docs/CACHING.md) | What is cached, and what never is |
-| [FLY_DEPLOYMENT](docs/FLY_DEPLOYMENT.md) | The prepared, undeployed Fly.io setup |
-| [RUNBOOK](docs/RUNBOOK.md) | Running one loop in Claude Code, and restarting the maintainer's origin |
+| [RUNBOOK](docs/RUNBOOK.md) | Running one loop in Claude Code |
 | [ROADMAP](docs/ROADMAP.md) | Planned work, and what is not planned |
 
 ---

@@ -1,12 +1,11 @@
 # pip constraints for the origin image (Dockerfile: `pip install -c`).
 #
-# Frozen from the maintainer's working venv (Python 3.11.9, the release/0.3.0
-# tree whose test suite passes) with `pip freeze --exclude-editable`, minus the
+# Frozen from a working venv (Python 3.11.9, a tree whose test suite passes) with `pip freeze --exclude-editable`, minus the
 # Windows-only pywin32 and colorama. A constraints file pins a version only
 # for a package that something actually asks for, so the test-only pins below
 # (pytest, pluggy, ...) are inert in the image rather than installed.
 #
-# Without it, every `fly deploy` resolves fastapi/starlette/mcp afresh, and the
+# Without it, every image build resolves fastapi/starlette/mcp afresh, and the
 # image that serves production is built from a dependency set nobody tested.
 # Regenerate after changing the venv, and run the suite before committing.
 annotated-doc==0.0.5

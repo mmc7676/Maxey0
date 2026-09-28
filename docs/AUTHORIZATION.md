@@ -92,9 +92,8 @@ Tokens have to come from out of band.
 
 With `MAXEY0_PUBLIC` set, the observe/gate bridge tools that read the host's
 own journals return `available: false`. The ones that write gate policy
-refuse. `MAXEY0_PUBLIC_HOST_PLANES=1` opts back in. Before this change, the
-shared operator token could read the laptop's `~/.scw/gate.jsonl` over the
-internet.
+refuse. `MAXEY0_PUBLIC_HOST_PLANES=1` opts back in; without it, a public
+server never exposes the journals of the machine it runs on.
 
 `scw.drift` with `anchor=true` requires `scw.admit`; measuring stays on
 `scw.read`.
@@ -131,7 +130,7 @@ the same file. They are still not shared across hosts.
 | `MAXEY0_ATTESTATION_KEY_FILE` | Adds an HMAC-SHA256 signature to each attestation record. It proves integrity to whoever holds the key, not public authorship. |
 | `MAXEY0_ROOT_REACH`, `MAXEY0_MAX_DEPTH`, `MAXEY0_MAX_CHILDREN` | Bound the root window SCW0: a comma-separated list of SCW IDs it may reach, the maximum depth and the maximum number of children. Unset means unbounded. A malformed value refuses to start. `maxey0-ss.deployment` reports them under `root_bounds`. |
 
-### Live posture (measured 2026-09-23 against mcp.maxey0.com and origin.maxey0.com)
+### Live posture (measured 2026-09-23 against the hosted edge and origin)
 
 | Call | Result |
 |---|---|
@@ -157,12 +156,9 @@ sending a malformed SCW address gets `-32002` (capability denied), never
 
 - MCP-client OAuth (see the oidc section). No identity provider is configured.
 - Per-tenant isolation. Roles are global; there is no tenant dimension.
-- Isolation of the origin host. It still runs on a personal development
-  laptop. Fly.io artifacts exist (`docs/FLY_DEPLOYMENT.md`), but the image has
-  never been built and nothing has been deployed.
 - A limiter shared across hosts. `MAXEY0_RATE_LIMIT_STORE=sqlite:<path>`
   shares limits among processes on one host only.
-- Secrets manager, unless the host provides one (for example, Fly secrets).
+- Secrets manager, unless the host provides one.
   The token hash lives in `.env` or `MAXEY0_MCP_TOKEN_HASHES_FILE`, and the
   hash is not sensitive. The plaintext token lives only on the client side.
 - A security audit. One adversarial review pass ran; its 7 reproduced

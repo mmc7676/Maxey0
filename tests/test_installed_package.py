@@ -320,7 +320,7 @@ def test_the_http_app_and_every_console_entry_point_load(installed):
 
 
 def test_a_checkout_resolves_everything_from_the_source_tree():
-    """The repository, editable installs and the Fly image behave as before."""
+    """The repository, editable installs and the container image behave as before."""
     assert settings.SOURCE_ROOT == ROOT
     assert settings.CONFIG_ROOT == ROOT
     assert settings.DEFAULT_ENV_FILE == ROOT / ".env"

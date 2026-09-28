@@ -1,11 +1,11 @@
 #!/bin/sh
-# Supervisor for the Fly.io origin image. Runs under tini (see the Dockerfile).
+# Supervisor for the origin container image. Runs under tini (see the Dockerfile).
 #
 # Starts the Maxey0-SuperSpace origin on 127.0.0.1, waits until it answers
 # /health, then starts cloudflared, which dials out to Cloudflare and is the
-# only way traffic reaches the origin (fly.toml declares no public service).
+# only way traffic reaches the origin (the image exposes no port).
 # If either process exits, the other is stopped and this script exits
-# non-zero, so Fly restarts the whole Machine rather than leaving a tunnel
+# non-zero, so the host restarts the whole container rather than leaving a tunnel
 # that forwards to nothing, or an origin nobody can reach.
 #
 # It refuses to start at all -- before any process is launched -- when the
@@ -14,13 +14,13 @@
 # MAXEY0_AUTH_MODE=disabled and MAXEY0_PUBLIC unset answers every caller as
 # admin, and the edge forwards `authorization` without checking it.
 #
-# Privileges: this script starts as root for exactly two reasons -- a Fly
-# volume is mounted root-owned, so the state directory on it has to be handed
+# Privileges: this script starts as root for exactly two reasons -- a state
+# volume may be mounted root-owned, so the state directory on it has to be handed
 # to the origin's user, and the two workloads run as two different users.
 # Neither workload ever runs as root. The origin (user maxey0) cannot read
 # cloudflared's environment in /proc, and so cannot read the tunnel token
-# that would let whoever holds it attach a rogue connector to
-# origin.maxey0.com.
+# that would let whoever holds it attach a rogue connector to the origin
+# hostname.
 set -eu
 
 ORIGIN_USER=maxey0
@@ -28,11 +28,11 @@ TUNNEL_USER=cloudflared
 PORT="${MAXEY0_PORT:-8765}"
 TUNNEL="${MAXEY0_TUNNEL:-on}"
 STATE_DIR="${SCW_HOME:-/data/scw}"
-# ~60s: the origin builds its whole MCP surface at import, and a shared-cpu-1x
-# Machine is slower at that than a laptop.
+# ~60s: the origin builds its whole MCP surface at import, which is slow on a
+# small shared-CPU container.
 HEALTH_ATTEMPTS=60
-# Shutdown budget, which must fit fly.toml's kill_timeout (40 s) or Fly KILLs
-# the Machine mid-drain: cloudflared gets TUNNEL_GRACE_S to finish in-flight
+# Shutdown budget, which must fit the host's stop timeout (set it to 40 s or
+# more) or the container is killed mid-drain: cloudflared gets TUNNEL_GRACE_S to finish in-flight
 # requests and TUNNEL_STOP_S in all before it is killed, then the origin gets
 # ORIGIN_STOP_S. 25 + 10 leaves 5 s of slack.
 TUNNEL_GRACE_S=20
@@ -62,9 +62,9 @@ esac
 
 case "$TUNNEL" in
     on)
-        [ -n "${TUNNEL_TOKEN:-}" ] || refuse "TUNNEL_TOKEN is not set. Set it with 'fly secrets set TUNNEL_TOKEN=...' (docs/FLY_DEPLOYMENT.md), or MAXEY0_TUNNEL=off for a local smoke test."
+        [ -n "${TUNNEL_TOKEN:-}" ] || refuse "TUNNEL_TOKEN is not set. Provide the tunnel token from the host's secret store, or MAXEY0_TUNNEL=off for a local smoke test."
         # The tunnel is the only ingress. A wider bind would put the origin on
-        # Fly's private network too, reachable around Cloudflare.
+        # the host's private network too, reachable around Cloudflare.
         case "${MAXEY0_HOST:-127.0.0.1}" in
             127.0.0.1 | localhost | ::1) ;;
             *) refuse "MAXEY0_HOST must be a loopback address when the tunnel is on (got '${MAXEY0_HOST}')." ;;
@@ -79,7 +79,7 @@ if [ "$(lower "${MAXEY0_AUTH_MODE}")" = bearer ] \
     log "warning: no bearer credential is configured, so every call that needs one will get 401."
 fi
 if [ -n "${MAXEY0_MCP_TOKENS:-}" ] && [ "$TUNNEL" = on ]; then
-    log "warning: MAXEY0_MCP_TOKENS holds plaintext bearer tokens; docs/FLY_DEPLOYMENT.md uses MAXEY0_MCP_TOKEN_HASHES instead."
+    log "warning: MAXEY0_MCP_TOKENS holds plaintext bearer tokens; use MAXEY0_MCP_TOKEN_HASHES instead."
 fi
 
 # --- Privileges ---------------------------------------------------------------

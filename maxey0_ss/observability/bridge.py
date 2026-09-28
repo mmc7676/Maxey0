@@ -19,11 +19,11 @@ because it writes.)
 
 Nearly every one of these tools answers from files on the machine the origin
 runs on: the Context plane's ledger, the Gate's journal, and the Gate policy
-file the host's own gate hook enforces from. Serving stdio on a laptop, that is
-the point. Serving a public deployment from that same laptop, it handed the
-maintainer's journals -- recent agent tool calls, ledger records, absolute
-local paths -- to anyone holding the shared operator token, and let an admin
-token rewrite the policy a local session enforces. So on a public deployment
+file the host's own gate hook enforces from. Serving stdio to a local host,
+that is the point. Serving a public deployment from the same machine, it would
+hand that machine's journals -- recent agent tool calls, ledger records,
+absolute local paths -- to anyone holding a shared operator token, and let an
+admin token rewrite the policy a local session enforces. So on a public deployment
 those tools stay listed and stop touching the host unless
 `MAXEY0_PUBLIC_HOST_PLANES` opts in; see `host_planes_enabled`.
 """
@@ -40,8 +40,8 @@ from ..auth.policy import GATE_WRITE, OBSERVE_READ, is_public_deployment
 from ..mcp_2026 import Tool
 
 #: Where `server/` is looked for, in priority order. The source tree beside the
-#: package comes first, so a checkout, an editable install and the Fly image
-#: (/app) import exactly the tree they sit in, as they always have. An
+#: package comes first, so a checkout, an editable install and the container
+#: image (/app) import exactly the tree they sit in, as they always have. An
 #: installed wheel has no source tree -- the package's parent is site-packages
 #: -- so it uses the copy setup.py writes into the package at build time.
 _SOURCE_ROOT = Path(__file__).resolve().parents[2]

@@ -1,4 +1,4 @@
-# Build context for the origin image (Dockerfile, deployed by fly.toml).
+# Build context for the origin container image (Dockerfile).
 #
 # The Dockerfile copies named paths only, never `COPY . .`, so this file is the
 # second line of defense rather than the only one. It still matters: anything
@@ -18,12 +18,11 @@
 config/credentials.json
 **/credentials.json
 # cloudflared's locally-managed tunnel credentials and origin certificate. The
-# Fly Machine uses a remotely-managed tunnel token supplied by `fly secrets`.
+# container uses a remotely-managed tunnel token supplied at runtime.
 **/.cloudflared/
 **/cert.pem
 *.pem
 *.key
-fly.secrets*
 
 # --- Version control, local environments, caches. --------------------------
 .git/

@@ -96,7 +96,8 @@ class TestOneIdentityAcrossEveryManifest(unittest.TestCase):
     def test_pyproject_publishes_the_distribution_id(self):
         data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
         self.assertEqual(data["project"]["name"], reg.DISTRIBUTION_ID)
-        self.assertEqual(data["project"]["version"], __version__)
+        self.assertEqual(data["tool"]["setuptools"]["dynamic"]["version"],
+                         {"attr": "maxey0_ss.__version__"})
 
     def test_every_generated_json_manifest_carries_this_version(self):
         for path in (ROOT / "distributions").rglob("*.json"):

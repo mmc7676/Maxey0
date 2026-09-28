@@ -1,12 +1,12 @@
-"""The Fly.io deployment artifacts, checked without Docker or flyctl.
+"""The origin container artifacts, checked without Docker.
 
-`Dockerfile`, `.dockerignore`, `fly.toml` and `deploy/entrypoint.sh` put the
-origin on the internet. Every property that makes that safe is a line in one of
-them that a later edit can drop without any other test noticing: a `.env`
-admitted to the build context is baked into an image layer and then loaded as
-configuration by `settings.py`; a `[[services]]` block gives the Machine a
-public door around Cloudflare; a CRLF entrypoint fails only after the deploy
-has replaced the running Machine. So each one is asserted here, and the
+`Dockerfile`, `.dockerignore` and `deploy/entrypoint.sh` put the origin on the
+internet behind a Cloudflare Tunnel. Every property that makes that safe is a
+line in one of them that a later edit can drop without any other test
+noticing: a `.env` admitted to the build context is baked into an image layer
+and then loaded as configuration by `settings.py`; an EXPOSEd port gives the
+container a door around Cloudflare; a CRLF entrypoint fails only after the
+deploy has replaced the running container. So each one is asserted here, and the
 entrypoint's refusals are executed rather than read.
 """
 
@@ -27,13 +27,11 @@ from _env import ROOT  # noqa: E402
 
 DOCKERFILE = ROOT / "Dockerfile"
 DOCKERIGNORE = ROOT / ".dockerignore"
-FLY_TOML = ROOT / "fly.toml"
 ENTRYPOINT = ROOT / "deploy" / "entrypoint.sh"
 CONSTRAINTS = ROOT / "deploy" / "constraints.txt"
-RUNBOOK = ROOT / "docs" / "FLY_DEPLOYMENT.md"
 
 #: Variable names that carry credentials. None may have a value in a file that
-#: is committed; all of them arrive through `fly secrets`.
+#: is committed; all of them arrive from the host's secret store at runtime.
 SECRET_NAME = re.compile(r"TOKEN|SECRET|PASSWORD|API_KEY|CREDENTIAL", re.IGNORECASE)
 
 
@@ -194,14 +192,6 @@ class TestDockerfile(unittest.TestCase):
         self.assertEqual(env.get("PYTHONDONTWRITEBYTECODE"), "1")
         self.assertEqual(env.get("PYTHONUNBUFFERED"), "1")
 
-    def test_defaults_agree_with_fly_toml(self):
-        """Two copies of the same defaults; they may not drift apart."""
-        env = self._env_defaults()
-        fly_env = tomllib.loads(FLY_TOML.read_text(encoding="utf-8"))["env"]
-        for key, value in fly_env.items():
-            with self.subTest(key=key):
-                self.assertEqual(env.get(key), value)
-
     def test_workloads_run_as_dedicated_unprivileged_users(self):
         """No USER line: the entrypoint drops root itself, per process.
 
@@ -264,55 +254,6 @@ class TestDockerfile(unittest.TestCase):
             sources["mcp_apps/super_space_react/dist/mcp-app.html"],
             ["workers/mcp-edge/src/generated/super-space.html"],
         )
-
-
-# ---------------------------------------------------------------------------
-# fly.toml
-# ---------------------------------------------------------------------------
-
-
-class TestFlyToml(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.config = tomllib.loads(FLY_TOML.read_text(encoding="utf-8"))
-
-    def test_no_public_service(self):
-        """The tunnel is the only ingress."""
-        self.assertNotIn("http_service", self.config)
-        self.assertNotIn("services", self.config)
-
-    def test_state_is_on_the_volume(self):
-        mounts = self.config["mounts"]
-        mounts = mounts if isinstance(mounts, list) else [mounts]
-        self.assertEqual(len(mounts), 1)
-        self.assertEqual(mounts[0]["source"], "maxey0_data")
-        self.assertEqual(mounts[0]["destination"], "/data")
-        self.assertTrue(self.config["env"]["SCW_HOME"].startswith("/data/"))
-
-    def test_env_is_public_and_authenticated(self):
-        env = self.config["env"]
-        self.assertIn(env["MAXEY0_PUBLIC"].strip().lower(), {"1", "true", "yes", "on"})
-        self.assertIn(env["MAXEY0_AUTH_MODE"].strip().lower(), {"bearer", "oidc"})
-        self.assertIn(env["MAXEY0_HOST"], {"127.0.0.1", "localhost", "::1"})
-
-    def test_no_secret_is_configured_in_the_file(self):
-        for name in self.config.get("env", {}):
-            with self.subTest(name=name):
-                self.assertIsNone(SECRET_NAME.search(name),
-                                  f"{name} is a secret; use `fly secrets set`")
-        self.assertNotIn("MAXEY0_PUBLIC_HOST_PLANES", self.config.get("env", {}))
-
-    def test_one_machine_replaced_in_place(self):
-        """A second Machine is a second tunnel connector for the same hostname."""
-        self.assertNotIn(self.config.get("deploy", {}).get("strategy"), {"bluegreen", "canary"})
-        self.assertEqual(len(self.config["vm"]), 1)
-        self.assertEqual(self.config["vm"][0]["size"], "shared-cpu-1x")
-        self.assertEqual(self.config["vm"][0]["memory"], "512mb")
-        self.assertEqual([r["policy"] for r in self.config["restart"]], ["always"])
-
-    def test_builds_this_dockerfile(self):
-        self.assertEqual(self.config["build"]["dockerfile"], "Dockerfile")
 
 
 # ---------------------------------------------------------------------------
@@ -380,7 +321,7 @@ class TestEntrypointText(unittest.TestCase):
             "HOME": "/root", "TUNNEL_TOKEN": "tok", "TUNNEL_LOGLEVEL": "info",
             "HTTPS_PROXY": "http://proxy:3128", "no_proxy": "localhost",
             "ANTHROPIC_API_KEY": "sk-leak", "OPENAI_API_KEY": "sk-leak2",
-            "MAXEY0_MCP_TOKENS": "t:admin", "FLY_API_TOKEN": "fly-leak",
+            "MAXEY0_MCP_TOKENS": "t:admin", "PLATFORM_API_TOKEN": "platform-leak",
         })
         self.assertEqual(result.returncode, 0, result.stderr)
         names = set(re.findall(r"(?m)^([A-Za-z_][A-Za-z0-9_]*)=", result.stdout))
@@ -391,7 +332,7 @@ class TestEntrypointText(unittest.TestCase):
         # The shell may export a few of its own (PWD, SHLVL, _); nothing given.
         self.assertFalse({n for n in names if n not in allowed and not n.startswith("TUNNEL_")}
                          & {"ANTHROPIC_API_KEY", "OPENAI_API_KEY", "MAXEY0_MCP_TOKENS",
-                            "FLY_API_TOKEN"})
+                            "PLATFORM_API_TOKEN"})
         self.assertNotIn("leak", result.stdout)
 
     def test_the_tunnel_is_stopped_before_the_origin(self):
@@ -421,7 +362,8 @@ cat "$log"
     def test_the_shutdown_budget_fits_the_kill_timeout(self):
         budget = {k: int(v) for k, v in re.findall(
             r"(?m)^(TUNNEL_GRACE_S|TUNNEL_STOP_S|ORIGIN_STOP_S)=(\d+)$", self.text)}
-        kill_timeout = tomllib.loads(FLY_TOML.read_text(encoding="utf-8"))["kill_timeout"]
+        # The host's stop timeout, which deploy/entrypoint.sh documents as 40 s.
+        kill_timeout = 40
         self.assertLess(budget["TUNNEL_GRACE_S"], budget["TUNNEL_STOP_S"])
         self.assertLess(budget["TUNNEL_STOP_S"] + budget["ORIGIN_STOP_S"], kill_timeout)
         self.assertIn('--grace-period "${TUNNEL_GRACE_S}s"', self.text)
@@ -633,15 +575,9 @@ class TestNoCredentialShapes(unittest.TestCase):
         sys.path.insert(0, str(ROOT / "scripts"))
         from _packaging import scan_for_secrets
 
-        files = [DOCKERFILE, DOCKERIGNORE, FLY_TOML, ENTRYPOINT, CONSTRAINTS, RUNBOOK,
+        files = [DOCKERFILE, DOCKERIGNORE, ENTRYPOINT, CONSTRAINTS,
                  pathlib.Path(__file__).resolve()]
         self.assertEqual(scan_for_secrets(files, ROOT), [])
-
-    def test_fly_toml_has_no_secret_shaped_value(self):
-        text = FLY_TOML.read_text(encoding="utf-8")
-        self.assertNotRegex(text, r"\beyJ[A-Za-z0-9_\-]{10,}")
-        self.assertNotRegex(text, r"sha256:[0-9a-f]{64}")
-        self.assertNotRegex(text, r"(?m)^\s*(TUNNEL_TOKEN|MAXEY0_MCP_TOKENS?|MAXEY0_MCP_TOKEN_HASHES)\s*=")
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -1,11 +1,10 @@
 """A public deployment does not serve the host's journals unless it opts in.
 
-Found live: an origin running on the maintainer's laptop, behind a tunnel with
-MAXEY0_PUBLIC=1 and bearer auth, answered `observe.gate_activity` with the last
-hundred entries of the laptop's Gate journal and `observe.events` with a
-1,216-record ledger, absolute local paths included -- to the shared operator
-token. `gate.set_mode` writes the same fallback policy file the laptop's own
-gate hook enforces from.
+Without this rule, a public origin behind a tunnel with MAXEY0_PUBLIC=1 and
+bearer auth answered `observe.gate_activity` with the last hundred entries of
+its host's Gate journal and `observe.events` with the host's ledger, absolute
+local paths included -- to a shared operator token. `gate.set_mode` writes the
+same fallback policy file the host's own gate hook enforces from.
 
 Every test here points the plane at `tmp_path` (SCW_HOME, SCW_EVENT_LOG,
 MAXEY0_GATE_LOG, MAXEY0_GATE_STATE), so nothing reads or writes the real

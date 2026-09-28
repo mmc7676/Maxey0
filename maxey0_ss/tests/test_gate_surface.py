@@ -9,7 +9,7 @@ byte-identical copies.
 Every call below runs against a throwaway SCW home. Until 0.3.0 it did not:
 `observe_gate_mode('observe')`, then `('enforce')`, then
 `observe_gate_policy('maker')` wrote the real `~/.scw/gate/policy-nosession.json`
--- the no-session fallback file the maintainer's own Claude Code gate hook
+-- the no-session fallback file the developer's own Claude Code gate hook
 enforces from. One test run left their gate forced to `enforce` with an empty
 `maker` scope declared, whatever they had configured before, and nothing
 reported it.
@@ -39,7 +39,7 @@ def _point_gate_at(mp: pytest.MonkeyPatch, home: pathlib.Path) -> None:
     reads SCW_EVENT_LOG. All of them fall back to `Path.home() / ".scw"`, so
     HOME and USERPROFILE (what `Path.home()` consults on POSIX and on Windows)
     are redirected too: a state path added later that forgets SCW_HOME still
-    lands here rather than in the maintainer's profile.
+    lands here rather than in the developer's profile.
 
     Each of those is resolved per call, not at import, which is why the
     redirect still holds when another test module imported

@@ -65,8 +65,7 @@ def build_session_manager(
     The session caps come from the surface's rate limiter. The SDK defaults
     are 10,000 sessions, 30 minutes idle and 4 MiB per request, and every open
     session holds a server task and its streams until it idles out: sized for
-    a server farm, not for the one shared-cpu, 512 MB Machine fly.toml
-    provisions. Which caps the installed SDK accepted is recorded on the
+    a server farm, not for a single small origin process. Which caps the installed SDK accepted is recorded on the
     limiter, so `auth.manifest` reports what was applied rather than what was
     asked for.
 

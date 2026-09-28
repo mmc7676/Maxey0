@@ -172,3 +172,25 @@ describe("/health states the edge's own auth posture", () => {
     expect(locked.cors_advertises_authorization).toBe(true);
   });
 });
+
+describe("/health and GET /mcp identify the service without internals", () => {
+  it("reports the version and a plain build id, and drops an unsafe one", async () => {
+    const ok = await worker.fetch(
+      new Request("https://mcp.example.test/health"), { MAXEY0_BUILD_ID: "8b105559" },
+    );
+    const body = await ok.json() as Record<string, unknown>;
+    expect(typeof body.version).toBe("string");
+    expect(body.build).toBe("8b105559");
+    const unsafe = await worker.fetch(
+      new Request("https://mcp.example.test/health"), { MAXEY0_BUILD_ID: "http://10.0.0.5/" },
+    );
+    expect((await unsafe.json() as Record<string, unknown>).build).toBeUndefined();
+  });
+
+  it("answers a browser GET on /mcp with 405 and where the probe is", async () => {
+    const res = await worker.fetch(new Request("https://mcp.example.test/mcp"), {});
+    expect(res.status).toBe(405);
+    const body = await res.json() as { error: { data: Record<string, string> } };
+    expect(body.error.data.health).toBe("/health");
+  });
+});

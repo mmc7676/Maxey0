@@ -56,8 +56,8 @@ from . import __version__ as SERVER_VERSION  # noqa: E402  (one literal)
 SUPER_SPACE_URI = "ui://maxey0-ss/super-space.html"
 
 #: Where the MCP App is looked for, in priority order. The source tree beside
-#: the package comes first, so a checkout, an editable install and the Fly
-#: image (which copies both files to /app/mcp_apps) serve exactly what they sit
+#: the package comes first, so a checkout, an editable install and the
+#: container image (which copies both files to /app/mcp_apps) serve exactly what they sit
 #: next to, as they always have. An installed wheel has no source tree -- the
 #: package's parent is site-packages -- so it serves the copy setup.py writes
 #: into the package at build time.

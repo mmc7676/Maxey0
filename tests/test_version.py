@@ -39,9 +39,16 @@ class TestOneVersionLiteral(unittest.TestCase):
         self.assertRegex(VERSION, r"^\d+\.\d+\.\d+(-[0-9A-Za-z.\-]+)?$")
         self.assertNotEqual(VERSION, "1.0.0")
 
-    def test_pyproject_agrees(self):
-        text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-        self.assertIn(f'version = "{VERSION}"', text)
+    def test_pyproject_derives_the_version_instead_of_declaring_it(self):
+        import tomllib
+
+        data = tomllib.loads((ROOT / "pyproject.toml").read_text(encoding="utf-8"))
+        self.assertNotIn("version", data["project"], "a second literal can drift")
+        self.assertIn("version", data["project"]["dynamic"])
+        self.assertEqual(
+            data["tool"]["setuptools"]["dynamic"]["version"],
+            {"attr": "maxey0_ss.__version__"},
+        )
 
     def test_every_json_manifest_agrees(self):
         for rel, path in (

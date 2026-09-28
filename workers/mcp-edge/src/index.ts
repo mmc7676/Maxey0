@@ -24,6 +24,8 @@ export interface Env {
    * means what it says. Unset is the safe default -- see `corsHeaders`.
    */
   MAXEY0_ALLOWED_ORIGINS?: string;
+  /** Optional build identifier reported by /health, e.g. the deployed commit SHA. */
+  MAXEY0_BUILD_ID?: string;
 }
 
 /** Every tool name the catalog declares. Built once per isolate. */
@@ -65,6 +67,12 @@ function json(
       ...extra,
     },
   });
+}
+
+/** `{build}` when MAXEY0_BUILD_ID is a plain identifier; otherwise nothing. */
+function buildId(env: Env): { build?: string } {
+  const raw = (env.MAXEY0_BUILD_ID ?? "").trim();
+  return /^[0-9A-Za-z._+-]{1,64}$/.test(raw) ? { build: raw } : {};
 }
 
 /** Headers every caller needs, whatever the origin policy. */
@@ -116,7 +124,7 @@ function isIpAddress(value: string): boolean {
  * documents that for a same-zone Worker subrequest the origin's
  * `CF-Connecting-IP` reflects the `x-real-ip` the Worker sets:
  * https://developers.cloudflare.com/fundamentals/reference/http-headers/#cf-connecting-ip-in-worker-subrequests
- * `mcp.maxey0.com` and `origin.maxey0.com` share the maxey0.com zone, which is
+ * The edge hostname and the origin hostname share one zone, which is
  * the case relied on here. Cross-zone, Cloudflare replaces the value with a
  * fixed Worker address and every caller lands in one limiter bucket, so an
  * origin moved to another zone needs this revisited, not only re-pointed.
@@ -455,6 +463,8 @@ export default {
       return json({
         ok: true,
         service: "maxey0-ss-edge",
+        version: catalog.serverVersion,
+        ...buildId(env),
         mcp_protocol: PROTOCOL,
         tools: catalog.tools.length,
         resources: catalog.resources.length,
@@ -488,7 +498,15 @@ export default {
 
     if (url.pathname === "/mcp") {
       if (request.method !== "POST") {
-        return json(err(null, -32600, "MCP endpoint accepts POST"), 405, { request, env });
+        // A browser GET lands here. 405 is the correct answer for an MCP
+        // Streamable HTTP endpoint; the body says where the status probe is.
+        return json(
+          err(null, -32600, "MCP endpoint accepts POST (Streamable HTTP)", {
+            endpoint: "/mcp", transport: "streamable-http", health: "/health",
+          }),
+          405,
+          { request, env },
+        );
       }
       return handleMcp(request, env);
     }

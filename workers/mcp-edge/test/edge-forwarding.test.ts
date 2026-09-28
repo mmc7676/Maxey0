@@ -151,7 +151,7 @@ describe("the origin's answer reaches the caller", () => {
         "Retry-After": "5",
         server: "uvicorn",
         "set-cookie": "session=abc",
-        "x-origin-internal": "fly-iad-1",
+        "x-origin-internal": "internal-host-1",
       },
     }));
     const res = await toolCall();

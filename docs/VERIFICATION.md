@@ -153,14 +153,11 @@ approach rather than a cleanup, and it has not been made.
   `workers.dev` route once a custom domain route is attached, confirmed via
   404), so the measurements above are historical and not reproducible against
   that host anymore.
-- **An isolated origin.** Tool execution is live, served through the named
-  tunnel `origin.maxey0.com` from a personal development laptop. The Fly.io
-  image (`docs/FLY_DEPLOYMENT.md`) has **never been built or deployed**:
-  Docker's backend failed to start here. Its entrypoint was run under `sh`
-  only.
+- **The container image.** `Dockerfile` has not been built in this
+  environment; its entrypoint was run under `sh` only.
 - **Per-client IPs for edge traffic: now verified.** On 2026-09-23, before
   the Worker set `x-real-ip`, a bad token sent directly to
-  `origin.maxey0.com` was not locked out by bad tokens sent through
+  the origin was not locked out by bad tokens sent through
   `mcp.maxey0.com`, so edge callers were not keyed by their own IP. After the
   Worker was deployed (`forwards_client_ip: true` on `/health`), the same
   test was repeated on 2026-09-24 with the auth-failure limit set to 3. Four
@@ -176,7 +173,7 @@ approach rather than a cleanup, and it has not been made.
   covered the SCW core, the tool surface and transports, the shipped plugins,
   and the web front ends. It confirmed 2 defects, both fixed: public
   `evidence.verify` returned an HTTP 500 on malformed records, and a
-  maintainer's absolute path shipped in every plugin, which the release
+  developer's absolute path shipped in every plugin, which the release
   scanner now refuses. That pass was shallow: few tool calls per area.
   A third, deep pass split the SCW core and the shipped plugins into six
   narrow areas (containment, context, semantic runtime, Studio, gate hooks,

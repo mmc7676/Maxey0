@@ -17,8 +17,7 @@ What this module owns:
 
 Scope is one process. Buckets live in memory and reset on restart. That is the
 deployment's limit only because the origin is one uvicorn process on one
-Machine (fly.toml pins exactly one, for the same in-memory reason); a second
-worker or Machine would multiply every number here, and the manifest says
+host; a second worker or host would multiply every number here, and the manifest says
 "per-process" so nobody reads it as a global guarantee.
 
 `MAXEY0_RATE_LIMIT_STORE=sqlite:<path>` swaps the in-memory buckets for
@@ -526,7 +525,7 @@ class RateLimiter:
         `proxy_headers=False` stops uvicorn rewriting the client, and also
         stops it setting the scheme. Behind the tunnel every request then looks
         like plain http, and the router's trailing-slash redirect -- which is
-        how `https://origin.maxey0.com/mcp/session` reaches the session mount
+        how `/mcp/session` (no trailing slash) reaches the session mount
         -- would send session clients to an http:// Location. Same peers, same
         values uvicorn accepted.
         """

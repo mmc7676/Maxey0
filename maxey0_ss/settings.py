@@ -17,7 +17,7 @@ place that flips when a real backend arrives.
 
 Where `.env` and `config/credentials.json` are read from
 --------------------------------------------------------
-From a source tree -- a checkout, an editable install, or the Fly image, which
+From a source tree -- a checkout, an editable install, or the container image, which
 lays the tree out under /app -- both are read from the repository root, as they
 always were, so a server started from any directory still finds the checkout's
 configuration.
@@ -51,7 +51,7 @@ _DISTRIBUTION_NAME = re.compile(r'(?m)^name\s*=\s*"maxey0"\s*$')
 def _is_source_tree(root: Path) -> bool:
     """Whether `root` is this project's source tree rather than site-packages.
 
-    A checkout, an editable install and the Fly image (whose Dockerfile copies
+    A checkout, an editable install and the container image (whose Dockerfile copies
     pyproject.toml into /app beside the package) all keep this project's
     pyproject.toml next to `maxey0_ss/`; an installed wheel does not. The
     distribution name is checked rather than the file's mere presence, so a

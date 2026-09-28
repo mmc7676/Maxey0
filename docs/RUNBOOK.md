@@ -1,12 +1,12 @@
 # Runbook: run, monitor, log, and report one Maxey0 agentic loop
 
-Start-to-finish procedure, from a cold laptop to a reported result.
+Start-to-finish procedure, from a fresh session to a reported result.
 
 ---
 
 ## 0. Power on and get a terminal open
 
-Boot the laptop, log in, open a terminal (PowerShell or Git Bash).
+Open a terminal (PowerShell or Git Bash).
 
 ## 1. Get the repository, then start Claude Code
 
@@ -230,29 +230,3 @@ harness. It is not part of the product and ships as a separate plugin:
    leakage and integrity as separate measured fields, with a `residue` section
    for anything it could not measure. Add a spec to `experiments/specs/` to run
    a different workload.
-
----
-
-## Restarting the origin
-
-Maintainer operations for the hosted instance behind `mcp.maxey0.com`. These
-steps need the maintainer's Cloudflare tunnel credentials, so they do not apply
-to anyone running their own server. They are recorded from the maintainer's
-setup; nothing in this repository checks the tunnel name, the credentials or
-the edge Worker's state.
-
-The origin is a normal long-running process, and this project does not run it on
-an always-on host yet, so after any restart of the machine it runs on:
-
-```powershell
-# terminal 1 — the tunnel
-cloudflared tunnel run maxey0-origin
-
-# terminal 2 — the origin itself
-cd <your checkout of Maxey0-SuperSpace>
-.venv\Scripts\maxey0-ss-public.exe
-```
-
-In the maintainer's setup, `mcp.maxey0.com` stays resolvable either way,
-because the edge Worker (source in `workers/mcp-edge`) runs separately; only
-tool execution depends on both of the above running.

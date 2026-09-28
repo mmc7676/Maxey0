@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased
+
+**Production path**
+- `GET /health` on the origin and the edge reports `version` and the MCP
+  protocol, plus `build` when `MAXEY0_BUILD_ID` is set to a plain identifier
+  (anything else is not echoed). A `GET` on `/mcp` answers `405` with a pointer
+  to `/health`.
+- `scripts/smoke_production.py`: an authenticated end-to-end check of a
+  deployed endpoint through the full SCW lifecycle, with each failure labeled
+  by layer.
+- The version has one source: `pyproject.toml` derives it from
+  `maxey0_ss.__version__`, and the release workflow checks the built files
+  carry the tag's version.
+
+**Removed**
+- The Fly.io deployment configuration and its documentation. The container
+  image (`Dockerfile`, `deploy/`) remains as a generic origin image for use
+  behind a Cloudflare Tunnel.
+- Documentation of the hosted instance's private infrastructure.
+
 ## 0.3.2 — attestation records serialized
 
 **Fixed**
@@ -70,9 +90,8 @@ yet". 30 tools, 3 resources.
 
 `mcp.maxey0.com` serves tool execution: a Cloudflare Worker edge, then a named
 tunnel, then a Python origin. This release makes that deployment's auth,
-abuse limits and exposure honest and measured. What it still is not, above all
-isolated from the development laptop it runs on, is listed in
-`docs/AUTHORIZATION.md` under "Not implemented" and in `docs/VERIFICATION.md`
+abuse limits and exposure honest and measured. What it still is not is listed
+in `docs/AUTHORIZATION.md` under "Not implemented" and in `docs/VERIFICATION.md`
 under "Not verified".
 
 Baseline before the hardening work: 875 Python tests, 1 skipped. After: 1117+
@@ -134,8 +153,7 @@ Every one was reproduced before fixing, and all are fixed with regression
 tests (see `docs/VERIFICATION.md`).
 
 **Deployment and packaging**
-- Fly.io artifacts (`Dockerfile`, `fly.toml`, `deploy/`,
-  `docs/FLY_DEPLOYMENT.md`). The image has not been built or deployed yet.
+- Origin container image (`Dockerfile`, `deploy/`).
 - `mcp` is a core dependency, because the app imports it at load.
 
 **Install and release fixes**
