@@ -38,7 +38,7 @@ jobs:
           # The built files must carry the tag's version: proves the dynamic
           # version resolved to the same literal the check above read.
           ls dist/maxey0-"${GITHUB_REF_NAME#v}"-py3-none-any.whl dist/maxey0-"${GITHUB_REF_NAME#v}".tar.gz
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: dist
           path: dist/
